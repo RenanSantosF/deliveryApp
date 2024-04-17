@@ -1,0 +1,10 @@
+{{>_navbar}}
+
+<h1>Categorias: </h1>
+{{#each categorias}}
+
+  <a href="/categorias/{{slug}}"><h4>{{nome}}</h4></a>
+
+{{else}}
+
+{{/each}}

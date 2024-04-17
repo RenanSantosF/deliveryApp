@@ -1,0 +1,30 @@
+{{>_navbar}}
+{{#each erros}}
+  <div class="alert alert-danger">{{texto}}</div>
+{{else}}
+{{/each}}
+
+<div class="card">
+  <div class="card-body">
+    <form action="/{{loja}}/admin/produto/edit" method="post">
+      <input type="hidden" value="{{produto._id}}" name="id">
+      <label for="titulo">Título: </label>
+        <input type="text" class="form-control" name="titulo" value="{{produto.titulo}}">
+      <label for="slug">Slug: </label>
+        <input type="text" name="slug" class="form-control" value="{{produto.slug}}">
+      <label for="descricao">Descrição: </label>
+        <input type="text" name="descricao" class="form-control" value="{{produto.descricao}}">
+      <label for="preco">Conteúdo: </label>
+        <textarea name="preco" class="form-control" >{{produto.preco}}</textarea>
+        <label for="categoria">Categoria: </label>
+        <select class="form-select" name="categoria">
+          {{#each categorias}}
+          <option value="{{_id}}">{{nome}}</option>
+          {{else}}
+          <option value="0">Nenhuma categoria registrada</option>
+          {{/each}}
+        </select>
+        <button class="btn btn-success mt-3" type="submit">Editar produto</button>
+    </form>
+  </div>
+</div>

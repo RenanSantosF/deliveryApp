@@ -1,0 +1,20 @@
+{{>_navbar}}
+
+{{#each erros}}
+  <div class="alert alert-danger">{{texto}}</div>
+{{else}}
+{{/each}}
+
+<div class="card">
+  <div class="card-body">
+      <form action="/{{loja}}/admin/categorias/nova" method="post">
+    <label for="nome">Nome: </label>
+      <input class="form-control" type="text" id="nome" name="nome" placeholder="nome da categoria">
+    <br>
+    <label for="slug">Slug: </label>
+      <input class="form-control" type="text" id="slug" name="slug" placeholder="Slug da categoria">
+    <br>
+    <button type="submit" class="btn btn-success">Criar categoria</button>
+  </form>
+  </div>
+</div>

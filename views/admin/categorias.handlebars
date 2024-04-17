@@ -1,0 +1,24 @@
+{{>_navbar}}
+<h2>Lista de categorias</h2>
+<hr>
+<a href="/{{loja}}/admin/categorias/add"><button class="btn btn-success">Nova categoria</button></a>
+
+{{#each categorias}}
+  <div class="card mt-4">
+    <div class="card-body">
+      <h2>{{nome}}</h2>
+      <small>{{slug}}</small> 
+      <P>Data de criação: {{date}}</P>
+      <a href="/{{nomeLoja}}/admin/categorias/edit/{{_id}}"><button class="btn btn-success">Editar categoria</button></a>
+      <form action="/{{nomeLoja}}/admin/categorias/deletar" method="post">
+        <input type="hidden" name="id" value="{{_id}}">
+        <button type="submit" class="btn btn-danger mt-2">Deletar categoria</button>
+      </form>
+    </div>
+  </div>
+
+{{else}}
+
+<h4 class="mt-3">Nenhuma categoria registrada!</h4>
+
+{{/each}}

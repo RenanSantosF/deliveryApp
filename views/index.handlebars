@@ -1,0 +1,172 @@
+<header>
+  <div>
+    <img src="./img/hamb-1.png" />
+    <h1>Dev Burguer</h1>
+    <span>Rua São Luis 10, Soteco, Viana - ES</span>
+    <div class="horarioFuncionamento" id="date-span">
+      <span>Seg à Dom - 18:00 às 22:00</span>
+    </div>
+  </div>
+</header>
+
+<h2 class="spanConhecaMenu">Conheça nosso menu</h2>
+
+<div id="menu">
+  <main class="categorias">
+    <div class="containerProduto">
+      <img src="./img/hamb-1.png" />
+      <div class="containerDescricaoPreco">
+        <p class="spanTitleProduto">Hamburguer Smash</p>
+        <p class="spanDescricaoProduto">Pão levinho de fermentação natural da
+          trigou, burger 160g, queijo prato e maionese da casa.</p>
+        <div class="preco">
+          <p>R$ 18.90</p>
+          <button
+            data-price="18.90"
+            data-name="Hamburguer Smash"
+            class="add-to-cart-btn"
+            href="#"
+          ><img src="./img/buy.png" /></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="containerProduto">
+      <img src="./img/hamb-2.png" />
+      <div class="containerDescricaoPreco">
+        <p class="spanTitleProduto">Hamburguer Duplo</p>
+        <p class="spanDescricaoProduto">Pão levinho de fermentação natural da
+          trigou, burger 160g, queijo prato e maionese da casa.</p>
+        <div class="preco">
+          <p>R$ 32.90</p>
+          <button
+            data-price="32.90"
+            data-name="Hamburguer Duplo"
+            class="add-to-cart-btn"
+            href="#"
+          ><img src="./img/buy.png" /></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="containerProduto">
+      <img src="./img/hamb-3.png" />
+      <div class="containerDescricaoPreco">
+        <p class="spanTitleProduto">Bacon Cremoso</p>
+        <p class="spanDescricaoProduto">Pão levinho de fermentação natural da
+          trigou, burger 160g, queijo prato e maionese da casa.</p>
+        <div class="preco">
+          <p>R$ 35.90</p>
+          <button
+            data-price="35.90"
+            data-name="Bacon Cremoso"
+            class="add-to-cart-btn"
+            href="#"
+          ><img src="./img/buy.png" /></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="containerProduto">
+      <img src="./img/hamb-4.png" />
+      <div class="containerDescricaoPreco">
+        <p class="spanTitleProduto">Hamburguer da Casa</p>
+        <p class="spanDescricaoProduto">Pão levinho de fermentação natural da
+          trigou, burger 160g, queijo prato e maionese da casa.</p>
+        <div class="preco">
+          <p>R$ 30,00</p>
+          <button
+            data-price="30"
+            data-name="Hamburguer da Casa"
+            class="add-to-cart-btn"
+            href="#"
+          ><img src="./img/buy.png" /></button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div class="containerSpanBebidas">
+    <h2>Bebidas</h2>
+  </div>
+
+  <div class="categorias" id="menu">
+
+    <div class="containerProduto">
+      <img src="./img/refri-1.png" />
+      <div class="containerDescricaoPreco">
+        <p class="spanTitleProduto">Coca Lata</p>
+        <p class="spanDescricaoProduto"></p>
+        <div class="preco">
+          <p>R$ 6,00</p>
+          <button
+            data-price="6"
+            data-name="Coca Lata"
+            class="add-to-cart-btn"
+            href="#"
+          ><img src="./img/buy.png" /></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="containerProduto">
+      <img src="./img/refri-2.png" />
+      <div class="containerDescricaoPreco">
+        <p class="spanTitleProduto">Guaraná Lata</p>
+        <p class="spanDescricaoProduto"></p>
+        <div class="preco">
+          <p>R$ 6,00</p>
+          <button
+            data-price="6"
+            data-name="Guaraná Lata"
+            class="add-to-cart-btn"
+            href="#"
+          ><img src="./img/buy.png" /></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal">
+  <div>
+    <h2>Meu carrinho</h2>
+  </div>
+</div>
+
+<footer>
+  <button id="cart-btn">
+    (<span id="cart-count">2</span>) Ver meu carrinho
+    <img src="./img/buy.png" />
+  </button>
+</footer>
+
+{{!-- <div class="container">
+
+  <div id="funcionamento" class="funcionamento">
+    <span id="status">Sábado:</span>
+  </div>
+
+  <h2>Lista de pedidos:</h2>
+
+  {{#each produtos}}
+    <div class="card">
+
+      <div class="card-body">
+        <h3>{{titulo}}</h3>
+        <h3>{{descricao}}</h3>
+        <a href="/produto/{{slug}}"><button class="btn btn-success">Leia mais</button></a>
+        <small>{{preco}}</small><br />
+        <small>Data de publicação: {{data}}</small>
+      </div>
+    </div>
+  {{else}}
+    <h5>Nenhuma produto</h5>
+  {{/each}}
+
+  <div class="localizacao">
+
+  </div>
+
+</div> --}}

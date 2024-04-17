@@ -1,0 +1,24 @@
+{{>_navbar}}
+<h2>Lista de bairros</h2>
+<hr>
+<a href="/{{loja}}/admin/bairros/add"><button class="btn btn-success">Novo bairro</button></a>
+
+{{#each bairros}}
+  <div class="card mt-4">
+    <div class="card-body">
+      <h2>{{nome}}</h2>
+      <small>Taxa de entrega: {{taxa}}</small>
+      <P>Data de criação: {{date}}</P>
+      <a href="/{{nomeLoja}}/admin/bairros/edit/{{_id}}"><button class="btn btn-success">Editar bairro</button></a>
+      <form action="/{{nomeLoja}}/admin/bairros/deletar" method="post">
+        <input type="hidden" name="id" value="{{_id}}">
+        <button type="submit" class="btn btn-danger mt-2">Deletar bairro</button>
+      </form>
+    </div>
+  </div>
+
+{{else}}
+
+<h4 class="mt-3">Nenhum bairro registrado!</h4>
+
+{{/each}}

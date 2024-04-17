@@ -1,0 +1,23 @@
+{{>_navbar}}
+<input type="hidden" type="text" name="nomeLojaProdutos" value="{{loja}}">
+<h2>Lista de produtos</h2>
+<hr>
+<a href="/{{loja}}/admin/produtos/add"><button class="btn btn-success">Nova produto</button></a>
+
+
+{{#each produtos}}
+  <div class="card mt-3">
+    <div class="card-body">
+      <h4>Título: {{titulo}}</h4>
+      <p>Descrição: {{descricao}}</p>
+      <p><strong>R$ {{preco}}</strong></p>
+      <br>
+      <small>Categoria: {{this.categoria.nome}}</small><br>
+      <a href="/{{nomeLoja}}/admin/produtos/edit/{{_id}}"><button class="btn btn-success mt-3">Editar produto</button></a>
+      <br>
+      <a href="/{{nomeLoja}}/admin/produtos/deletar/{{_id}}"><button class="btn btn-danger mt-1">Deletar produto</button></a>
+    </div>
+  </div>
+{{else}}
+<p>Nenhuma produto registrada!</p>
+{{/each}}
