@@ -1,7 +1,7 @@
 <header>
   <div>
     <img src="./img/hamb-1.png" />
-    <h1>Dev Burguer</h1>
+    <h1>Lanchonete do Renanzin</h1>
     <span>Rua São Luis 10, Soteco, Viana - ES</span>
     <div class="horarioFuncionamento" id="date-span">
       <span>Seg à Dom - 18:00 às 22:00</span>
@@ -12,24 +12,125 @@
 <h2 class="spanConhecaMenu">Conheça nosso menu</h2>
 
 <div id="menu">
-  <main class="categorias">
-    <div class="containerProduto">
-      <img src="./img/hamb-1.png" />
-      <div class="containerDescricaoPreco">
-        <p class="spanTitleProduto">Hamburguer Smash</p>
-        <p class="spanDescricaoProduto">Pão levinho de fermentação natural da
-          trigou, burger 160g, queijo prato e maionese da casa.</p>
-        <div class="preco">
-          <p>R$ 18.90</p>
-          <button
-            data-price="18.90"
-            data-name="Hamburguer Smash"
-            class="add-to-cart-btn"
-            href="#"
-          ><img src="./img/buy.png" /></button>
+
+  <div id="menu">
+    {{#each produtosPorCategoria}}
+      <div class="containerSpanBebidas">
+        <h2>{{@key}}</h2>
+      </div>
+      <div class="categorias" id="menu">
+        {{#each this}}
+          <div class="containerProduto">
+            <img src="./img/hamb-4.png" />
+            <div class="containerDescricaoPreco">
+              <p class="spanTitleProduto">{{titulo}}</p>
+              <p class="spanDescricaoProduto">{{descricao}}</p>
+              <div class="preco">
+                <p>R$ {{preco}}</p>
+                <button
+                  data-price="{{preco}}"
+                  data-name="{{titulo}}"
+                  class="add-to-cart-btn"
+                  href="#"
+                ><img src="./img/buy.png" /></button>
+              </div>
+            </div>
+          </div>
+        {{else}}
+          <h1>Nenhum produto encontrado</h1>
+        {{/each}}
+      </div>
+
+    {{else}}
+      <h1>Nenhum produto encontrado</h1>
+    {{/each}}
+  </div>
+
+</div>
+
+<div class="modal" id="cart-modal">
+  <div>
+    <div class="headerModal">
+      <h2>Meu carrinho</h2>
+    </div>
+
+    <div id="cart-items" class="items"></div>
+
+    <p>Total: <span id="cart-total">0.00</span></p>
+
+    <p>Endereço de entrega:</p>
+
+    <input
+      type="text"
+      id="address"
+      placeholder="Digite seu endereço completo..."
+    />
+
+    <p class="alert" id="address-warn">Digite seu endereço completo!</p>
+
+    <div class="containerFinalizarPedido">
+      <button id="close-modal-btn">Fechar</button>
+      <button id="checkout-btn">Finalizar pedido</button>
+
+    </div>
+
+  </div>
+
+</div>
+
+<footer>
+  <button id="cart-btn">
+    (<span id="cart-count">0</span>) Ver meu carrinho
+    <img src="./img/buy.png" />
+  </button>
+</footer>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  {{!-- <main class="categorias">
+
+    {{#each produtos}}
+      <div class="containerProduto">
+        <img src="./img/hamb-1.png" />
+        <div class="containerDescricaoPreco">
+          <p class="spanTitleProduto">{{titulo}}</p>
+          <p class="spanDescricaoProduto">{{descricao}}</p>
+          <div class="preco">
+            <p>R$ {{preco}}</p>
+            <button
+              data-price="{{preco}}"
+              data-name="{{titulo}}"
+              class="add-to-cart-btn"
+              href="#"
+            >
+              <img src="./img/buy.png" /></button>
+          </div>
         </div>
       </div>
-    </div>
+    {{else}}
+      <h5>Nenhuma produto</h5>
+    {{/each}}
 
     <div class="containerProduto">
       <img src="./img/hamb-2.png" />
@@ -125,48 +226,4 @@
         </div>
       </div>
     </div>
-  </div>
-</div>
-
-
-<div class="modal">
-  <div>
-    <h2>Meu carrinho</h2>
-  </div>
-</div>
-
-<footer>
-  <button id="cart-btn">
-    (<span id="cart-count">2</span>) Ver meu carrinho
-    <img src="./img/buy.png" />
-  </button>
-</footer>
-
-{{!-- <div class="container">
-
-  <div id="funcionamento" class="funcionamento">
-    <span id="status">Sábado:</span>
-  </div>
-
-  <h2>Lista de pedidos:</h2>
-
-  {{#each produtos}}
-    <div class="card">
-
-      <div class="card-body">
-        <h3>{{titulo}}</h3>
-        <h3>{{descricao}}</h3>
-        <a href="/produto/{{slug}}"><button class="btn btn-success">Leia mais</button></a>
-        <small>{{preco}}</small><br />
-        <small>Data de publicação: {{data}}</small>
-      </div>
-    </div>
-  {{else}}
-    <h5>Nenhuma produto</h5>
-  {{/each}}
-
-  <div class="localizacao">
-
-  </div>
-
-</div> --}}
+  </div> --}}

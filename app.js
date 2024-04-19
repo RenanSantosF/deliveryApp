@@ -54,18 +54,17 @@ try {
 // Public
 app.use(express.static(path.join(__dirname, "public")));
 
-// Rotas
-
 // Desviando para outros arquivos
 app.use("/:nomeLoja/admin", autenticado, admin);
 app.use("/usuarios", usuarios);
 
+// Rotas
 app.get("/", (req, res) => {
   res.send("principal");
 });
 
 // Página da loja, de exibir erro
-app.get("/:nomeLoja/404", (req, res) => {
+app.get("/404", (req, res) => {
   res.send("Erro 404!");
 });
 
@@ -76,13 +75,34 @@ app.get("/:nomeLoja", existeUsuario, (req, res) => {
     .populate("categoria")
     .sort({ data: "desc" })
     .then((produtos) => {
-      res.render("index", {
-        produtos: produtos,
-      });
+      Categoria.find({ nomeLoja: req.params.nomeLoja })
+        .lean()
+        .sort({ data: "desc" })
+        .then((categorias) => {
+          const produtosPorCategoria = {};
+
+          categorias.forEach((categoria) => {
+            produtosPorCategoria[categoria.nome] = [];
+          });
+
+          produtos.forEach((produto) => {
+            const categoria = categorias.find(
+              (cat) => cat.nome === produto.categoria.nome
+            );
+
+            if (categoria) {
+              produtosPorCategoria[categoria.nome].push(produto);
+            }
+          });
+
+          res.render("index", {
+            produtosPorCategoria: produtosPorCategoria,
+          });
+        });
     })
     .catch((err) => {
       req.flash("error_msg", "Houve um erro interno");
-      res.redirect(`/${usuario.nomeLoja}/404`);
+      res.send("Erro interno");
     });
 });
 

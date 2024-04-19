@@ -38,10 +38,15 @@ header > div > span {
 }
 
 header > div > .horarioFuncionamento {
-  background-color: rgb(31, 148, 31);
+  background-color: rgb(206, 28, 28);
   padding: 4px 16px 4px 16px;
   border-radius: 10px;
   margin: 1.5rem 0 1.5rem 0;
+}
+
+.activeHorarioFuncionamento {
+  background-color: rgb(31, 148, 31);
+  
 }
 
 header > div > .horarioFuncionamento span {
@@ -161,10 +166,79 @@ header > div > .horarioFuncionamento span {
   padding: 20px;
   border-radius: 10px;
   min-width: 90%;
+}
+
+.items {
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+}
+
+.headerModal {
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.items > h2 {
+  font-size: 20px;
   font-weight: bold;
+
+}
+
+.items {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  flex-direction: column;
+}
+
+.modal > div > p {
+  font-weight: bold;
+}
+
+.modal > div > input {
+  width: 100%;
+  padding: 4px;
+  border-radius: 4px;
+  margin: 4px 0;
+  
+}
+
+.alert {
+  color: red;
+  display: none;
+}
+
+.activeSpanAlert {
+  display: flex;
+}
+
+.ActiveAddress{
+  border-color: rgb(250, 31, 31);
+}
+
+.containerFinalizarPedido {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.close-modal-btn {
+  border: none;
+  background-color: transparent;
+}
+
+
+
+#checkout-btn {
+  background-color: rgb(40, 150, 40);
+  color: aliceblue;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: none;
 }
 
 @media (min-width: 770px) {
@@ -172,6 +246,8 @@ header > div > .horarioFuncionamento span {
     min-width: 600px;
   }
 }
+
+
 
 footer {
   position: fixed;
@@ -196,4 +272,29 @@ footer > button {
   border: none;
   gap: 8px;
   font-weight: bold;
+}
+
+.containerItemCarrinho {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  flex-direction: column;
+  width: 100%;
+}
+
+.itemCarrinho {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.atributosItemCarrinho > .spanItemName {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.atributosItemCarrinho > .spanItemPrice {
+  font-size: 1rem;
+  font-weight: bold;
+  margin-top: 0.5rem;
 }
