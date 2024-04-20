@@ -15,6 +15,8 @@ require("./models/Produto");
 const Produto = mongoose.model("produtos");
 require("./models/Categoria");
 const Categoria = mongoose.model("categorias");
+require("./models/Usuario");
+const Usuario = mongoose.model("usuarios");
 require("./config/auth")(passport);
 require("./models/Usuario");
 
@@ -70,6 +72,16 @@ app.get("/404", (req, res) => {
 
 // Página para cada cliente de cada loja
 app.get("/:nomeLoja", existeUsuario, (req, res) => {
+  let dadosUsuario = [];
+  Usuario.find({ nomeLoja: req.params.nomeLoja })
+    .lean()
+    .then((usuario) => {
+      dadosUsuario = usuario;
+    })
+    .catch((err) => {
+      // res.send('erro ao exibir usuário')
+    });
+
   Produto.find({ nomeLoja: req.params.nomeLoja })
     .lean()
     .populate("categoria")
@@ -97,7 +109,11 @@ app.get("/:nomeLoja", existeUsuario, (req, res) => {
 
           res.render("index", {
             produtosPorCategoria: produtosPorCategoria,
+            dadosUsuario: dadosUsuario,
           });
+        })
+        .catch((err) => {
+          res.send("Erro interno");
         });
     })
     .catch((err) => {

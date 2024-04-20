@@ -75,7 +75,6 @@ function updateCartModal() {
         <p class="spanItemPrice">R$ ${item.price.toFixed(2)}</p>
       </div>
 
-
       <button class="remove-from-cart-btn" data-name="${item.name}">
         Remover
       </button>
@@ -194,3 +193,12 @@ if (isOpen) {
 } else {
   spanItem.classList.add("activeHorarioFuncionamento");
 }
+
+
+function defineFundoImg() {
+  const img = document.getElementById('headerImgFundo')
+  const dataImg = img.dataset.img;
+  img.style.backgroundImage = `'url(${dataImg})'`
+  console.log(dataImg)
+}
+defineFundoImg()

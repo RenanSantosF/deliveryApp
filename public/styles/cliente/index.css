@@ -1,7 +1,6 @@
 header {
   width: 100%;
   height: 420px;
-  background-image: url("/img/bg.png");
   background-size: cover;
   background-position: center;
 }
@@ -46,7 +45,6 @@ header > div > .horarioFuncionamento {
 
 .activeHorarioFuncionamento {
   background-color: rgb(31, 148, 31);
-  
 }
 
 header > div > .horarioFuncionamento span {
@@ -82,7 +80,7 @@ header > div > .horarioFuncionamento span {
   }
 }
 
-.containerDescricaoPreco{ 
+.containerDescricaoPreco {
   width: 100%;
 }
 
@@ -183,7 +181,6 @@ header > div > .horarioFuncionamento span {
 .items > h2 {
   font-size: 20px;
   font-weight: bold;
-
 }
 
 .items {
@@ -202,7 +199,6 @@ header > div > .horarioFuncionamento span {
   padding: 4px;
   border-radius: 4px;
   margin: 4px 0;
-  
 }
 
 .alert {
@@ -214,7 +210,7 @@ header > div > .horarioFuncionamento span {
   display: flex;
 }
 
-.ActiveAddress{
+.ActiveAddress {
   border-color: rgb(250, 31, 31);
 }
 
@@ -231,8 +227,6 @@ header > div > .horarioFuncionamento span {
   background-color: transparent;
 }
 
-
-
 #checkout-btn {
   background-color: rgb(40, 150, 40);
   color: aliceblue;
@@ -246,8 +240,6 @@ header > div > .horarioFuncionamento span {
     min-width: 600px;
   }
 }
-
-
 
 footer {
   position: fixed;

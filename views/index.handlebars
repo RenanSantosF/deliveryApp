@@ -1,13 +1,15 @@
-<header>
+{{#each dadosUsuario}}
+<header data-img="./uploads/{{imgLogo}}" id="headerImgFundo">
   <div>
-    <img src="./img/hamb-1.png" />
-    <h1>Lanchonete do Renanzin</h1>
-    <span>Rua São Luis 10, Soteco, Viana - ES</span>
+    <img src="./uploads/{{imgLogo}}" />
+    <h1>{{nomeLoja}}</h1>
+    <span>{{rua}} {{numeroRua}}, {{bairro}}, {{cidade}} - {{estado}}</span>
     <div class="horarioFuncionamento" id="date-span">
       <span>Seg à Dom - 18:00 às 22:00</span>
     </div>
   </div>
 </header>
+{{/each}}
 
 <h2 class="spanConhecaMenu">Conheça nosso menu</h2>
 
