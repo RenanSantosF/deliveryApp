@@ -1,36 +1,23 @@
 {{#each dadosUsuario}}
-<header data-img="./uploads/{{imgBg}}" id="headerImgFundo">
-  <div>
-    <img src="./uploads/{{imgLogo}}" />
-    <h1>{{nomeLoja}}</h1>
-    <span>{{rua}} {{numeroRua}}, {{bairro}}, {{cidade}} - {{estado}}</span>
-    {{#each statusSituacao}}
-    <div class="horarioFuncionamento" data-status="{{status}}" id="date-span">
-      <span>{{status}} - {{abertura}} às {{fechamento}}</span>
+  <header data-img="./uploads/{{imgBg}}" id="headerImgFundo">
+    <div>
+      <img src="./uploads/{{imgLogo}}" />
+      <h1>{{nomeLoja}}</h1>
+      <span>{{rua}} {{numeroRua}}, {{bairro}}, {{cidade}} - {{estado}}</span>
+      {{#each statusSituacao}}
+        <div
+          class="horarioFuncionamento"
+          data-status="{{status}}"
+          id="date-span"
+        >
+          <span>{{status}} - {{abertura}} às {{fechamento}}</span>
+        </div>
+      {{/each}}
     </div>
-    {{/each}}
-  </div>
-</header>
+  </header>
 {{/each}}
 
-
-{{!-- {{#each dadosUsuario}}
-<header data-img="./uploads/{{imgLogo}}" id="headerImgFundo">
-  <div>
-    <h1>{{nomeLoja}}</h1>
-    <span>{{rua}}, {{numeroRua}}, {{bairro}}, {{cidade}}, {{estado}}</span>
-    
-    {{#each statusSituacao}}
-    <div class="horarioFuncionamento" data-status="{{status}}" id="date-span">
-      <span>{{status}}{{abertura}} - {{fechamento}}</span>
-    </div>
-    {{/each}}
-  </div>
-</header>
-{{/each}} --}}
-
-
-<h2 class="spanConhecaMenu">Conheça nosso menu</h2>
+{{!-- <h2 class="spanConhecaMenu">Conheça nosso menu</h2> --}}
 
 <div id="menu">
 
@@ -58,46 +45,65 @@
             </div>
           </div>
         {{else}}
-          <h1>Nenhum produto encontrado</h1>
+          <h2>Nenhum produto encontrado</h2>
         {{/each}}
       </div>
 
     {{else}}
-      <h1>Nenhum produto encontrado</h1>
+      <h2>Nenhum produto encontrado</h2>
     {{/each}}
   </div>
 
 </div>
 
-<div class="modal" id="cart-modal">
-  <div>
-    <div class="headerModal">
-      <h2>Meu carrinho</h2>
+{{#each dadosUsuario}}
+  <div class="modal" id="cart-modal" data-contact="{{telefone}}">
+    <div>
+      <div class="headerModal">
+        <h2>Meu carrinho</h2>
+      </div>
+
+      <div id="cart-items" class="items"></div>
+
+      <p>Total: <span id="cart-total">0.00</span></p>
+
+      <div class="containerEntregaBtn">
+        <img id="imgEntrega" src="./img/imgEntrega.png" alt="" />
+        <button id="btnEntrega">Adicionar informações de entrega</button>
+      </div>
+
+      <span id="address-warn"></span>
+      <div class="containerEntrega" id="containerEntrega">
+        <span class="item1">Informações de entrega:</span>
+        <input type="text" class="item2" id="address" placeholder="CEP" />
+        <input type="text" class="item3" id="rua" placeholder="Rua/Avenida" />
+        <input type="text" class="item4" id="numero" placeholder="Nº" />
+        <input
+          class="item5"
+          type="text"
+          id="pontoReferencia"
+          placeholder="Ponto de referência"
+        />
+        <input type="text" class="item6" id="Bairro" placeholder="Bairro" />
+        <input type="text" class="item7" id="Cidade" placeholder="Cidade" />
+        <input type="text" class="item8" id="UF" placeholder="UF" />
+        <span class="item9">Telefone para contato:</span>
+        <input
+          class="item10"
+          type="text"
+          id="contatoInput"
+          placeholder="DDD + número"
+        />
+      </div>
+
+      <div class="containerFinalizarPedido">
+        <button id="close-modal-btn">Fechar</button>
+        <button id="checkout-btn">Finalizar pedido</button>
+      </div>
+
     </div>
-
-    <div id="cart-items" class="items"></div>
-
-    <p>Total: <span id="cart-total">0.00</span></p>
-
-    <p>Endereço de entrega:</p>
-
-    <input
-      type="text"
-      id="address"
-      placeholder="Digite seu endereço completo..."
-    />
-
-    <p class="alert" id="address-warn">Digite seu endereço completo!</p>
-
-    <div class="containerFinalizarPedido">
-      <button id="close-modal-btn">Fechar</button>
-      <button id="checkout-btn">Finalizar pedido</button>
-
-    </div>
-
   </div>
-
-</div>
+{{/each}}
 
 <footer>
   <button id="cart-btn">
@@ -105,146 +111,3 @@
     <img src="./img/buy.png" />
   </button>
 </footer>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  {{!-- <main class="categorias">
-
-    {{#each produtos}}
-      <div class="containerProduto">
-        <img src="./img/hamb-1.png" />
-        <div class="containerDescricaoPreco">
-          <p class="spanTitleProduto">{{titulo}}</p>
-          <p class="spanDescricaoProduto">{{descricao}}</p>
-          <div class="preco">
-            <p>R$ {{preco}}</p>
-            <button
-              data-price="{{preco}}"
-              data-name="{{titulo}}"
-              class="add-to-cart-btn"
-              href="#"
-            >
-              <img src="./img/buy.png" /></button>
-          </div>
-        </div>
-      </div>
-    {{else}}
-      <h5>Nenhuma produto</h5>
-    {{/each}}
-
-    <div class="containerProduto">
-      <img src="./img/hamb-2.png" />
-      <div class="containerDescricaoPreco">
-        <p class="spanTitleProduto">Hamburguer Duplo</p>
-        <p class="spanDescricaoProduto">Pão levinho de fermentação natural da
-          trigou, burger 160g, queijo prato e maionese da casa.</p>
-        <div class="preco">
-          <p>R$ 32.90</p>
-          <button
-            data-price="32.90"
-            data-name="Hamburguer Duplo"
-            class="add-to-cart-btn"
-            href="#"
-          ><img src="./img/buy.png" /></button>
-        </div>
-      </div>
-    </div>
-
-    <div class="containerProduto">
-      <img src="./img/hamb-3.png" />
-      <div class="containerDescricaoPreco">
-        <p class="spanTitleProduto">Bacon Cremoso</p>
-        <p class="spanDescricaoProduto">Pão levinho de fermentação natural da
-          trigou, burger 160g, queijo prato e maionese da casa.</p>
-        <div class="preco">
-          <p>R$ 35.90</p>
-          <button
-            data-price="35.90"
-            data-name="Bacon Cremoso"
-            class="add-to-cart-btn"
-            href="#"
-          ><img src="./img/buy.png" /></button>
-        </div>
-      </div>
-    </div>
-
-    <div class="containerProduto">
-      <img src="./img/hamb-4.png" />
-      <div class="containerDescricaoPreco">
-        <p class="spanTitleProduto">Hamburguer da Casa</p>
-        <p class="spanDescricaoProduto">Pão levinho de fermentação natural da
-          trigou, burger 160g, queijo prato e maionese da casa.</p>
-        <div class="preco">
-          <p>R$ 30,00</p>
-          <button
-            data-price="30"
-            data-name="Hamburguer da Casa"
-            class="add-to-cart-btn"
-            href="#"
-          ><img src="./img/buy.png" /></button>
-        </div>
-      </div>
-    </div>
-  </main>
-
-  <div class="containerSpanBebidas">
-    <h2>Bebidas</h2>
-  </div>
-
-  <div class="categorias" id="menu">
-
-    <div class="containerProduto">
-      <img src="./img/refri-1.png" />
-      <div class="containerDescricaoPreco">
-        <p class="spanTitleProduto">Coca Lata</p>
-        <p class="spanDescricaoProduto"></p>
-        <div class="preco">
-          <p>R$ 6,00</p>
-          <button
-            data-price="6"
-            data-name="Coca Lata"
-            class="add-to-cart-btn"
-            href="#"
-          ><img src="./img/buy.png" /></button>
-        </div>
-      </div>
-    </div>
-
-    <div class="containerProduto">
-      <img src="./img/refri-2.png" />
-      <div class="containerDescricaoPreco">
-        <p class="spanTitleProduto">Guaraná Lata</p>
-        <p class="spanDescricaoProduto"></p>
-        <div class="preco">
-          <p>R$ 6,00</p>
-          <button
-            data-price="6"
-            data-name="Guaraná Lata"
-            class="add-to-cart-btn"
-            href="#"
-          ><img src="./img/buy.png" /></button>
-        </div>
-      </div>
-    </div>
-  </div> --}}

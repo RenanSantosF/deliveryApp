@@ -6,13 +6,22 @@ const cartTotal = document.getElementById("cart-total");
 const checkoutBtn = document.getElementById("checkout-btn");
 const closeModalBtn = document.getElementById("close-modal-btn");
 const cartCounter = document.getElementById("cart-count");
-const addressInput = document.getElementById("address");
 const addressWarn = document.getElementById("address-warn");
+const btnEntrega = document.getElementById("btnEntrega");
+const containerEntrega = document.getElementById("containerEntrega");
+const imgEntrega = document.getElementById("imgEntrega");
 
+const addressInput = document.getElementById("address");
+const enderecoInputs = document.querySelectorAll("#containerEntrega input");
+const numeroInput = document.getElementById("numero");
+const pontoReferenciaInput = document.getElementById("pontoReferencia");
+const ruaInput = document.getElementById("rua");
+const BairroInput = document.getElementById("Bairro");
+const CidadeInput = document.getElementById("Cidade");
+const UFInput = document.getElementById("UF");
+const contatoInput = document.getElementById("contatoInput");
 
 let cart = [];
-
-
 
 // Abrir o modal do carrinho
 cartBtn.addEventListener("click", () => {
@@ -151,15 +160,23 @@ checkoutBtn.addEventListener("click", () => {
     return;
   }
 
+  let shouldStop = false;
   if (cart.length === 0) return;
-  if (addressInput.value === "") {
-    addressWarn.classList.add("activeSpanAlert");
-    addressInput.classList.add("ActiveAddress");
+
+  enderecoInputs.forEach((enderecoInput) => {
+    if (!enderecoInput.value) {
+      addressWarn.classList.add("activeSpanAlert");
+      enderecoInput.classList.add("ActiveAddress");
+
+      shouldStop = true;
+      return;
+    }
+  });
+  if (shouldStop) {
     return;
   }
 
   // Enviar pedido para a api
-
   const cartItems = cart
     .map((item) => {
       return ` ${item.name} Quantidade: (${item.quantity}) Preço: R$ ${item.price} |`;
@@ -167,10 +184,21 @@ checkoutBtn.addEventListener("click", () => {
     .join("");
 
   const message = encodeURIComponent(cartItems);
-  const phone = 27998836017;
+  const phone = cartModal.dataset.contact;
+  const endereco = {
+    numero: numeroInput.value,
+    pontoReferencia: pontoReferenciaInput.value,
+    rua: ruaInput.value,
+    Bairro: BairroInput.value,
+    Cidade: CidadeInput.value,
+    UF: UFInput.value,
+    contato: contatoInput.value,
+  };
+
+  console.log(endereco);
 
   window.open(
-    `https://wa.me/${phone}?text=${message} Endereço: ${addressInput.value}`,
+    `https://wa.me/${phone}?text=${message} Endereço: Rua:${endereco.rua}, Nº:${endereco.numero}, Referência:${endereco.pontoReferencia}, Bairro: ${endereco.Bairro}, Cidade: ${endereco.Cidade}, UF: ${endereco.UF}`,
     "_blank"
   );
 
@@ -182,29 +210,52 @@ const spanItem = document.getElementById("date-span");
 
 // Verifica hora e manipula o card horário
 function checkRestaurantOpen() {
-  if(spanItem.dataset.status === 'aberta') {
-    return true
+  if (spanItem.dataset.status === "aberta") {
+    return true;
   } else {
-    return false
+    return false;
   }
 }
 
-
 const isOpen = checkRestaurantOpen();
-console.log(isOpen)
 
 if (isOpen == true) {
-  console.log(isOpen)
-  spanItem.style.backgroundColor = "rgb(31, 148, 31)"
+  spanItem.style.backgroundColor = "rgb(31, 148, 31)";
 } else {
-  spanItem.style.backgroundColor = "rgb(206, 28, 28)"
+  spanItem.style.backgroundColor = "rgb(206, 28, 28)";
 }
-
 
 function defineFundoImg() {
-  const img = document.getElementById('headerImgFundo')
+  const img = document.getElementById("headerImgFundo");
   const dataImg = img.dataset.img;
   const cssString = `url("${dataImg}")`;
-  img.style.backgroundImage = cssString
+  img.style.backgroundImage = cssString;
 }
-defineFundoImg()
+defineFundoImg();
+
+btnEntrega.addEventListener("click", (ev) => {
+  ev.preventDefault();
+  btnEntrega.style.display = "none";
+  containerEntrega.style.display = "grid";
+  imgEntrega.style.display = "none";
+  checkoutBtn.style.display = "flex";
+});
+
+function VerificaInputsEntrega() {
+  enderecoInputs.forEach((enderecoInput) => {
+    if (!enderecoInput.value) {
+      addressWarn.classList.add("activeSpanAlert");
+      enderecoInput.classList.add("ActiveAddress");
+      console.log(enderecoInput);
+    }
+  });
+}
+
+enderecoInputs.forEach((enderecoInput) => {
+  enderecoInput.addEventListener("input", () => {
+    if (enderecoInput.value) {
+      addressWarn.classList.remove("activeSpanAlert");
+      enderecoInput.classList.remove("ActiveAddress");
+    }
+  });
+});

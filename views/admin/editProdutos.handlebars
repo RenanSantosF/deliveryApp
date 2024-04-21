@@ -6,7 +6,7 @@
 
 <div class="card">
   <div class="card-body">
-    <form action="/{{loja}}/admin/produto/edit" method="post">
+    <form action="/{{loja}}/admin/produto/edit" method="post" enctype="multipart/form-data">
       <input type="hidden" value="{{produto._id}}" name="id">
       <label for="titulo">Título: </label>
         <input type="text" class="form-control" name="titulo" value="{{produto.titulo}}">
@@ -14,8 +14,10 @@
         <input type="text" name="slug" class="form-control" value="{{produto.slug}}">
       <label for="descricao">Descrição: </label>
         <input type="text" name="descricao" class="form-control" value="{{produto.descricao}}">
-      <label for="preco">Conteúdo: </label>
-        <textarea name="preco" class="form-control" >{{produto.preco}}</textarea>
+      <label for="preco">Preço: </label>
+        <input name="preco" class="form-control" >{{produto.preco}}</input>
+      <label for="preco">Imagem: </label>
+        <input type="file" name="imgProduto" class="form-control">
         <label for="categoria">Categoria: </label>
         <select class="form-select" name="categoria">
           {{#each categorias}}

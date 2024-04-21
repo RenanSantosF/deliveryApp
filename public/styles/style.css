@@ -5,3 +5,19 @@
   font-family: "Poppins", sans-serif;
 
 }
+
+::-webkit-scrollbar {
+  width: 10px; /* Largura da barra de rolagem */
+  background-color: #f5f5f5; /* Cor de fundo da barra de rolagem */
+}
+
+/* Estilo do botão da barra de rolagem */
+::-webkit-scrollbar-thumb {
+  background-color: #c5c5c5; /* Cor do botão da barra de rolagem */
+  border-radius: 5px; /* Borda arredondada do botão */
+}
+
+/* Altera a cor do botão da barra de rolagem quando o mouse passa por cima */
+::-webkit-scrollbar-thumb:hover {
+  background-color: #a0a0a0; /* Cor do botão da barra de rolagem quando o mouse passa por cima */
+}

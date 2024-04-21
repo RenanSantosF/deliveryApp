@@ -13,18 +13,19 @@ const multer = require("multer");
 const path = require("path");
 
 // Configurando o recebimento de arquivo
-
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "public/uploads/");
   },
   filename: function (req, file, cb) {
-    cb(null, file.originalname + Date.now() + path.extname(file.originalname));
+    const uniqueFileName =
+      file.originalname + Date.now() + path.extname(file.originalname);
+    req.generatedFileName = uniqueFileName;
+    cb(null, uniqueFileName);
   },
 });
 
 const upload = multer({ storage });
-
 
 let usuarioAtual = "";
 function UserAuth(req, res, next) {
@@ -196,67 +197,70 @@ router.get("/produtos/add", UserAuth, eAdmin, (req, res) => {
     });
 });
 
-router.post("/produtos/nova", upload.single("imgProduto"), UserAuth, eAdmin, (req, res, e) => {
-  let erros = [];
-  if (
-    !req.body.titulo ||
-    typeof req.body.titulo == undefined ||
-    req.body.titulo == null
-  ) {
-    erros.push({ texto: "Título inválido" });
-  }
-  if (
-    !req.body.slug ||
-    typeof req.body.slug == undefined ||
-    req.body.slug == null
-  ) {
-    erros.push({ texto: "Slug inválido" });
-  }
-  if (
-    !req.body.descricao ||
-    typeof req.body.descricao == undefined ||
-    req.body.descricao == null
-  ) {
-    erros.push({ texto: "Descrição inválida" });
-  }
+router.post(
+  "/produtos/nova",
+  upload.single("imgProduto"),
+  UserAuth,
+  eAdmin,
+  (req, res, e) => {
+    let erros = [];
+    if (
+      !req.body.titulo ||
+      typeof req.body.titulo == undefined ||
+      req.body.titulo == null
+    ) {
+      erros.push({ texto: "Título inválido" });
+    }
+    if (
+      !req.body.slug ||
+      typeof req.body.slug == undefined ||
+      req.body.slug == null
+    ) {
+      erros.push({ texto: "Slug inválido" });
+    }
+    if (
+      !req.body.descricao ||
+      typeof req.body.descricao == undefined ||
+      req.body.descricao == null
+    ) {
+      erros.push({ texto: "Descrição inválida" });
+    }
 
-  if (
-    !req.body.preco ||
-    typeof req.body.preco == undefined ||
-    req.body.preco == null
-  ) {
-    erros.push({ texto: "Valor inválido" });
+    if (
+      !req.body.preco ||
+      typeof req.body.preco == undefined ||
+      req.body.preco == null
+    ) {
+      erros.push({ texto: "Valor inválido" });
+    }
+    if (req.body.categoria == "0") {
+      erros.push({ texto: "categoria inválida, registre uma categoria" });
+    }
+    if (erros.length > 0) {
+      res.render("admin/addProduto", { erros: erros });
+    } else {
+      const novaproduto = {
+        titulo: req.body.titulo,
+        slug: req.body.slug,
+        descricao: req.body.descricao,
+        preco: req.body.preco,
+        categoria: req.body.categoria,
+        nomeLoja: usuarioAtual,
+        imgProduto: req.generatedFileName,
+      };
+      new Produto(novaproduto)
+        .save()
+        .then(() => {
+          req.flash("success_msg", "produto criado com sucesso!");
+          res.redirect(`/${usuarioAtual}/admin/produtos`);
+        })
+        .catch((err) => {
+          req.flash("error_msg", "Houve um erro na criação da produto!");
+          res.redirect(`/${usuarioAtual}/admin/produtos`);
+        });
+    }
   }
-  if (req.body.categoria == "0") {
-    erros.push({ texto: "categoria inválida, registre uma categoria" });
-  }
-  if (erros.length > 0) {
-    res.render("admin/addProduto", { erros: erros });
-  } else {
-    const novaproduto = {
-      titulo: req.body.titulo,
-      slug: req.body.slug,
-      descricao: req.body.descricao,
-      preco: req.body.preco,
-      categoria: req.body.categoria,
-      nomeLoja: usuarioAtual,
-      imgProduto:
-        req.file.originalname +
-        Date.now() +
-        path.extname(req.file.originalname),
-    };
-    new Produto(novaproduto)
-      .save()
-      .then(() => {
-        req.flash("success_msg", "produto criado com sucesso!");
-        res.redirect(`/${usuarioAtual}/admin/produtos`);
-      })
-      .catch((err) => {
-        req.flash("error_msg", "Houve um erro na criação da produto!");
-        res.redirect(`/${usuarioAtual}/admin/produtos`);
-      });
-  }
-});
+);
 
 router.get("/produtos/edit/:id", UserAuth, eAdmin, (req, res) => {
   Produto.findOne({ _id: req.params.id })
@@ -284,33 +288,39 @@ router.get("/produtos/edit/:id", UserAuth, eAdmin, (req, res) => {
     });
 });
 
-router.post("/produto/edit", UserAuth, eAdmin, (req, res) => {
-  Produto.findOne({ _id: req.body.id })
-    .then((produto) => {
-      produto.titulo = req.body.titulo;
-      produto.slug = req.body.slug;
-      produto.descricao = req.body.descricao;
-      produto.categoria = req.body.categoria;
-      produto.preco = req.body.preco;
-      produto.nomeLoja = usuarioAtual;
-      produto.imgProduto = req.file.originalname + Date.now() + path.extname(req.file.originalname)
+router.post(
+  "/produto/edit",
+  upload.single("imgProduto"),
+  UserAuth,
+  eAdmin,
+  (req, res) => {
+    Produto.findOne({ _id: req.body.id })
+      .then((produto) => {
+        produto.titulo = req.body.titulo;
+        produto.slug = req.body.slug;
+        produto.descricao = req.body.descricao;
+        produto.categoria = req.body.categoria;
+        produto.preco = req.body.preco;
+        produto.nomeLoja = usuarioAtual;
+        produto.imgProduto = req.generatedFileName;
 
-      produto
-        .save()
-        .then(() => {
-          req.flash("success_msg", "produto editada com sucesso!");
-          res.redirect(`/${usuarioAtual}/admin/produtos`);
-        })
-        .catch((err) => {
-          req.flash("error_msg", "Erro interno");
-          res.redirect(`/${usuarioAtual}/admin/produtos`);
-        });
-    })
-    .catch((err) => {
-      req.flash("error_msg", "Houve um erro ao salvar a edição");
-      res.redirect(`/${usuarioAtual}/admin/produtos`);
-    });
-});
+        produto
+          .save()
+          .then(() => {
+            req.flash("success_msg", "produto editada com sucesso!");
+            res.redirect(`/${usuarioAtual}/admin/produtos`);
+          })
+          .catch((err) => {
+            req.flash("error_msg", "Erro interno");
+            res.redirect(`/${usuarioAtual}/admin/produtos`);
+          });
+      })
+      .catch((err) => {
+        req.flash("error_msg", "Houve um erro ao salvar a edição");
+        res.redirect(`/${usuarioAtual}/admin/produtos`);
+      });
+  }
+);
 
 router.get("/produtos/deletar/:id", UserAuth, eAdmin, (req, res) => {
   Produto.deleteOne({ _id: req.params.id })

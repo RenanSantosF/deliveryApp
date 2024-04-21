@@ -12,6 +12,7 @@ header > div {
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 header > div > img {
@@ -28,11 +29,11 @@ header > div > img:hover {
 header > div > h1 {
   margin: 10px 0 10px 0;
   font-weight: bold;
-  color: aliceblue;
+  color: white;
 }
 
 header > div > span {
-  color: aliceblue;
+  color: white;
   font-size: 18px;
 }
 
@@ -42,10 +43,8 @@ header > div > .horarioFuncionamento {
   margin: 1.5rem 0 1.5rem 0;
 }
 
-
-
 header > div > .horarioFuncionamento span {
-  color: aliceblue;
+  color: white;
   font-size: 16px;
 }
 
@@ -121,8 +120,9 @@ header > div > .horarioFuncionamento span {
 
 .preco > button {
   display: flex;
-  background-color: black;
-  padding: 0 15px 0 15px;
+  background-color: rgb(31, 31, 31);
+  border: none;
+  padding: 2px 15px 2px 15px;
   border-radius: 5px;
   justify-content: center;
   align-items: center;
@@ -136,6 +136,9 @@ header > div > .horarioFuncionamento span {
   margin: 8px auto 8px auto;
   max-width: 80rem;
   padding: 0 8px 0 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 #menu > .containerSpanBebidas > h2 {
@@ -157,10 +160,12 @@ header > div > .horarioFuncionamento span {
 }
 
 .modal > div {
-  background-color: aliceblue;
+  background-color: white;
   padding: 20px;
   border-radius: 10px;
   min-width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
 }
 
 .items {
@@ -219,17 +224,20 @@ header > div > .horarioFuncionamento span {
   margin-top: 20px;
 }
 
-.close-modal-btn {
+#close-modal-btn {
   border: none;
   background-color: transparent;
+  font-size: 18px;
 }
 
 #checkout-btn {
+  display: none;
   background-color: rgb(40, 150, 40);
-  color: aliceblue;
-  padding: 4px 8px;
+  color: white;
+  padding: 6px 10px;
   border-radius: 6px;
   border: none;
+  font-size: 18px;
 }
 
 @media (min-width: 770px) {
@@ -254,7 +262,7 @@ footer > button {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: aliceblue;
+  color: white;
   background-color: transparent;
   width: 100%;
   height: 100%;
@@ -286,4 +294,97 @@ footer > button {
   font-size: 1rem;
   font-weight: bold;
   margin-top: 0.5rem;
+}
+
+.containerEntrega {
+  display: none;
+  grid-template-columns: repeat(4, 1fr);
+
+  grid-template-areas:
+    "item1 item1 item1 item1"
+    "item2 item2 item2 item2"
+    "item3 item3 item3 item4"
+    "item5 item5 item5 item5"
+    "item6 item6 item6 item6"
+    "item7 item7 item7 item8"
+    "item9 item9 item9 item9"
+    "item10 item10 item10 item10";
+  gap: 20px;
+  background-color: #e7e7e7;
+  border-radius: 10px;
+  padding: 10px;
+  margin: 10px 0 0 0;
+}
+
+.containerEntrega > input {
+  height: 45px;
+  padding: 3px 10px 3px 10px;
+  border-radius: 5px;
+  border: 1px solid #dddfe2;
+  font-size: 18px;
+}
+
+.containerEntregaBtn {
+  margin-top: 20px;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  gap: 5px;
+}
+
+.containerEntregaBtn > img {
+  width: 20px;
+}
+#btnEntrega {
+  background-color: transparent;
+  border: none;
+  border-radius: 10px;
+  font-size: 20px;
+  font-weight: bold;
+  color: #45a74a;
+}
+
+.item1 {
+  grid-area: item1;
+  font-size: 18px;
+  font-weight: bold;
+  color: rgb(49, 49, 49);
+}
+.item2 {
+  grid-area: item2;
+}
+.item3 {
+  grid-area: item3;
+}
+.item4 {
+  grid-area: item4;
+  @media (max-width: 880px) {
+    width: 90px;
+  }
+}
+
+.item5 {
+  grid-area: item5;
+}
+.item6 {
+  grid-area: item6;
+}
+.item7 {
+  grid-area: item7;
+}
+.item8 {
+  grid-area: item8;
+  @media (max-width: 880px) {
+    width: 90px;
+  }
+}
+.item9 {
+  grid-area: item9;
+  font-size: 18px;
+  font-weight: bold;
+  color: rgb(49, 49, 49);
+}
+.item10 {
+  grid-area: item10;
 }
