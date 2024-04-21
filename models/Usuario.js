@@ -26,6 +26,13 @@ const Usuario = new Schema({
     type: String,
     require: true,
   },
+  imgBg: {
+    type: String,
+  },
+  telefone: {
+    type: String,
+    require: true,
+  },
   numeroRua: {
     type: String,
     require: true,

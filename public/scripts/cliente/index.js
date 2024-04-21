@@ -178,27 +178,33 @@ checkoutBtn.addEventListener("click", () => {
   updateCartModal();
 });
 
+const spanItem = document.getElementById("date-span");
+
 // Verifica hora e manipula o card horário
 function checkRestaurantOpen() {
-  const data = new Date();
-  const hora = data.getHours();
-  return hora >= 18 && hora < 22;
+  if(spanItem.dataset.status === 'aberta') {
+    return true
+  } else {
+    return false
+  }
 }
 
-const spanItem = document.getElementById("date-span");
-const isOpen = checkRestaurantOpen();
 
-if (isOpen) {
-  spanItem.classList.remove("activeHorarioFuncionamento");
+const isOpen = checkRestaurantOpen();
+console.log(isOpen)
+
+if (isOpen == true) {
+  console.log(isOpen)
+  spanItem.style.backgroundColor = "rgb(31, 148, 31)"
 } else {
-  spanItem.classList.add("activeHorarioFuncionamento");
+  spanItem.style.backgroundColor = "rgb(206, 28, 28)"
 }
 
 
 function defineFundoImg() {
   const img = document.getElementById('headerImgFundo')
   const dataImg = img.dataset.img;
-  img.style.backgroundImage = `'url(${dataImg})'`
-  console.log(dataImg)
+  const cssString = `url("${dataImg}")`;
+  img.style.backgroundImage = cssString
 }
 defineFundoImg()

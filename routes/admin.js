@@ -9,6 +9,23 @@ const Produto = mongoose.model("produtos");
 require("../models/Bairro");
 const Bairro = mongoose.model("bairros");
 
+const multer = require("multer");
+const path = require("path");
+
+// Configurando o recebimento de arquivo
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "public/uploads/");
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname + Date.now() + path.extname(file.originalname));
+  },
+});
+
+const upload = multer({ storage });
+
+
 let usuarioAtual = "";
 function UserAuth(req, res, next) {
   usuarioAtual = req.user.nomeLoja;
@@ -179,7 +196,7 @@ router.get("/produtos/add", UserAuth, eAdmin, (req, res) => {
     });
 });
 
-router.post("/produtos/nova", UserAuth, eAdmin, (req, res, e) => {
+router.post("/produtos/nova", upload.single("imgProduto"), UserAuth, eAdmin, (req, res, e) => {
   let erros = [];
   if (
     !req.body.titulo ||
@@ -202,12 +219,13 @@ router.post("/produtos/nova", UserAuth, eAdmin, (req, res, e) => {
   ) {
     erros.push({ texto: "Descrição inválida" });
   }
+
   if (
     !req.body.preco ||
     typeof req.body.preco == undefined ||
     req.body.preco == null
   ) {
-    erros.push({ texto: "Conteúdo inválido" });
+    erros.push({ texto: "Valor inválido" });
   }
   if (req.body.categoria == "0") {
     erros.push({ texto: "categoria inválida, registre uma categoria" });
@@ -222,6 +240,10 @@ router.post("/produtos/nova", UserAuth, eAdmin, (req, res, e) => {
       preco: req.body.preco,
       categoria: req.body.categoria,
       nomeLoja: usuarioAtual,
+      imgProduto:
+        req.file.originalname +
+        Date.now() +
+        path.extname(req.file.originalname),
     };
     new Produto(novaproduto)
       .save()
@@ -269,6 +291,9 @@ router.post("/produto/edit", UserAuth, eAdmin, (req, res) => {
       produto.slug = req.body.slug;
       produto.descricao = req.body.descricao;
       produto.categoria = req.body.categoria;
+      produto.preco = req.body.preco;
+      produto.nomeLoja = usuarioAtual;
+      produto.imgProduto = req.file.originalname + Date.now() + path.extname(req.file.originalname)
 
       produto
         .save()

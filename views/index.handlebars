@@ -1,15 +1,34 @@
 {{#each dadosUsuario}}
-<header data-img="./uploads/{{imgLogo}}" id="headerImgFundo">
+<header data-img="./uploads/{{imgBg}}" id="headerImgFundo">
   <div>
     <img src="./uploads/{{imgLogo}}" />
     <h1>{{nomeLoja}}</h1>
     <span>{{rua}} {{numeroRua}}, {{bairro}}, {{cidade}} - {{estado}}</span>
-    <div class="horarioFuncionamento" id="date-span">
-      <span>Seg à Dom - 18:00 às 22:00</span>
+    {{#each statusSituacao}}
+    <div class="horarioFuncionamento" data-status="{{status}}" id="date-span">
+      <span>{{status}} - {{abertura}} às {{fechamento}}</span>
     </div>
+    {{/each}}
   </div>
 </header>
 {{/each}}
+
+
+{{!-- {{#each dadosUsuario}}
+<header data-img="./uploads/{{imgLogo}}" id="headerImgFundo">
+  <div>
+    <h1>{{nomeLoja}}</h1>
+    <span>{{rua}}, {{numeroRua}}, {{bairro}}, {{cidade}}, {{estado}}</span>
+    
+    {{#each statusSituacao}}
+    <div class="horarioFuncionamento" data-status="{{status}}" id="date-span">
+      <span>{{status}}{{abertura}} - {{fechamento}}</span>
+    </div>
+    {{/each}}
+  </div>
+</header>
+{{/each}} --}}
+
 
 <h2 class="spanConhecaMenu">Conheça nosso menu</h2>
 
@@ -23,7 +42,7 @@
       <div class="categorias" id="menu">
         {{#each this}}
           <div class="containerProduto">
-            <img src="./img/hamb-4.png" />
+            <img src="./uploads/{{imgProduto}}" />
             <div class="containerDescricaoPreco">
               <p class="spanTitleProduto">{{titulo}}</p>
               <p class="spanDescricaoProduto">{{descricao}}</p>

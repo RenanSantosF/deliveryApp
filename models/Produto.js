@@ -31,6 +31,9 @@ const Produto = new Schema({
     type: Date,
     default: Date.now(),
   },
+  imgProduto: {
+    type: String,
+  }
 });
 
 mongoose.model("produtos", Produto);

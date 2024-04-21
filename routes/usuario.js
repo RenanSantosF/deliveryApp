@@ -25,7 +25,7 @@ router.get("/registro", (req, res) => {
   res.render("usuarios/registro");
 });
 
-router.post("/registro", upload.single("imgLogo"), (req, res) => {
+router.post("/registro", upload.fields([{ name: 'imgLogo', maxCount: 1 }, { name: 'imgBg', maxCount: 1 }]), (req, res) => {
   let erros = [];
 
   if (
@@ -67,6 +67,7 @@ router.post("/registro", upload.single("imgLogo"), (req, res) => {
             "error_msg",
             "Já existe uma conta com este email no nosso sistema"
           );
+          console.log('erroooooooo')
           res.redirect("/usuarios/registro");
         } else {
           const novoUsuario = new Usuario({
@@ -75,9 +76,15 @@ router.post("/registro", upload.single("imgLogo"), (req, res) => {
             senha: req.body.senha,
             nomeLoja: req.body.nomeLoja,
             imgLogo:
-              req.file.originalname +
+              req.files.imgLogo[0].originalname +
               Date.now() +
-              path.extname(req.file.originalname),
+              path.extname(req.files.imgLogo[0].originalname),
+            imgBg:
+              req.files.imgBg[0].originalname +
+              Date.now() +
+              path.extname(req.files.imgBg[0].originalname),
+
+            telefone: req.body.telefone,
             numeroRua: req.body.numero,
             rua: req.body.rua,
             bairro: req.body.bairro,
@@ -107,6 +114,7 @@ router.post("/registro", upload.single("imgLogo"), (req, res) => {
                   "error_msg",
                   "Houve um erro durante o salvamento de usuário"
                 );
+                console.log(erro)
                 res.redirect("/");
               } else {
                 novoUsuario.senha = hash;
@@ -121,6 +129,7 @@ router.post("/registro", upload.single("imgLogo"), (req, res) => {
                       "error_msg",
                       "Houve um erro  ao criar o usuario, tente novamente!"
                     );
+                    console.log(err)
                     res.redirect("/usuarios/registro");
                   });
               }
@@ -130,6 +139,7 @@ router.post("/registro", upload.single("imgLogo"), (req, res) => {
       })
       .catch((err) => {
         req.flash("error_msg", "Houve um erro interno");
+        console.log(err)
         res.redirect("/");
       });
   }

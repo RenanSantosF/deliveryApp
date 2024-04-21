@@ -73,10 +73,30 @@ app.get("/404", (req, res) => {
 // Página para cada cliente de cada loja
 app.get("/:nomeLoja", existeUsuario, (req, res) => {
   let dadosUsuario = [];
+  let statusLoja = []
   Usuario.find({ nomeLoja: req.params.nomeLoja })
     .lean()
     .then((usuario) => {
       dadosUsuario = usuario;
+
+      const horariosDeFuncionamento = {
+        seg: { abertura: usuario[0].segAb, fechamento: usuario[0].segFe },
+        ter: { abertura: usuario[0].terAb, fechamento: usuario[0].terFe },
+        qua: { abertura: usuario[0].quaAb, fechamento: usuario[0].quaFe },
+        qui: { abertura: usuario[0].quiAb, fechamento: usuario[0].quiFe },
+        sex: { abertura: usuario[0].sexAb, fechamento: usuario[0].sexFe },
+        sab: { abertura: usuario[0].sabAb, fechamento: usuario[0].sabFe },
+        dom: { abertura: usuario[0].domAb, fechamento: usuario[0].domFe }
+      };
+
+      statusLoja = verificarHorarioDeFuncionamento(horariosDeFuncionamento)
+
+      dadosUsuario.forEach(usuario => {
+        usuario.statusSituacao = statusLoja
+        console.log(statusLoja)
+        console.log(dadosUsuario)
+      });
+
     })
     .catch((err) => {
       // res.send('erro ao exibir usuário')
@@ -110,6 +130,7 @@ app.get("/:nomeLoja", existeUsuario, (req, res) => {
           res.render("index", {
             produtosPorCategoria: produtosPorCategoria,
             dadosUsuario: dadosUsuario,
+            statusLoja: statusLoja,
           });
         })
         .catch((err) => {
@@ -190,3 +211,59 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log("Servidor rodando");
 });
+
+
+
+
+// Função para verificar se o horário atual está dentro do horário de funcionamento da loja
+function verificarHorarioDeFuncionamento(element) {
+  // Obter o horário atual
+  const agora = new Date();
+  const horaAtual = agora.getHours();
+  const minutoAtual = agora.getMinutes();
+  
+  // Obter o dia atual da semana (0 = Domingo, 1 = Segunda, ..., 6 = Sábado)
+  const diaAtual = agora.getDay();
+  const diaSemana = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab'][diaAtual];
+
+  // Verificar se a loja está aberta no dia atual
+  if (diaSemana in element) {
+    const horarioFuncionamento = element[diaSemana];
+    const horaAbertura = parseInt(horarioFuncionamento.abertura.split(':')[0]);
+    const minutoAbertura = parseInt(horarioFuncionamento.abertura.split(':')[1]);
+    const horaFechamento = parseInt(horarioFuncionamento.fechamento.split(':')[0]);
+    const minutoFechamento = parseInt(horarioFuncionamento.fechamento.split(':')[1]);
+    
+    // Verificar se o horário atual está dentro do intervalo de funcionamento
+    const horarioAtualEmMinutos = horaAtual * 60 + minutoAtual;
+    const horarioAberturaEmMinutos = horaAbertura * 60 + minutoAbertura;
+    const horarioFechamentoEmMinutos = horaFechamento * 60 + minutoFechamento;
+    
+    if (horarioAtualEmMinutos >= horarioAberturaEmMinutos && horarioAtualEmMinutos <= horarioFechamentoEmMinutos) {
+      console.log("A loja está aberta!");
+      return [{
+        status: "aberta",
+        dia: diaSemana,
+        abertura: horarioFuncionamento.abertura,
+        fechamento: horarioFuncionamento.fechamento
+      }];
+    } else {
+      console.log("A loja está fechada.");
+      return [{
+        status: "fechada",
+        dia: diaSemana,
+        abertura: horarioFuncionamento.abertura,
+        fechamento: horarioFuncionamento.fechamento
+      }];
+    }
+  } else {
+    console.log("A loja está fechada hoje.");
+    return [{
+      status: "fechadaHoje",
+      dia: diaSemana,
+      abertura: horarioFuncionamento.abertura,
+      fechamento: horarioFuncionamento.fechamento
+    }];
+  }
+
+}

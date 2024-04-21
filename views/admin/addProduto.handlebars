@@ -7,7 +7,7 @@
 
 <div class="card">
   <div class="card-body">
-    <form action="/{{loja}}/admin/produtos/nova" method="post">
+    <form action="/{{loja}}/admin/produtos/nova" method="post" enctype="multipart/form-data">
       <label for="titulo">Título: </label>
         <input type="text" class="form-control" name="titulo">
       <label for="slug">Slug: </label>
@@ -16,6 +16,8 @@
         <input type="text" name="descricao" class="form-control">
       <label for="preco">Preço: </label>
         <input type="text" name="preco" class="form-control">
+      <label for="preco">Imagem: </label>
+        <input type="file" name="imgProduto" class="form-control">
         <label for="categoria">Categoria: </label>
         <select class="form-select" name="categoria">
           {{#each categorias}}
