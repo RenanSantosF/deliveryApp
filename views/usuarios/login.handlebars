@@ -1,14 +1,38 @@
-{{>_navbar}}
+{{!-- {{>_navbar}} --}}
 
-<h4>Login:</h4>
 <div class="card">
   <div class="card-body">
     <form action="/usuarios/login" method="post">
-      <label for="email">Email: </label>
-        <input id="email" type="email" class="form-control" name="email" required>
-      <label for="senha">Senha: </label>
-        <input type="password" class="form-control" name="senha" required>
-      <button id="logar" class="btn btn-success mt-3">Entrar</button>
+      <H1>Menu Whats</H1>
+      <div>
+        <input
+          placeholder="Email"
+          id="email"
+          type="email"
+          class="form-control"
+          name="email"
+          required
+        />
+        <img src="../img/usuarioIcon.svg" />
+      </div>
+
+      <div>
+        <input
+          id="senha"
+          placeholder="Senha"
+          type="password"
+          class="form-control"
+          name="senha"
+          required
+        />
+        <img id="iconChange" src="../img/visualizarIcon.svg" />
+      </div>
+      <button id="logar" class="btn btn-success mt-3">ENTRAR</button>
+
     </form>
+    <form id="form" action="/usuarios/cadastrar" method="post">
+      <a href=""><button>Desejo me cadastrar</button></a>
+    </form>
+
   </div>
 </div>

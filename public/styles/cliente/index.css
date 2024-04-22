@@ -208,14 +208,6 @@ header > div > .horarioFuncionamento span {
   display: none;
 }
 
-.activeSpanAlert {
-  display: flex;
-}
-
-.ActiveAddress {
-  border-color: rgb(250, 31, 31);
-}
-
 .containerFinalizarPedido {
   width: 100%;
   display: flex;
@@ -387,4 +379,12 @@ footer > button {
 }
 .item10 {
   grid-area: item10;
+}
+
+.activeSpanAlert {
+  display: flex;
+}
+
+.ActiveAddress {
+  border: 1px solid #e9130c;
 }
