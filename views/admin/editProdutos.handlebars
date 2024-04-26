@@ -9,24 +9,36 @@
     <form action="/{{loja}}/admin/produto/edit" method="post" enctype="multipart/form-data">
       <input type="hidden" value="{{produto._id}}" name="id">
       <label for="titulo">Título: </label>
-        <input type="text" class="form-control" name="titulo" value="{{produto.titulo}}">
+        <input type="text" name="titulo" value="{{produto.titulo}}">
       <label for="slug">Slug: </label>
-        <input type="text" name="slug" class="form-control" value="{{produto.slug}}">
+        <input type="text" name="slug" value="{{produto.slug}}">
       <label for="descricao">Descrição: </label>
-        <input type="text" name="descricao" class="form-control" value="{{produto.descricao}}">
+        <input type="text" name="descricao" value="{{produto.descricao}}">
       <label for="preco">Preço: </label>
-        <input name="preco" class="form-control" >{{produto.preco}}</input>
+        <input name="preco" >{{produto.preco}}</input>
       <label for="preco">Imagem: </label>
-        <input type="file" name="imgProduto" class="form-control">
+        <input type="file" name="imgProduto">
         <label for="categoria">Categoria: </label>
-        <select class="form-select" name="categoria">
+        <select name="categoria">
           {{#each categorias}}
           <option value="{{_id}}">{{nome}}</option>
           {{else}}
           <option value="0">Nenhuma categoria registrada</option>
           {{/each}}
         </select>
-        <button class="btn btn-success mt-3" type="submit">Editar produto</button>
+
+        <label for="adicionais">Adicionais: </label>
+        {{#each adicionais}} 
+          <label for="{{_id}}">
+            <input type="checkbox" value="{{nome}}" name="adicionais">
+            <input type="text" name="precoAdicional" value="{{taxa}}" style="display: none;">
+            {{nome}}
+          </label>  
+        {{else}}
+          <option value="0">Nenhum adicional encontrado, cadastre algum.</option>
+        {{/each}}
+
+        <button id="btnEnviar" type="submit">Editar produto</button>
     </form>
   </div>
 </div>

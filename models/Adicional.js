@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const Bairro = new Schema({
+const Adicional = new Schema({
   nomeLoja: {
     type: String,
     require: true,
@@ -20,4 +20,4 @@ const Bairro = new Schema({
   },
 });
 
-mongoose.model("bairros", Bairro);
+mongoose.model("adicionais", Adicional);

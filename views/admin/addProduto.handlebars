@@ -7,26 +7,38 @@
 
 <div class="card">
   <div class="card-body">
-    <form action="/{{loja}}/admin/produtos/nova" method="post" enctype="multipart/form-data">
+    <form action="/{{loja}}/admin/produtos/nova"  method="post" enctype="multipart/form-data">
       <label for="titulo">Título: </label>
-        <input type="text" class="form-control" name="titulo">
+        <input type="text" name="titulo">
       <label for="slug">Slug: </label>
-        <input type="text" name="slug" class="form-control">
+        <input type="text" name="slug">
       <label for="descricao">Descrição: </label>
-        <input type="text" name="descricao" class="form-control">
+        <input type="text" name="descricao">
       <label for="preco">Preço: </label>
-        <input type="text" name="preco" class="form-control">
+        <input type="text" name="preco">
       <label for="preco">Imagem: </label>
-        <input type="file" name="imgProduto" class="form-control">
+        <input type="file" name="imgProduto">
         <label for="categoria">Categoria: </label>
-        <select class="form-select" name="categoria">
+        <select name="categoria">
           {{#each categorias}}
           <option value="{{_id}}">{{nome}}</option>
           {{else}}
           <option value="0">Nenhuma categoria registrada</option>
           {{/each}}
         </select>
-        <button class="btn btn-success mt-3" type="submit">Criar produto</button>
+
+        <label for="adicionais">Adicionais: </label>
+        {{#each adicionais}} 
+          <label for="{{_id}}">
+            <input type="checkbox" value="{{nome}}" name="adicionais">
+            <input type="text" name="precoAdicional" value="{{taxa}}" style="display: none;">
+            {{nome}}
+          </label>  
+        {{else}}
+          <option value="0">Nenhum adicional encontrado, cadastre algum.</option>
+        {{/each}}
+
+        <button id="btnEnviar" type="submit">Criar produto</button>
     </form>
   </div>
 </div>

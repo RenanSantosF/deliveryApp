@@ -33,7 +33,14 @@ const Produto = new Schema({
   },
   imgProduto: {
     type: String,
-  }
+  },
+  adicionais: [
+    {
+      adicionais: String,
+      precoAdicional: String,
+      produtoReferido: String,
+    },
+  ],
 });
 
 mongoose.model("produtos", Produto);

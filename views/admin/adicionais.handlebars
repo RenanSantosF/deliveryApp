@@ -1,0 +1,24 @@
+{{>_navbar}}
+<h2>Lista de adicionais</h2>
+<hr>
+<a href="/{{loja}}/admin/adicionais/add"><button class="btn btn-success">Novo Adicional</button></a>
+
+{{#each adicionais}}
+  <div class="card mt-4">
+    <div class="card-body">
+      <h2>{{nome}}</h2>
+      <small>Taxa de entrega: {{taxa}}</small>
+      <P>Data de criação: {{date}}</P>
+      <a href="/{{nomeLoja}}/admin/adicionais/edit/{{_id}}"><button class="btn btn-success">Editar Adicional</button></a>
+      <form action="/{{nomeLoja}}/admin/adicionais/deletar" method="post">
+        <input type="hidden" name="id" value="{{_id}}">
+        <button type="submit" class="btn btn-danger mt-2">Deletar adicional</button>
+      </form>
+    </div>
+  </div>
+
+{{else}}
+
+<h4 class="mt-3">Nenhum adicional registrado!</h4>
+
+{{/each}}

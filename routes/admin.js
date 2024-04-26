@@ -6,8 +6,8 @@ require("../models/Categoria");
 const Categoria = mongoose.model("categorias");
 require("../models/Produto");
 const Produto = mongoose.model("produtos");
-require("../models/Bairro");
-const Bairro = mongoose.model("bairros");
+require("../models/Adicional");
+const Adicional = mongoose.model("adicionais");
 
 const multer = require("multer");
 const path = require("path");
@@ -186,10 +186,23 @@ router.get("/produtos", UserAuth, eAdmin, (req, res) => {
 });
 
 router.get("/produtos/add", UserAuth, eAdmin, (req, res) => {
-  Categoria.find({ nomeLoja: usuarioAtual })
+  Adicional.find({ nomeLoja: usuarioAtual })
     .lean()
-    .then((categorias) => {
-      res.render("admin/addProduto", { categorias: categorias });
+    .then((adicionais) => {
+      Categoria.find({ nomeLoja: usuarioAtual })
+        .lean()
+        .then((categorias) => {
+          res.render("admin/addProduto", {
+            categorias: categorias,
+            adicionais: adicionais,
+            css: "/styles/addProdutos/index.css",
+            script: "/scripts/addProdutos/index.js",
+          });
+        })
+        .catch((err) => {
+          req.flash("error_msg", "Houve um erro ao carregar o formulário");
+          res.redirect(`/${usuarioAtual}/admin`);
+        });
     })
     .catch((err) => {
       req.flash("error_msg", "Houve um erro ao carregar o formulário");
@@ -239,6 +252,16 @@ router.post(
     if (erros.length > 0) {
       res.render("admin/addProduto", { erros: erros });
     } else {
+      const novosAdicionais = [];
+
+      for (let i = 0; i < req.body.adicionais.length; i++) {
+        novosAdicionais.push({
+          adicionais: req.body.adicionais[i],
+          precoAdicional: req.body.precoAdicional[i],
+          produtoReferido: req.body.titulo,
+        });
+      }
+
       const novaproduto = {
         titulo: req.body.titulo,
         slug: req.body.slug,
@@ -247,7 +270,9 @@ router.post(
         categoria: req.body.categoria,
         nomeLoja: usuarioAtual,
         imgProduto: req.generatedFileName,
+        adicionais: novosAdicionais,
       };
+      console.log(novaproduto);
       new Produto(novaproduto)
         .save()
         .then(() => {
@@ -266,13 +291,24 @@ router.get("/produtos/edit/:id", UserAuth, eAdmin, (req, res) => {
   Produto.findOne({ _id: req.params.id })
     .lean()
     .then((produto) => {
-      Categoria.find({ nomeLoja: usuarioAtual })
+      Adicional.find({ nomeLoja: usuarioAtual })
         .lean()
-        .then((categorias) => {
-          res.render("admin/editprodutos", {
-            categorias: categorias,
-            produto: produto,
-          });
+        .then((adicionais) => {
+          Categoria.find({ nomeLoja: usuarioAtual })
+            .lean()
+            .then((categorias) => {
+              res.render("admin/editprodutos", {
+                categorias: categorias,
+                produto: produto,
+                adicionais: adicionais,
+                css: "/styles/addProdutos/index.css",
+                script: "/scripts/addProdutos/index.js",
+              });
+            })
+            .catch((err) => {
+              req.flash("error_msg", "Houve um erro ao listar as categorias");
+              res.redirect(`/${usuarioAtual}/admin/produtos`);
+            });
         })
         .catch((err) => {
           req.flash("error_msg", "Houve um erro ao listar as categorias");
@@ -296,6 +332,15 @@ router.post(
   (req, res) => {
     Produto.findOne({ _id: req.body.id })
       .then((produto) => {
+        const novosAdicionais = []
+        for (let i = 0; i < req.body.adicionais.length; i++) {
+          novosAdicionais.push({
+            adicionais: req.body.adicionais[i],
+            precoAdicional: req.body.precoAdicional[i],
+            produtoReferido: req.body.titulo,
+          });
+        }
+
         produto.titulo = req.body.titulo;
         produto.slug = req.body.slug;
         produto.descricao = req.body.descricao;
@@ -303,6 +348,7 @@ router.post(
         produto.preco = req.body.preco;
         produto.nomeLoja = usuarioAtual;
         produto.imgProduto = req.generatedFileName;
+        produto.adicionais = novosAdicionais
 
         produto
           .save()
@@ -334,25 +380,28 @@ router.get("/produtos/deletar/:id", UserAuth, eAdmin, (req, res) => {
     });
 });
 
-//bairros
-router.get("/bairros", UserAuth, eAdmin, (req, res) => {
-  Bairro.find({ nomeLoja: usuarioAtual })
+//Adicionais
+router.get("/adicionais", UserAuth, eAdmin, (req, res) => {
+  Adicional.find({ nomeLoja: usuarioAtual })
     .sort({ date: "desc" })
     .lean()
-    .then((bairros) => {
-      res.render("admin/bairros", { bairros: bairros });
+    .then((adicionais) => {
+      res.render("admin/adicionais", { adicionais: adicionais });
     })
     .catch((err) => {
-      req.flash("error_msg", "Houve um erro ao listar os bairros cadastrados");
+      req.flash(
+        "error_msg",
+        "Houve um erro ao listar os adicionais cadastrados"
+      );
       res.redirect(`"/${usuarioAtual}/admin`);
     });
 });
 
-router.get("/bairros/add", UserAuth, eAdmin, (req, res) => {
-  res.render("admin/addbairros");
+router.get("/adicionais/add", UserAuth, eAdmin, (req, res) => {
+  res.render("admin/addadicionais");
 });
 
-router.post("/bairros/nova", UserAuth, eAdmin, (req, res) => {
+router.post("/adicionais/nova", UserAuth, eAdmin, (req, res) => {
   let erros = [];
   if (
     !req.body.nome ||
@@ -369,39 +418,39 @@ router.post("/bairros/nova", UserAuth, eAdmin, (req, res) => {
     erros.push({ texto: "Valor da taxa é inválido" });
   }
   if (req.body.nome.length < 2) {
-    erros.push({ texto: "Nome do bairro precisa ser maior" });
+    erros.push({ texto: "Nome do adicionais precisa ser maior" });
   }
   if (erros.length > 0) {
-    res.render("admin/addbairros", { erros: erros });
+    res.render("admin/addadicionais", { erros: erros });
   } else {
-    const novoBairro = {
+    const novoAdicional = {
       nome: req.body.nome,
       taxa: req.body.taxa,
       nomeLoja: usuarioAtual,
     };
     try {
-      new Bairro(novoBairro).save();
-      res.redirect(`/${usuarioAtual}/admin/bairros`);
-      req.flash("success_msg", "Bairro registrado com sucesso!");
+      new Adicional(novoAdicional).save();
+      res.redirect(`/${usuarioAtual}/admin/adicionais`);
+      req.flash("success_msg", "Adicional registrado com sucesso!");
     } catch (error) {
-      req.flash("error_msg", "Houve um erro ao adicionar o bairro!");
+      req.flash("error_msg", "Houve um erro ao adicionar o adicional!");
     }
   }
 });
 
-router.get("/bairros/edit/:id", UserAuth, eAdmin, (req, res) => {
-  Bairro.findOne({ _id: req.params.id })
+router.get("/adicionais/edit/:id", UserAuth, eAdmin, (req, res) => {
+  Adicional.findOne({ _id: req.params.id })
     .lean()
-    .then((bairro) => {
-      res.render("admin/editBairros", { bairro: bairro });
+    .then((adicional) => {
+      res.render("admin/editadicionais", { adicional: adicional });
     })
     .catch((err) => {
-      req.flash("error_msg", "Esse bairro não existe!");
-      res.redirect("/admin/bairros");
+      req.flash("error_msg", "Esse adicional não existe!");
+      res.redirect("/admin/adicionais");
     });
 });
 
-router.post("/bairros/edit", UserAuth, eAdmin, (req, res) => {
+router.post("/adicionais/edit", UserAuth, eAdmin, (req, res) => {
   let erros = [];
   if (
     !req.body.nome ||
@@ -418,45 +467,45 @@ router.post("/bairros/edit", UserAuth, eAdmin, (req, res) => {
     erros.push({ texto: "Valor inválido" });
   }
   if (req.body.nome.length < 2) {
-    erros.push({ texto: "Nome do bairro precisa ser maior" });
+    erros.push({ texto: "Nome do adicional precisa ser maior" });
   }
   if (erros.length > 0) {
-    res.render("editBairros", { erros: erros });
-    res.redirect(`/${usuarioAtual}/admin/bairros/edit/${req.body.id}`);
+    res.render("editAdicionais", { erros: erros });
+    res.redirect(`/${usuarioAtual}/admin/adicionais/edit/${req.body.id}`);
   } else {
-    Bairro.findOne({ _id: req.body.id })
-      .then((bairro) => {
-        (bairro.nome = req.body.nome), (bairro.taxa = req.body.taxa);
-        bairro
+    Adicional.findOne({ _id: req.body.id })
+      .then((adicional) => {
+        (adicional.nome = req.body.nome), (adicional.taxa = req.body.taxa);
+        adicional
           .save()
           .then(() => {
-            req.flash("success_msg", "Bairro editado com sucesso!");
-            res.redirect(`/${usuarioAtual}/admin/bairros`);
+            req.flash("success_msg", "Adicional editado com sucesso!");
+            res.redirect(`/${usuarioAtual}/admin/adicionais`);
           })
           .catch((err) => {
             req.flash(
               "error_msg",
-              "Houve um erro interno ao adicionar o bairro!"
+              "Houve um erro interno ao adicionar o adicional!"
             );
-            res.redirect(`/${usuarioAtual}/admin/bairros`);
+            res.redirect(`/${usuarioAtual}/admin/adicionais`);
           });
       })
       .catch((err) => {
-        req.flash("error_msg", "Houve um erro ao editar o bairro");
-        res.redirect(`/${usuarioAtual}/admin/bairros`);
+        req.flash("error_msg", "Houve um erro ao editar o adicional");
+        res.redirect(`/${usuarioAtual}/admin/adicionais`);
       });
   }
 });
 
-router.post("/bairros/deletar", UserAuth, eAdmin, (req, res) => {
-  Bairro.deleteOne({ _id: req.body.id })
+router.post("/adicionais/deletar", UserAuth, eAdmin, (req, res) => {
+  Adicional.deleteOne({ _id: req.body.id })
     .then(() => {
-      req.flash("success_msg", "Bairro deletado com sucesso!");
-      res.redirect(`/${usuarioAtual}/admin/bairros`);
+      req.flash("success_msg", "Adicional deletado com sucesso!");
+      res.redirect(`/${usuarioAtual}/admin/adicionais`);
     })
     .catch((err) => {
-      req.flash("error_msg", "Houve um erro ao deletar o bairro");
-      res.redirect(`/${usuarioAtual}/admin/bairros`);
+      req.flash("error_msg", "Houve um erro ao deletar o adicional");
+      res.redirect(`/${usuarioAtual}/admin/adicionais`);
     });
 });
 

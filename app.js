@@ -70,7 +70,7 @@ app.use(express.static(path.join(__dirname, "public")));
 // Desviando para outros arquivos
 app.use("/:nomeLoja/admin", autenticado, admin);
 app.use("/usuarios", usuarios);
-
+//
 // Rotas
 app.get("/", (req, res) => {
   res.send("principal");
@@ -143,6 +143,8 @@ app.get("/:nomeLoja", existeUsuario, (req, res) => {
             css: "/styles/cliente/index.css",
             script: "/scripts/cliente/index.js",
           });
+
+          console.log(produtosPorCategoria);
         })
         .catch((err) => {
           res.send("Erro interno");

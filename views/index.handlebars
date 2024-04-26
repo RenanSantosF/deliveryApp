@@ -17,7 +17,7 @@
   </header>
 {{/each}}
 
-{{!-- <h2 class="spanConhecaMenu">Conheça nosso menu</h2> --}}
+{{! <h2 class="spanConhecaMenu">Conheça nosso menu</h2> }}
 
 <div id="menu">
 
@@ -28,16 +28,32 @@
       </div>
       <div class="categorias" id="menu">
         {{#each this}}
-          <div class="containerProduto">
-            <img src="./uploads/{{imgProduto}}" />
+          <div
+            class="containerProduto"
+            data-name="{{this.titulo}}"
+            data-price="{{this.preco}}"
+            data-descricao="{{this.descricao}}"
+            data-imgProduto="{{this.imgProduto}}"
+          >
+
+            {{! Exibe lista com todos os adicionais }}
+            <ul>
+              {{#each this.adicionais}}
+                <li class="adicionaisLista" data-value="{{this.precoAdicional}}" data-produtoReferido="{{produtoReferido}}" >{{this.adicionais}}</li>
+              {{else}}
+                <h1>Nenhum adicional</h1>
+              {{/each}}
+            </ul>
+
+            <img src="./uploads/{{this.imgProduto}}" />
             <div class="containerDescricaoPreco">
-              <p class="spanTitleProduto">{{titulo}}</p>
-              <p class="spanDescricaoProduto">{{descricao}}</p>
+              <p class="spanTitleProduto">{{this.titulo}}</p>
+              <p class="spanDescricaoProduto">{{this.descricao}}</p>
               <div class="preco">
-                <p>R$ {{preco}}</p>
+                <p>R$ {{this.preco}}</p>
                 <button
-                  data-price="{{preco}}"
-                  data-name="{{titulo}}"
+                  data-price="{{this.preco}}"
+                  data-name="{{this.titulo}}"
                   class="add-to-cart-btn"
                   href="#"
                 ><img src="./img/buy.png" /></button>
@@ -53,7 +69,6 @@
       <h2>Nenhum produto encontrado</h2>
     {{/each}}
   </div>
-
 </div>
 
 {{#each dadosUsuario}}

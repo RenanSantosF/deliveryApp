@@ -46,6 +46,7 @@ menu.addEventListener("click", (ev) => {
     const name = parentButton.getAttribute("data-name");
     const price = parseFloat(parentButton.getAttribute("data-price"));
 
+    console.log(parentButton);
     addToCart(name, price);
   }
 });
@@ -259,3 +260,73 @@ enderecoInputs.forEach((enderecoInput) => {
     }
   });
 });
+
+//
+//
+//
+////
+//
+//
+//
+//
+////
+//
+//
+//
+//
+////
+//
+//
+//
+//
+////
+////
+//
+//
+////
+//
+//
+//
+//
+////
+//
+
+let produtoModal = [];
+let listaAdicionais = [];
+const modalProduto = document.getElementById("modalProduto");
+const adicionaisLista = document.querySelectorAll(".adicionaisLista");
+const precoAdicionalLista = document.querySelectorAll(".precoAdicionalLista");
+
+menu.addEventListener("click", (ev) => {
+  let parentButton = ev.target.closest(".containerProduto");
+  if (parentButton) {
+    const name = parentButton.getAttribute("data-name");
+    const price = parseFloat(parentButton.getAttribute("data-price"));
+
+    adicionaisLista.forEach((item) => {
+      if (item.dataset.produtoreferido == name) {
+        listaAdicionais.push({
+          nomeAdicional: item.textContent,
+          valorAdicional: item.dataset.value,
+        });
+      }
+    });
+    console.log(listaAdicionais);
+  }
+});
+
+function addToProdutoModal(name, price) {
+  const existingItem = produtoModal.find((item) => item.name === name);
+
+  if (existingItem) {
+    existingItem.quantity += 1;
+  } else {
+    cart.push({
+      name,
+      price,
+      quantity: 1,
+    });
+  }
+
+  updateCartModal();
+}
