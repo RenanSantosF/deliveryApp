@@ -25,19 +25,27 @@ let cart = [];
 
 // Abrir o modal do carrinho
 cartBtn.addEventListener("click", () => {
-  cartModal.style.display = "flex";
+  cartModal.classList.add("modalActive");
   updateCartModal();
 });
 
 // Fechar modal
 cartModal.addEventListener("click", (ev) => {
   if (ev.target === cartModal) {
-    cartModal.style.display = "none";
+    cartModal.classList.remove("modalActive");
+    cartModal.classList.add("modalDisable");
+    setTimeout(() => {
+      cartModal.classList.remove("modalDisable");
+    }, 300);
   }
 });
 
 closeModalBtn.addEventListener("click", () => {
-  cartModal.style.display = "none";
+  cartModal.classList.remove("modalActive");
+  cartModal.classList.add("modalDisable");
+  setTimeout(() => {
+    cartModal.classList.remove("modalDisable");
+  }, 300);
 });
 
 menu.addEventListener("click", (ev) => {
@@ -50,23 +58,6 @@ menu.addEventListener("click", (ev) => {
     addToCart(name, price);
   }
 });
-
-//Função para adicionar no carrinho
-function addToCart(name, price) {
-  const existingItem = cart.find((item) => item.name === name);
-
-  if (existingItem) {
-    existingItem.quantity += 1;
-  } else {
-    cart.push({
-      name,
-      price,
-      quantity: 1,
-    });
-  }
-
-  updateCartModal();
-}
 
 // Atualiza o carrinho
 function updateCartModal() {
@@ -81,19 +72,18 @@ function updateCartModal() {
     <div class="itemCarrinho">
       <div class="atributosItemCarrinho">
         <p class="spanItemName">${item.name}</p>
-        <p>Qtd: ${item.quantity}</p>
+        <p>Qtd: ${item.quantityProduto}</p>
         <p class="spanItemPrice">R$ ${item.price.toFixed(2)}</p>
       </div>
 
       <button class="remove-from-cart-btn" data-name="${item.name}">
         Remover
       </button>
-
     </div>
 
     `;
 
-    total += item.price * item.quantity;
+    total += item.price * item.quantityProduto;
 
     cartItemsContainer.appendChild(cartItemElement);
   });
@@ -121,8 +111,8 @@ function removeItemCart(name) {
   if (index !== -1) {
     const item = cart[index];
 
-    if (item.quantity > 1) {
-      item.quantity -= 1;
+    if (item.quantityProduto > 1) {
+      item.quantityProduto -= 1;
       updateCartModal();
       return;
     }
@@ -261,47 +251,21 @@ enderecoInputs.forEach((enderecoInput) => {
   });
 });
 
-//
-//
-//
-////
-//
-//
-//
-//
-////
-//
-//
-//
-//
-////
-//
-//
-//
-//
-////
-////
-//
-//
-////
-//
-//
-//
-//
-////
-//
-
-let produtoModal = [];
+let produtoModal = {};
 let listaAdicionais = [];
-const modalProduto = document.getElementById("modalProduto");
-const adicionaisLista = document.querySelectorAll(".adicionaisLista");
-const precoAdicionalLista = document.querySelectorAll(".precoAdicionalLista");
 
 menu.addEventListener("click", (ev) => {
+  capturaProdutoParaModal(ev);
+});
+
+function capturaProdutoParaModal(ev) {
+  const adicionaisLista = document.querySelectorAll(".adicionaisLista");
   let parentButton = ev.target.closest(".containerProduto");
   if (parentButton) {
     const name = parentButton.getAttribute("data-name");
     const price = parseFloat(parentButton.getAttribute("data-price"));
+    const descricao = parentButton.getAttribute("data-descricao");
+    const imgProduto = parentButton.getAttribute("data-imgProduto");
 
     adicionaisLista.forEach((item) => {
       if (item.dataset.produtoreferido == name) {
@@ -311,21 +275,111 @@ menu.addEventListener("click", (ev) => {
         });
       }
     });
-    console.log(listaAdicionais);
+
+    produtoModal = {
+      name: name,
+      price: price,
+      descricao: descricao,
+      imgProduto: imgProduto,
+      listaAdicionais: listaAdicionais,
+      quantityProduto: 1,
+    };
+
+    exibeDadosProduto();
+    exibeModalProduto();
+    console.log(produtoModal);
+  }
+}
+
+function exibeModalProduto() {
+  document.getElementById("modalProduto").classList.add("modalProdutoActive");
+  document
+    .getElementById("modalProduto")
+    .classList.remove("modalProdutoDisable");
+}
+
+document.getElementById("btnVoltar").addEventListener("click", () => {
+  fechaModalProduto();
+});
+
+function fechaModalProduto() {
+  produtoModal = {};
+  const addProdutoBtn = document.getElementById("adicionarProduto");
+  addProdutoBtn.disabled = true;
+  setTimeout(() => (addProdutoBtn.disabled = false), 300);
+
+  setTimeout(() => {
+    document
+      .getElementById("modalProduto")
+      .classList.remove("modalProdutoActive");
+    document
+      .getElementById("modalProduto")
+      .classList.add("modalProdutoDisable");
+    setTimeout(function () {
+      document
+        .getElementById("modalProduto")
+        .classList.remove("modalProdutoDisable");
+    }, 300);
+  }, 100);
+}
+
+function exibeDadosProduto() {
+  const nomeProduto = document.getElementById("nomeProduto");
+  const descricaoProduto = document.getElementById("descricaoProduto");
+  const valorProduto = document.getElementById("valorProduto");
+  const imgModalProduto = document.getElementById("imgModalProduto");
+  const quantidadeTotalProduto = document.getElementById(
+    "quantidadeTotalProduto"
+  );
+  const totalProdudo = document.getElementById("totalProdudo");
+
+  valorProduto.textContent = produtoModal.price.toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  });
+  // totalProdudo.textContent = produtoModal.price.toLocaleString("pt-BR", {
+  //   style: "currency",
+  //   currency: "BRL",
+  // });
+  imgModalProduto.src = `./uploads/${produtoModal.imgProduto}`;
+  quantidadeTotalProduto.textContent = produtoModal.quantityProduto;
+  nomeProduto.textContent = produtoModal.name;
+  descricaoProduto.textContent = produtoModal.descricao;
+}
+
+document.getElementById("somaItem").addEventListener("click", () => {
+  produtoModal.quantityProduto += 1;
+
+  exibeDadosProduto();
+  console.log(produtoModal);
+});
+
+document.getElementById("subtraiItem").addEventListener("click", () => {
+  if (produtoModal.quantityProduto > 1) {
+    produtoModal.quantityProduto -= 1;
+
+    exibeDadosProduto();
+
+    console.log(produtoModal);
   }
 });
 
-function addToProdutoModal(name, price) {
-  const existingItem = produtoModal.find((item) => item.name === name);
+document.getElementById("adicionarProduto").addEventListener("click", () => {
+  addToCartCorreto();
+  fechaModalProduto();
+});
+
+function addToCartCorreto() {
+  const existingItem = cart.find((item) => item.name === produtoModal.name);
 
   if (existingItem) {
-    existingItem.quantity += 1;
+    existingItem.quantityProduto += produtoModal.quantityProduto;
+    console.log(existingItem);
+    console.log(cart);
   } else {
-    cart.push({
-      name,
-      price,
-      quantity: 1,
-    });
+    cart.push(produtoModal);
+    console.log(existingItem);
+    console.log(cart);
   }
 
   updateCartModal();

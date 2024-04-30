@@ -15,7 +15,7 @@
       <label for="descricao">Descrição: </label>
         <input type="text" name="descricao" value="{{produto.descricao}}">
       <label for="preco">Preço: </label>
-        <input name="preco" >{{produto.preco}}</input>
+        <input name="preco" value="{{produto.preco}}">
       <label for="preco">Imagem: </label>
         <input type="file" name="imgProduto">
         <label for="categoria">Categoria: </label>
@@ -30,7 +30,7 @@
         <label for="adicionais">Adicionais: </label>
         {{#each adicionais}} 
           <label for="{{_id}}">
-            <input type="checkbox" value="{{nome}}" name="adicionais">
+            <input class="adicional" type="checkbox" value="{{nome}}" name="adicionais">
             <input type="text" name="precoAdicional" value="{{taxa}}" style="display: none;">
             {{nome}}
           </label>  

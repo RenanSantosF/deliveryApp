@@ -37,9 +37,13 @@
           >
 
             {{! Exibe lista com todos os adicionais }}
-            <ul>
+            <ul style="display: none;">
               {{#each this.adicionais}}
-                <li class="adicionaisLista" data-value="{{this.precoAdicional}}" data-produtoReferido="{{produtoReferido}}" >{{this.adicionais}}</li>
+                <li
+                  class="adicionaisLista"
+                  data-value="{{this.precoAdicional}}"
+                  data-produtoReferido="{{produtoReferido}}"
+                >{{this.adicionais}}</li>
               {{else}}
                 <h1>Nenhum adicional</h1>
               {{/each}}
@@ -51,12 +55,6 @@
               <p class="spanDescricaoProduto">{{this.descricao}}</p>
               <div class="preco">
                 <p>R$ {{this.preco}}</p>
-                <button
-                  data-price="{{this.preco}}"
-                  data-name="{{this.titulo}}"
-                  class="add-to-cart-btn"
-                  href="#"
-                ><img src="./img/buy.png" /></button>
               </div>
             </div>
           </div>
@@ -71,10 +69,47 @@
   </div>
 </div>
 
+<div class="modalProduto" id="modalProduto">
+  <div id="imgProduto">
+    <div id="btnVoltar">
+      <img src="./img/botao-voltar.png" />
+    </div>
+    <img
+      id="imgModalProduto"
+      class="imgModalProduto"
+      src="./uploads/hamb-4.png1713677295624.png"
+    />
+  </div>
+
+  <div class="informacaoProduto">
+    <h2 id="nomeProduto">nomeProduto</h2>
+    <span id="descricaoProduto">Lorem ipsum dolor sit amet consectetur
+      adipisicing elit. Iusto quaerat eveniet nisi nobis eligendi blanditiis.</span>
+    <span id="valorProduto"></span>
+  </div>
+  <div class="adicionalProduto">
+    <div class="adiciona">
+
+    </div>
+  </div>
+  <div class="footerProduto">
+    <div id="quantidade">
+      <img id="subtraiItem" src="./img/menos.png" />
+      <span id="quantidadeTotalProduto">1</span>
+      <img id="somaItem" src="./img/mais.png" />
+    </div>
+    <button id="adicionarProduto">Adicionar
+    </button>
+  </div>
+</div>
+
 {{#each dadosUsuario}}
   <div class="modal" id="cart-modal" data-contact="{{telefone}}">
     <div>
       <div class="headerModal">
+        <div id="close-modal-btn">
+          <img src="./img/botao-voltar.png" />
+        </div>
         <h2>Meu carrinho</h2>
       </div>
 
@@ -112,7 +147,7 @@
       </div>
 
       <div class="containerFinalizarPedido">
-        <button id="close-modal-btn">Fechar</button>
+
         <button id="checkout-btn">Finalizar pedido</button>
       </div>
 

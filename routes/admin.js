@@ -254,9 +254,13 @@ router.post(
     } else {
       const novosAdicionais = [];
 
-      for (let i = 0; i < req.body.adicionais.length; i++) {
+      const adicionais = Array.isArray(req.body.adicionais)
+        ? req.body.adicionais
+        : [req.body.adicionais];
+
+      for (let i = 0; i < adicionais.length; i++) {
         novosAdicionais.push({
-          adicionais: req.body.adicionais[i],
+          adicionais: adicionais[i],
           precoAdicional: req.body.precoAdicional[i],
           produtoReferido: req.body.titulo,
         });
@@ -272,7 +276,7 @@ router.post(
         imgProduto: req.generatedFileName,
         adicionais: novosAdicionais,
       };
-      console.log(novaproduto);
+      console.log(novosAdicionais);
       new Produto(novaproduto)
         .save()
         .then(() => {
@@ -332,10 +336,15 @@ router.post(
   (req, res) => {
     Produto.findOne({ _id: req.body.id })
       .then((produto) => {
-        const novosAdicionais = []
-        for (let i = 0; i < req.body.adicionais.length; i++) {
+        const novosAdicionais = [];
+
+        const adicionais = Array.isArray(req.body.adicionais)
+          ? req.body.adicionais
+          : [req.body.adicionais];
+
+        for (let i = 0; i < adicionais.length; i++) {
           novosAdicionais.push({
-            adicionais: req.body.adicionais[i],
+            adicionais: adicionais[i],
             precoAdicional: req.body.precoAdicional[i],
             produtoReferido: req.body.titulo,
           });
@@ -348,7 +357,7 @@ router.post(
         produto.preco = req.body.preco;
         produto.nomeLoja = usuarioAtual;
         produto.imgProduto = req.generatedFileName;
-        produto.adicionais = novosAdicionais
+        produto.adicionais = novosAdicionais;
 
         produto
           .save()

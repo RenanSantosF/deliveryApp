@@ -19,5 +19,6 @@ function alterarTipoInput(value) {
   novoInput.setAttribute("id", "senha");
   novoInput.value = input.value;
   novoInput.placeholder = "Senha";
+  novoInput.name = "senha";
   input.parentNode.replaceChild(novoInput, input);
 }
