@@ -144,6 +144,8 @@ app.get("/:nomeLoja", existeUsuario, (req, res) => {
             script: "/scripts/cliente/index.js",
           });
 
+          console.log(produtosPorCategoria)
+          
         })
         .catch((err) => {
           res.send("Erro interno");

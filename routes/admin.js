@@ -263,6 +263,7 @@ router.post(
           adicionais: adicionais[i],
           precoAdicional: req.body.precoAdicional[i],
           produtoReferido: req.body.titulo,
+          categoriaAdicional: req.body.categoriaAdicional[i]
         });
       }
 
@@ -347,6 +348,7 @@ router.post(
             adicionais: adicionais[i],
             precoAdicional: req.body.precoAdicional[i],
             produtoReferido: req.body.titulo,
+            categoriaAdicional: req.body.categoriaAdicional[i]
           });
         }
 
@@ -407,7 +409,17 @@ router.get("/adicionais", UserAuth, eAdmin, (req, res) => {
 });
 
 router.get("/adicionais/add", UserAuth, eAdmin, (req, res) => {
-  res.render("admin/addadicionais");
+  Categoria.find({ nomeLoja: usuarioAtual })
+    .lean()
+    .then((categorias) => {
+      res.render("admin/addadicionais", {
+        categorias: categorias,
+      });
+    })
+    .catch((err) => {
+      req.flash("error_msg", "Houve um erro ao listar os adicionais");
+      res.redirect(`/${usuarioAtual}/admin/adicionais`);
+    });
 });
 
 router.post("/adicionais/nova", UserAuth, eAdmin, (req, res) => {
@@ -436,6 +448,7 @@ router.post("/adicionais/nova", UserAuth, eAdmin, (req, res) => {
       nome: req.body.nome,
       taxa: req.body.taxa,
       nomeLoja: usuarioAtual,
+      categoria: req.body.categoria,
     };
     try {
       new Adicional(novoAdicional).save();
@@ -451,7 +464,18 @@ router.get("/adicionais/edit/:id", UserAuth, eAdmin, (req, res) => {
   Adicional.findOne({ _id: req.params.id })
     .lean()
     .then((adicional) => {
-      res.render("admin/editadicionais", { adicional: adicional });
+      Categoria.find({ nomeLoja: usuarioAtual })
+        .lean()
+        .then((categorias) => {
+          res.render("admin/editadicionais", {
+            adicional: adicional,
+            categorias: categorias,
+          });
+        })
+        .catch((err) => {
+          req.flash("error_msg", "Houve um erro ao listar os adicionais");
+          res.redirect(`/${usuarioAtual}/admin/adicionais`);
+        });
     })
     .catch((err) => {
       req.flash("error_msg", "Esse adicional não existe!");
@@ -484,7 +508,9 @@ router.post("/adicionais/edit", UserAuth, eAdmin, (req, res) => {
   } else {
     Adicional.findOne({ _id: req.body.id })
       .then((adicional) => {
-        (adicional.nome = req.body.nome), (adicional.taxa = req.body.taxa);
+        (adicional.nome = req.body.nome),
+        (adicional.taxa = req.body.taxa),
+        (adicional.categoria = req.body.categoria)
         adicional
           .save()
           .then(() => {

@@ -18,6 +18,10 @@ const Adicional = new Schema({
     type: Date,
     default: Date.now(),
   },
+  categoria: {
+    type: String,
+    require: true
+  }
 });
 
 mongoose.model("adicionais", Adicional);

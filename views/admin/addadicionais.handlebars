@@ -14,6 +14,15 @@
     <label for="taxa">Taxa de entrega: </label>
       <input class="form-control" type="text" id="taxa" name="taxa" placeholder="Taxa de entrega">
     <br>
+
+    <select name="categoria">
+      {{#each categorias}}
+        <option value="{{nome}}">{{nome}}</option>
+      {{else}}
+        <option value="0">Nenhuma categoria registrada</option>
+      {{/each}}
+    </select>
+
     <button type="submit" class="btn btn-success">Incluir Adicional</button>
   </form>
   </div>

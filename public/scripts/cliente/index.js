@@ -23,6 +23,38 @@ const contatoInput = document.getElementById("contatoInput");
 
 let cart = [];
 
+document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+  anchor.addEventListener("click", function (e) {
+    e.preventDefault();
+    document.querySelectorAll('a[href^="#"]').forEach((item) => {
+      item.classList.remove("activeNav");
+    });
+
+    // Obtém o elemento da barra de navegação
+    const nav = document.querySelector("nav");
+
+    // Obtém a posição do elemento clicado em relação à barra de navegação
+    const linkPosition =
+      this.getBoundingClientRect().left - nav.getBoundingClientRect().left;
+
+    // Rola horizontalmente para que o item clicado fique no canto esquerdo da tela
+    nav.scrollBy({
+      left: linkPosition,
+      behavior: "smooth",
+    });
+
+    const target = document.querySelector(this.getAttribute("href"));
+
+    this.classList.add("activeNav");
+    const offset = target.offsetTop + -15;
+
+    window.scrollTo({
+      top: offset,
+      behavior: "smooth",
+    });
+  });
+});
+
 // Abrir o modal do carrinho
 cartBtn.addEventListener("click", () => {
   cartModal.classList.add("modalActive");
@@ -76,9 +108,18 @@ function updateCartModal() {
         <p class="spanItemPrice">R$ ${item.price.toFixed(2)}</p>
       </div>
 
-      <button class="remove-from-cart-btn" data-name="${item.name}">
-        Remover
-      </button>
+
+
+      <div id="quantidade">
+        <img data-name="${
+          item.name
+        }" class="remove-from-cart-btn" src="./img/menos.png" />
+        <span id="quantidadeTotalProduto">${item.quantityProduto}</span>
+        <img data-name="${
+          item.name
+        }" class="add-from-cart-btn" src="./img/mais.png" />
+      </div>
+
     </div>
 
     `;
@@ -103,6 +144,12 @@ cartItemsContainer.addEventListener("click", (ev) => {
 
     removeItemCart(name);
   }
+
+  if (ev.target.classList.contains("add-from-cart-btn")) {
+    const name = ev.target.getAttribute("data-name");
+
+    addItemCart(name);
+  }
 });
 
 function removeItemCart(name) {
@@ -113,6 +160,23 @@ function removeItemCart(name) {
 
     if (item.quantityProduto > 1) {
       item.quantityProduto -= 1;
+      updateCartModal();
+      return;
+    }
+
+    cart.splice(index, 1);
+    updateCartModal();
+  }
+}
+
+function addItemCart(name) {
+  const index = cart.findIndex((item) => item.name === name);
+
+  if (index !== -1) {
+    const item = cart[index];
+
+    if (item.quantityProduto >= 1) {
+      item.quantityProduto += 1;
       updateCartModal();
       return;
     }
@@ -252,7 +316,7 @@ enderecoInputs.forEach((enderecoInput) => {
 });
 
 let produtoModal = {};
-let listaAdicionais = [];
+let listaAdicionais = {};
 
 menu.addEventListener("click", (ev) => {
   capturaProdutoParaModal(ev);
@@ -269,10 +333,19 @@ function capturaProdutoParaModal(ev) {
 
     adicionaisLista.forEach((item) => {
       if (item.dataset.produtoreferido == name) {
-        listaAdicionais.push({
+
+        adicionarProduto(item.dataset.categoria, {
           nomeAdicional: item.textContent,
           valorAdicional: item.dataset.value,
         });
+
+        function adicionarProduto(categoria, produto) {
+          if (listaAdicionais.hasOwnProperty(categoria)) {
+            listaAdicionais[categoria].push(produto);
+          } else {
+            listaAdicionais[categoria] = [produto];
+          }
+        }
       }
     });
 
@@ -281,8 +354,8 @@ function capturaProdutoParaModal(ev) {
       price: price,
       descricao: descricao,
       imgProduto: imgProduto,
-      listaAdicionais: listaAdicionais,
       quantityProduto: 1,
+      listaAdicionais: listaAdicionais,
     };
 
     exibeDadosProduto();
@@ -337,10 +410,7 @@ function exibeDadosProduto() {
     style: "currency",
     currency: "BRL",
   });
-  // totalProdudo.textContent = produtoModal.price.toLocaleString("pt-BR", {
-  //   style: "currency",
-  //   currency: "BRL",
-  // });
+
   imgModalProduto.src = `./uploads/${produtoModal.imgProduto}`;
   quantidadeTotalProduto.textContent = produtoModal.quantityProduto;
   nomeProduto.textContent = produtoModal.name;

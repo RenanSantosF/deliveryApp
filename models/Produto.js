@@ -39,6 +39,7 @@ const Produto = new Schema({
       adicionais: String,
       precoAdicional: String,
       produtoReferido: String,
+      categoriaAdicional: String,
     },
   ],
 });
