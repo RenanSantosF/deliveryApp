@@ -30,10 +30,8 @@ document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
       item.classList.remove("activeNav");
     });
 
-    // Obtém o elemento da barra de navegação
     const nav = document.querySelector("nav");
 
-    // Obtém a posição do elemento clicado em relação à barra de navegação
     const linkPosition =
       this.getBoundingClientRect().left - nav.getBoundingClientRect().left;
 
@@ -86,7 +84,6 @@ menu.addEventListener("click", (ev) => {
     const name = parentButton.getAttribute("data-name");
     const price = parseFloat(parentButton.getAttribute("data-price"));
 
-    console.log(parentButton);
     addToCart(name, price);
   }
 });
@@ -104,11 +101,9 @@ function updateCartModal() {
     <div class="itemCarrinho">
       <div class="atributosItemCarrinho">
         <p class="spanItemName">${item.name}</p>
-        <p>Qtd: ${item.quantityProduto}</p>
+        <p>Adicionais: ${item.quantityProduto}</p>
         <p class="spanItemPrice">R$ ${item.price.toFixed(2)}</p>
       </div>
-
-
 
       <div id="quantidade">
         <img data-name="${
@@ -124,7 +119,9 @@ function updateCartModal() {
 
     `;
 
-    total += item.price * item.quantityProduto;
+    total +=
+      item.valorTotalAdicional * item.quantityProduto +
+      item.price * item.quantityProduto;
 
     cartItemsContainer.appendChild(cartItemElement);
   });
@@ -250,8 +247,6 @@ checkoutBtn.addEventListener("click", () => {
     contato: contatoInput.value,
   };
 
-  console.log(endereco);
-
   window.open(
     `https://wa.me/${phone}?text=${message} Endereço: Rua:${endereco.rua}, Nº:${endereco.numero}, Referência:${endereco.pontoReferencia}, Bairro: ${endereco.Bairro}, Cidade: ${endereco.Cidade}, UF: ${endereco.UF}`,
     "_blank"
@@ -301,7 +296,6 @@ function VerificaInputsEntrega() {
     if (!enderecoInput.value) {
       addressWarn.classList.add("activeSpanAlert");
       enderecoInput.classList.add("ActiveAddress");
-      console.log(enderecoInput);
     }
   });
 }
@@ -317,10 +311,23 @@ enderecoInputs.forEach((enderecoInput) => {
 
 let produtoModal = {};
 let listaAdicionais = {};
+let adicional = {};
+let total = 0;
 
 menu.addEventListener("click", (ev) => {
   capturaProdutoParaModal(ev);
 });
+
+function atualizarValorTotal() {
+  total = 0;
+  for (const categoria in produtoModal.listaAdicionais) {
+    const lista = produtoModal.listaAdicionais[categoria];
+    lista.forEach((objeto) => {
+      total += objeto.valorAdicional * objeto.quantidade;
+      produtoModal.valorTotalAdicional = total;
+    });
+  }
+}
 
 function capturaProdutoParaModal(ev) {
   const adicionaisLista = document.querySelectorAll(".adicionaisLista");
@@ -330,13 +337,13 @@ function capturaProdutoParaModal(ev) {
     const price = parseFloat(parentButton.getAttribute("data-price"));
     const descricao = parentButton.getAttribute("data-descricao");
     const imgProduto = parentButton.getAttribute("data-imgProduto");
-
+    listaAdicionais = {};
     adicionaisLista.forEach((item) => {
       if (item.dataset.produtoreferido == name) {
-
         adicionarProduto(item.dataset.categoria, {
           nomeAdicional: item.textContent,
           valorAdicional: item.dataset.value,
+          quantidade: 0,
         });
 
         function adicionarProduto(categoria, produto) {
@@ -350,6 +357,7 @@ function capturaProdutoParaModal(ev) {
     });
 
     produtoModal = {
+      valorTotalAdicional: 0,
       name: name,
       price: price,
       descricao: descricao,
@@ -358,9 +366,66 @@ function capturaProdutoParaModal(ev) {
       listaAdicionais: listaAdicionais,
     };
 
+    const container = document.getElementById("adicionalProduto");
+
+    for (const categoria in produtoModal.listaAdicionais) {
+      const divCategoria = document.createElement("div");
+      divCategoria.className = "categoria";
+      divCategoria.innerHTML = "";
+
+      const tituloCategoria = document.createElement("h2");
+      tituloCategoria.textContent = categoria;
+      divCategoria.appendChild(tituloCategoria);
+
+      const lista = produtoModal.listaAdicionais[categoria];
+
+      lista.forEach((objeto) => {
+        const listItem = document.createElement("li");
+        listItem.textContent = `${objeto.nomeAdicional}: R$ ${objeto.valorAdicional}`;
+
+        const btnRemover = document.createElement("button");
+        btnRemover.textContent = "-";
+        btnRemover.type = "button";
+        btnRemover.addEventListener("click", () => {
+          if (objeto.quantidade > 0) {
+            objeto.quantidade--;
+            quantidadeSpan.textContent = objeto.quantidade;
+            atualizarQuantidade(objeto, categoria, objeto.quantidade);
+            atualizarValorTotal();
+          }
+        });
+        listItem.appendChild(btnRemover);
+
+        const quantidadeSpan = document.createElement("span");
+        quantidadeSpan.textContent = objeto.quantidade;
+        listItem.appendChild(quantidadeSpan);
+
+        const btnAdicionar = document.createElement("button");
+        btnAdicionar.textContent = "+";
+        btnAdicionar.type = "button";
+        btnAdicionar.addEventListener("click", () => {
+          if (objeto.quantidade < 10) {
+            objeto.quantidade++;
+            quantidadeSpan.textContent = objeto.quantidade;
+            atualizarQuantidade(objeto, categoria, objeto.quantidade);
+            atualizarValorTotal();
+          }
+        });
+        listItem.appendChild(btnAdicionar);
+
+        divCategoria.appendChild(listItem);
+      });
+      container.appendChild(divCategoria);
+    }
+
+    function atualizarQuantidade(objeto, categoria, novaQuantidade) {
+      produtoModal.listaAdicionais[categoria].find(
+        (item) => item === objeto
+      ).quantidade = novaQuantidade;
+    }
+
     exibeDadosProduto();
     exibeModalProduto();
-    console.log(produtoModal);
   }
 }
 
@@ -392,6 +457,9 @@ function fechaModalProduto() {
       document
         .getElementById("modalProduto")
         .classList.remove("modalProdutoDisable");
+
+      const container = document.getElementById("adicionalProduto");
+      container.innerHTML = "";
     }, 300);
   }, 100);
 }
@@ -404,7 +472,6 @@ function exibeDadosProduto() {
   const quantidadeTotalProduto = document.getElementById(
     "quantidadeTotalProduto"
   );
-  const totalProdudo = document.getElementById("totalProdudo");
 
   valorProduto.textContent = produtoModal.price.toLocaleString("pt-BR", {
     style: "currency",
@@ -421,7 +488,6 @@ document.getElementById("somaItem").addEventListener("click", () => {
   produtoModal.quantityProduto += 1;
 
   exibeDadosProduto();
-  console.log(produtoModal);
 });
 
 document.getElementById("subtraiItem").addEventListener("click", () => {
@@ -429,8 +495,6 @@ document.getElementById("subtraiItem").addEventListener("click", () => {
     produtoModal.quantityProduto -= 1;
 
     exibeDadosProduto();
-
-    console.log(produtoModal);
   }
 });
 
@@ -444,11 +508,9 @@ function addToCartCorreto() {
 
   if (existingItem) {
     existingItem.quantityProduto += produtoModal.quantityProduto;
-    console.log(existingItem);
     console.log(cart);
   } else {
     cart.push(produtoModal);
-    console.log(existingItem);
     console.log(cart);
   }
 

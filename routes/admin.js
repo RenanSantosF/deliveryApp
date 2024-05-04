@@ -277,7 +277,6 @@ router.post(
         imgProduto: req.generatedFileName,
         adicionais: novosAdicionais,
       };
-      console.log(novosAdicionais);
       new Produto(novaproduto)
         .save()
         .then(() => {

@@ -61,7 +61,7 @@
                   class="adicionaisLista"
                   data-value="{{this.precoAdicional}}"
                   data-produtoReferido="{{this.produtoReferido}}"
-                  data-categoria = "{{this.categoriaAdicional}}"
+                  data-categoria="{{this.categoriaAdicional}}"
                 >{{this.adicionais}}</li>
               {{else}}
                 <h1>Nenhum adicional</h1>
@@ -89,25 +89,28 @@
 </div>
 
 <div class="modalProduto" id="modalProduto">
-  <div id="imgProduto">
-    <div id="btnVoltar">
-      <img src="./img/botao-voltar.png" />
+  <div id="btnVoltar">
+    <img src="./img/botao-voltar.png" />
+  </div>
+  <div class="contentModalProduto">
+    <div id="imgProduto">
+
+      <img
+        id="imgModalProduto"
+        class="imgModalProduto"
+        src="./uploads/hamb-4.png1713677295624.png"
+      />
     </div>
-    <img
-      id="imgModalProduto"
-      class="imgModalProduto"
-      src="./uploads/hamb-4.png1713677295624.png"
-    />
-  </div>
 
-  <div class="informacaoProduto">
-    <h2 id="nomeProduto">nomeProduto</h2>
-    <span id="descricaoProduto">Lorem ipsum dolor sit amet consectetur
-      adipisicing elit. Iusto quaerat eveniet nisi nobis eligendi blanditiis.</span>
-    <span id="valorProduto"></span>
-  </div>
+    <div class="informacaoProduto">
+      <h2 id="nomeProduto">nomeProduto</h2>
+      <span id="descricaoProduto">Lorem ipsum dolor sit amet consectetur
+        adipisicing elit. Iusto quaerat eveniet nisi nobis eligendi blanditiis.</span>
+      <span id="valorProduto"></span>
+    </div>
 
-  <div id="adicionalProduto"></div>
+    <div id="adicionalProduto"></div>
+  </div>
 
   <div class="footerProduto">
     <div id="quantidade">
