@@ -5,6 +5,7 @@ module.exports = {
     } else {
       req.flash("error_msg", "Você precisa ser um administrador!");
       res.redirect("/");
+
     }
   },
 };

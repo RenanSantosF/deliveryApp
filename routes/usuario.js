@@ -156,17 +156,37 @@ router.post("/cadastrar", (req, res) => {
   res.redirect("/usuarios/registro");
 });
 
-router.post("/login", (req, res, next) => {
-  passport.authenticate("local", {
-    successRedirect: `/`,
-    failureRedirect: "/usuarios/login",
-    failureFlash: true,
-  })(req, res, next);
-});
+// router.post("/login", (req, res, next) => {
+//   passport.authenticate("local", {
+//     successRedirect: `/`,
+//     failureRedirect: "/usuarios/login",
+//     failureFlash: true,
+//   })(req, res, next);
+// });
 router.get("/logout", (req, res) => {
   req.logout();
   req.flash("success_msg", "Deslogado com sucesso");
   res.redirect("/");
+});
+
+
+router.post("/login", (req, res, next) => {
+  passport.authenticate("local", (err, user, info) => {
+    if (err) {
+      return next(err);
+    }
+    if (!user) {
+      req.flash("error_msg", "Usuário ou senha inválidos");
+      return res.redirect("/usuarios/login");
+    }
+    req.logIn(user, (err) => {
+      if (err) {
+        return next(err);
+      }
+      const userRoute = `/${req.user.nomeLoja}/admin`;
+      return res.redirect(userRoute);
+    });
+  })(req, res, next);
 });
 
 module.exports = router;

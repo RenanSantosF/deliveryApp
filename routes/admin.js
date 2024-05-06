@@ -34,26 +34,28 @@ function UserAuth(req, res, next) {
 }
 
 router.get("/", UserAuth, (req, res) => {
+  
   res.render("admin/index");
 });
 
 router.get("/:nomeLoja/posts", UserAuth, eAdmin, (req, res) => {
+
   res.send("Página de posts");
 });
 
 router.get("/categorias", UserAuth, eAdmin, (req, res) => {
-  Categoria.find({ nomeLoja: usuarioAtual })
+  Categoria.find({ nomeLoja: req.user.nomeLoja })
     .sort({ date: "desc" })
     .lean()
     .then((categorias) => {
       res.render("admin/categorias", {
         categorias: categorias,
-        usuarioAtual: usuarioAtual,
+        usuarioAtual: req.user.nomeLoja,
       });
     })
     .catch((err) => {
       req.flash("error_msg", "Houve um erro ao listar as categorias");
-      res.redirect(`/${usuarioAtual}/admin`);
+      res.redirect(`/${req.user.nomeLoja}/admin`);
     });
 });
 
@@ -86,11 +88,11 @@ router.post("/categorias/nova", UserAuth, eAdmin, (req, res) => {
     const novaCategoria = {
       nome: req.body.nome,
       slug: req.body.slug,
-      nomeLoja: usuarioAtual,
+      nomeLoja: req.user.nomeLoja,
     };
     try {
       new Categoria(novaCategoria).save();
-      res.redirect(`/${usuarioAtual}/admin/categorias`);
+      res.redirect(`/${req.user.nomeLoja}/admin/categorias`);
       req.flash("success_msg", "Categoria criada com sucesso!");
     } catch (error) {
       req.flash("error_msg", "Houve um erro ao salvar a categoria!");
@@ -106,7 +108,7 @@ router.get("/categorias/edit/:id", UserAuth, eAdmin, (req, res) => {
     })
     .catch((err) => {
       req.flash("error_msg", "Essa categoria não existe!");
-      res.redirect(`/${usuarioAtual}/admin/categorias`);
+      res.redirect(`/${req.user.nomeLoja}/admin/categorias`);
     });
 });
 
@@ -131,7 +133,7 @@ router.post("/categorias/edit", UserAuth, eAdmin, (req, res) => {
   }
   if (erros.length > 0) {
     res.render("editCategorias", { erros: erros });
-    res.redirect(`/${usuarioAtual}/admin/categorias/edit/${req.body.id}`);
+    res.redirect(`/${req.user.nomeLoja}/admin/categorias/edit/${req.body.id}`);
   } else {
     Categoria.findOne({ _id: req.body.id })
       .then((categoria) => {
@@ -140,19 +142,19 @@ router.post("/categorias/edit", UserAuth, eAdmin, (req, res) => {
           .save()
           .then(() => {
             req.flash("success_msg", "Categoria editada com sucesso!");
-            res.redirect(`/${usuarioAtual}/admin/categorias`);
+            res.redirect(`/${req.user.nomeLoja}/admin/categorias`);
           })
           .catch((err) => {
             req.flash(
               "error_msg",
               "Houve um erro interno ao salvar a categoria!"
             );
-            res.redirect(`/${usuarioAtual}/admin/categorias`);
+            res.redirect(`/${req.user.nomeLoja}/admin/categorias`);
           });
       })
       .catch((err) => {
         req.flash("error_msg", "Houve um erro ao editar a categoria");
-        res.redirect(`/${usuarioAtual}/admin/categorias`);
+        res.redirect(`/${req.user.nomeLoja}/admin/categorias`);
       });
   }
 });
@@ -161,18 +163,18 @@ router.post("/categorias/deletar", UserAuth, eAdmin, (req, res) => {
   Categoria.deleteOne({ _id: req.body.id })
     .then(() => {
       req.flash("success_msg", "Categoria deletada com sucesso!");
-      res.redirect(`/${usuarioAtual}/admin/categorias`);
+      res.redirect(`/${req.user.nomeLoja}/admin/categorias`);
     })
     .catch((err) => {
       req.flash("error_msg", "Houve um erro ao deletar a categoria");
-      res.redirect(`/${usuarioAtual}/admin/categorias`);
+      res.redirect(`/${req.user.nomeLoja}/admin/categorias`);
     });
 });
 
 // Produtos
 
 router.get("/produtos", UserAuth, eAdmin, (req, res) => {
-  Produto.find({ nomeLoja: usuarioAtual })
+  Produto.find({ nomeLoja: req.user.nomeLoja })
     .populate("categoria")
     .sort({ date: "desc" })
     .lean()
@@ -181,15 +183,15 @@ router.get("/produtos", UserAuth, eAdmin, (req, res) => {
     })
     .catch((err) => {
       req.flash("error_msg", "Houve um erro ao listar as produtos");
-      res.redirect(`/${usuarioAtual}/admin`);
+      res.redirect(`/${req.user.nomeLoja}/admin`);
     });
 });
 
 router.get("/produtos/add", UserAuth, eAdmin, (req, res) => {
-  Adicional.find({ nomeLoja: usuarioAtual })
+  Adicional.find({ nomeLoja: req.user.nomeLoja })
     .lean()
     .then((adicionais) => {
-      Categoria.find({ nomeLoja: usuarioAtual })
+      Categoria.find({ nomeLoja: req.user.nomeLoja })
         .lean()
         .then((categorias) => {
           res.render("admin/addProduto", {
@@ -201,12 +203,12 @@ router.get("/produtos/add", UserAuth, eAdmin, (req, res) => {
         })
         .catch((err) => {
           req.flash("error_msg", "Houve um erro ao carregar o formulário");
-          res.redirect(`/${usuarioAtual}/admin`);
+          res.redirect(`/${req.user.nomeLoja}/admin`);
         });
     })
     .catch((err) => {
       req.flash("error_msg", "Houve um erro ao carregar o formulário");
-      res.redirect(`/${usuarioAtual}/admin`);
+      res.redirect(`/${req.user.nomeLoja}/admin`);
     });
 });
 
@@ -273,7 +275,7 @@ router.post(
         descricao: req.body.descricao,
         preco: req.body.preco,
         categoria: req.body.categoria,
-        nomeLoja: usuarioAtual,
+        nomeLoja: req.user.nomeLoja,
         imgProduto: req.generatedFileName,
         adicionais: novosAdicionais,
       };
@@ -281,11 +283,11 @@ router.post(
         .save()
         .then(() => {
           req.flash("success_msg", "produto criado com sucesso!");
-          res.redirect(`/${usuarioAtual}/admin/produtos`);
+          res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
         })
         .catch((err) => {
           req.flash("error_msg", "Houve um erro na criação da produto!");
-          res.redirect(`/${usuarioAtual}/admin/produtos`);
+          res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
         });
     }
   }
@@ -295,10 +297,10 @@ router.get("/produtos/edit/:id", UserAuth, eAdmin, (req, res) => {
   Produto.findOne({ _id: req.params.id })
     .lean()
     .then((produto) => {
-      Adicional.find({ nomeLoja: usuarioAtual })
+      Adicional.find({ nomeLoja: req.user.nomeLoja })
         .lean()
         .then((adicionais) => {
-          Categoria.find({ nomeLoja: usuarioAtual })
+          Categoria.find({ nomeLoja: req.user.nomeLoja })
             .lean()
             .then((categorias) => {
               res.render("admin/editprodutos", {
@@ -311,12 +313,12 @@ router.get("/produtos/edit/:id", UserAuth, eAdmin, (req, res) => {
             })
             .catch((err) => {
               req.flash("error_msg", "Houve um erro ao listar as categorias");
-              res.redirect(`/${usuarioAtual}/admin/produtos`);
+              res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
             });
         })
         .catch((err) => {
           req.flash("error_msg", "Houve um erro ao listar as categorias");
-          res.redirect(`/${usuarioAtual}/admin/produtos`);
+          res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
         });
     })
     .catch((err) => {
@@ -324,7 +326,7 @@ router.get("/produtos/edit/:id", UserAuth, eAdmin, (req, res) => {
         "error_msg",
         "Houve um erro ao carregar o formulário de edição"
       );
-      res.redirect(`/${usuarioAtual}/admin/produtos`);
+      res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
     });
 });
 
@@ -356,7 +358,7 @@ router.post(
         produto.descricao = req.body.descricao;
         produto.categoria = req.body.categoria;
         produto.preco = req.body.preco;
-        produto.nomeLoja = usuarioAtual;
+        produto.nomeLoja = req.user.nomeLoja;
         produto.imgProduto = req.generatedFileName;
         produto.adicionais = novosAdicionais;
 
@@ -364,16 +366,16 @@ router.post(
           .save()
           .then(() => {
             req.flash("success_msg", "produto editada com sucesso!");
-            res.redirect(`/${usuarioAtual}/admin/produtos`);
+            res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
           })
           .catch((err) => {
             req.flash("error_msg", "Erro interno");
-            res.redirect(`/${usuarioAtual}/admin/produtos`);
+            res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
           });
       })
       .catch((err) => {
         req.flash("error_msg", "Houve um erro ao salvar a edição");
-        res.redirect(`/${usuarioAtual}/admin/produtos`);
+        res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
       });
   }
 );
@@ -382,17 +384,17 @@ router.get("/produtos/deletar/:id", UserAuth, eAdmin, (req, res) => {
   Produto.deleteOne({ _id: req.params.id })
     .then(() => {
       req.flash("success_msg", "produto deletada");
-      res.redirect(`/${usuarioAtual}/admin/produtos`);
+      res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
     })
     .catch((err) => {
       req.flash("error_msg", "Houve um erro ao deletar a produto!");
-      res.redirect(`/${usuarioAtual}/admin/produtos`);
+      res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
     });
 });
 
 //Adicionais
 router.get("/adicionais", UserAuth, eAdmin, (req, res) => {
-  Adicional.find({ nomeLoja: usuarioAtual })
+  Adicional.find({ nomeLoja: req.user.nomeLoja })
     .sort({ date: "desc" })
     .lean()
     .then((adicionais) => {
@@ -403,12 +405,12 @@ router.get("/adicionais", UserAuth, eAdmin, (req, res) => {
         "error_msg",
         "Houve um erro ao listar os adicionais cadastrados"
       );
-      res.redirect(`"/${usuarioAtual}/admin`);
+      res.redirect(`"/${req.user.nomeLoja}/admin`);
     });
 });
 
 router.get("/adicionais/add", UserAuth, eAdmin, (req, res) => {
-  Categoria.find({ nomeLoja: usuarioAtual })
+  Categoria.find({ nomeLoja: req.user.nomeLoja })
     .lean()
     .then((categorias) => {
       res.render("admin/addadicionais", {
@@ -417,7 +419,7 @@ router.get("/adicionais/add", UserAuth, eAdmin, (req, res) => {
     })
     .catch((err) => {
       req.flash("error_msg", "Houve um erro ao listar os adicionais");
-      res.redirect(`/${usuarioAtual}/admin/adicionais`);
+      res.redirect(`/${req.user.nomeLoja}/admin/adicionais`);
     });
 });
 
@@ -446,12 +448,12 @@ router.post("/adicionais/nova", UserAuth, eAdmin, (req, res) => {
     const novoAdicional = {
       nome: req.body.nome,
       taxa: req.body.taxa,
-      nomeLoja: usuarioAtual,
+      nomeLoja: req.user.nomeLoja,
       categoria: req.body.categoria,
     };
     try {
       new Adicional(novoAdicional).save();
-      res.redirect(`/${usuarioAtual}/admin/adicionais`);
+      res.redirect(`/${req.user.nomeLoja}/admin/adicionais`);
       req.flash("success_msg", "Adicional registrado com sucesso!");
     } catch (error) {
       req.flash("error_msg", "Houve um erro ao adicionar o adicional!");
@@ -463,7 +465,7 @@ router.get("/adicionais/edit/:id", UserAuth, eAdmin, (req, res) => {
   Adicional.findOne({ _id: req.params.id })
     .lean()
     .then((adicional) => {
-      Categoria.find({ nomeLoja: usuarioAtual })
+      Categoria.find({ nomeLoja: req.user.nomeLoja })
         .lean()
         .then((categorias) => {
           res.render("admin/editadicionais", {
@@ -473,7 +475,7 @@ router.get("/adicionais/edit/:id", UserAuth, eAdmin, (req, res) => {
         })
         .catch((err) => {
           req.flash("error_msg", "Houve um erro ao listar os adicionais");
-          res.redirect(`/${usuarioAtual}/admin/adicionais`);
+          res.redirect(`/${req.user.nomeLoja}/admin/adicionais`);
         });
     })
     .catch((err) => {
@@ -503,7 +505,7 @@ router.post("/adicionais/edit", UserAuth, eAdmin, (req, res) => {
   }
   if (erros.length > 0) {
     res.render("editAdicionais", { erros: erros });
-    res.redirect(`/${usuarioAtual}/admin/adicionais/edit/${req.body.id}`);
+    res.redirect(`/${req.user.nomeLoja}/admin/adicionais/edit/${req.body.id}`);
   } else {
     Adicional.findOne({ _id: req.body.id })
       .then((adicional) => {
@@ -514,19 +516,19 @@ router.post("/adicionais/edit", UserAuth, eAdmin, (req, res) => {
           .save()
           .then(() => {
             req.flash("success_msg", "Adicional editado com sucesso!");
-            res.redirect(`/${usuarioAtual}/admin/adicionais`);
+            res.redirect(`/${req.user.nomeLoja}/admin/adicionais`);
           })
           .catch((err) => {
             req.flash(
               "error_msg",
               "Houve um erro interno ao adicionar o adicional!"
             );
-            res.redirect(`/${usuarioAtual}/admin/adicionais`);
+            res.redirect(`/${req.user.nomeLoja}/admin/adicionais`);
           });
       })
       .catch((err) => {
         req.flash("error_msg", "Houve um erro ao editar o adicional");
-        res.redirect(`/${usuarioAtual}/admin/adicionais`);
+        res.redirect(`/${req.user.nomeLoja}/admin/adicionais`);
       });
   }
 });
@@ -535,11 +537,11 @@ router.post("/adicionais/deletar", UserAuth, eAdmin, (req, res) => {
   Adicional.deleteOne({ _id: req.body.id })
     .then(() => {
       req.flash("success_msg", "Adicional deletado com sucesso!");
-      res.redirect(`/${usuarioAtual}/admin/adicionais`);
+      res.redirect(`/${req.user.nomeLoja}/admin/adicionais`);
     })
     .catch((err) => {
       req.flash("error_msg", "Houve um erro ao deletar o adicional");
-      res.redirect(`/${usuarioAtual}/admin/adicionais`);
+      res.redirect(`/${req.user.nomeLoja}/admin/adicionais`);
     });
 });
 
