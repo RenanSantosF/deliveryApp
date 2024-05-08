@@ -22,23 +22,11 @@
   {{#each produtosPorCategoria}}
     <ul>
       <li><a href="#{{@key}}">{{@key}}</a></li>
-      <li><a href="#{{@key}}">{{@key}}</a></li>
-      <li><a href="#{{@key}}">{{@key}}</a></li>
-      <li><a href="#{{@key}}">{{@key}}</a></li>
-      <li><a href="#{{@key}}">{{@key}}</a></li>
-      <li><a href="#{{@key}}">{{@key}}</a></li>
-      <li><a href="#{{@key}}">{{@key}}</a></li>
-      <li><a href="#{{@key}}">{{@key}}</a></li>
-      <li><a href="#{{@key}}">{{@key}}</a></li>
-      <li><a href="#{{@key}}">{{@key}}</a></li>
-      <li><a href="#{{@key}}">{{@key}}</a></li>
-      <li><a href="#{{@key}}">{{@key}}</a></li>
     </ul>
   {{/each}}
 </nav>
 
-<div id="menu">
-
+<div id="menu" class="menu">
   <div id="menu">
     {{#each produtosPorCategoria}}
       <div id="{{@key}}" class="containerSpanBebidas">
@@ -73,9 +61,10 @@
               <p class="spanTitleProduto">{{this.titulo}}</p>
               <p class="spanDescricaoProduto">{{this.descricao}}</p>
               <div class="preco">
-                <p>R$ {{this.preco}}</p>
+                <p id="ajustePreco">R$ {{this.preco}}</p>
               </div>
             </div>
+
           </div>
         {{else}}
           <h2>Nenhum produto encontrado</h2>
@@ -86,6 +75,7 @@
       <h2>Nenhum produto encontrado</h2>
     {{/each}}
   </div>
+
 </div>
 
 <div class="modalProduto" id="modalProduto">
@@ -103,9 +93,8 @@
     </div>
 
     <div class="informacaoProduto">
-      <h2 id="nomeProduto">nomeProduto</h2>
-      <span id="descricaoProduto">Lorem ipsum dolor sit amet consectetur
-        adipisicing elit. Iusto quaerat eveniet nisi nobis eligendi blanditiis.</span>
+      <h2 id="nomeProduto"></h2>
+      <span id="descricaoProduto"></span>
       <span id="valorProduto"></span>
     </div>
 
@@ -114,9 +103,9 @@
 
   <div class="footerProduto">
     <div id="quantidade">
-      <img id="subtraiItem" src="./img/menos.png" />
+      <button class="btnSomaSubtrai" id="subtraiItem">-</button>
       <span id="quantidadeTotalProduto">1</span>
-      <img id="somaItem" src="./img/mais.png" />
+      <button class="btnSomaSubtrai" id="somaItem">+</button>
     </div>
     <button id="adicionarProduto">Adicionar
     </button>
@@ -137,36 +126,21 @@
 
         <div id="cart-items" class="items"></div>
 
-        <p>Total: <span id="cart-total">0.00</span></p>
+        <div id="divAddMaisItens">
+          <button id="addMaisItens">Adicionar mais itens</button>
+        </div>
 
-        <div class="containerEntregaBtn">
+        {{! <div class="containerEntregaBtn">
           <img id="imgEntrega" src="./img/imgEntrega.png" alt="" />
           <button id="btnEntrega">Adicionar informações de entrega</button>
+        </div> }}
+
+        <div id="divAddEndereco">
+          <p>TOTAL<span id="cart-total">0.00</span></p>
+          <button id="addEndereco">Próximo</button>
         </div>
 
         <span id="address-warn"></span>
-        <div class="containerEntrega" id="containerEntrega">
-          <span class="item1">Informações de entrega:</span>
-          <input type="text" class="item2" id="address" placeholder="CEP" />
-          <input type="text" class="item3" id="rua" placeholder="Rua/Avenida" />
-          <input type="text" class="item4" id="numero" placeholder="Nº" />
-          <input
-            class="item5"
-            type="text"
-            id="pontoReferencia"
-            placeholder="Ponto de referência"
-          />
-          <input type="text" class="item6" id="Bairro" placeholder="Bairro" />
-          <input type="text" class="item7" id="Cidade" placeholder="Cidade" />
-          <input type="text" class="item8" id="UF" placeholder="UF" />
-          <span class="item9">Telefone para contato:</span>
-          <input
-            class="item10"
-            type="text"
-            id="contatoInput"
-            placeholder="DDD + número"
-          />
-        </div>
 
         <div class="containerFinalizarPedido">
 
@@ -178,6 +152,27 @@
     </div>
   </div>
 {{/each}}
+
+{{! MODAL ENTREGA }}
+<div id="modalEndereco" class="modalEndereco">
+  <div>
+    <div class="headerModal">
+      <div id="close-modalEndereco-btn">
+        <img src="./img/botao-voltar.png" />
+      </div>
+      <h2>Informações da entrega</h2>
+    </div>
+    <input type="text" placeholder="CEP" />
+    <input type="text" placeholder="Rua/Avenida" />
+    <input type="text" placeholder="Nº" />
+    <input type="text" placeholder="Ponto de referência" />
+    <input type="text" placeholder="Bairro" />
+    <input type="text" placeholder="Cidade" />
+    <input type="text" placeholder="UF" />
+
+    <input type="text" placeholder="DDD + número" />
+  </div>
+</div>
 
 <footer>
   <button id="cart-btn">

@@ -8,6 +8,10 @@ require("../models/Produto");
 const Produto = mongoose.model("produtos");
 require("../models/Adicional");
 const Adicional = mongoose.model("adicionais");
+require("../models/Pagamento");
+const Pagamento = mongoose.model("pagamentos");
+require("../models/Bairro");
+const Bairro = mongoose.model("bairros");
 
 const multer = require("multer");
 const path = require("path");
@@ -34,12 +38,10 @@ function UserAuth(req, res, next) {
 }
 
 router.get("/", UserAuth, (req, res) => {
-  
   res.render("admin/index");
 });
 
 router.get("/:nomeLoja/posts", UserAuth, eAdmin, (req, res) => {
-
   res.send("Página de posts");
 });
 
@@ -265,7 +267,7 @@ router.post(
           adicionais: adicionais[i],
           precoAdicional: req.body.precoAdicional[i],
           produtoReferido: req.body.titulo,
-          categoriaAdicional: req.body.categoriaAdicional[i]
+          categoriaAdicional: req.body.categoriaAdicional[i],
         });
       }
 
@@ -349,15 +351,17 @@ router.post(
             adicionais: adicionais[i],
             precoAdicional: req.body.precoAdicional[i],
             produtoReferido: req.body.titulo,
-            categoriaAdicional: req.body.categoriaAdicional[i]
+            categoriaAdicional: req.body.categoriaAdicional[i],
           });
         }
+
+        const preco = req.body.preco;
 
         produto.titulo = req.body.titulo;
         produto.slug = req.body.slug;
         produto.descricao = req.body.descricao;
         produto.categoria = req.body.categoria;
-        produto.preco = req.body.preco;
+        produto.preco = preco;
         produto.nomeLoja = req.user.nomeLoja;
         produto.imgProduto = req.generatedFileName;
         produto.adicionais = novosAdicionais;
@@ -510,8 +514,8 @@ router.post("/adicionais/edit", UserAuth, eAdmin, (req, res) => {
     Adicional.findOne({ _id: req.body.id })
       .then((adicional) => {
         (adicional.nome = req.body.nome),
-        (adicional.taxa = req.body.taxa),
-        (adicional.categoria = req.body.categoria)
+          (adicional.taxa = req.body.taxa),
+          (adicional.categoria = req.body.categoria);
         adicional
           .save()
           .then(() => {
@@ -542,6 +546,276 @@ router.post("/adicionais/deletar", UserAuth, eAdmin, (req, res) => {
     .catch((err) => {
       req.flash("error_msg", "Houve um erro ao deletar o adicional");
       res.redirect(`/${req.user.nomeLoja}/admin/adicionais`);
+    });
+});
+
+//Pagamentos
+router.get("/pagamentos", UserAuth, eAdmin, (req, res) => {
+  Pagamento.find({ nomeLoja: req.user.nomeLoja })
+    .sort({ date: "desc" })
+    .lean()
+    .then((pagamentos) => {
+      res.render("admin/pagamentos", { pagamentos: pagamentos });
+    })
+    .catch((err) => {
+      req.flash(
+        "error_msg",
+        "Houve um erro ao listar as formas de pagamentos cadastradas"
+      );
+      res.redirect(`"/${req.user.nomeLoja}/admin`);
+    });
+});
+
+router.get("/pagamentos/add", UserAuth, eAdmin, (req, res) => {
+  try {
+    res.render("admin/addpagamentos");
+  } catch (error) {
+    console.log(error);
+    res.redirect(`/${req.user.nomeLoja}/admin/pagamentos`);
+  }
+});
+
+router.post("/pagamentos/nova", UserAuth, eAdmin, (req, res) => {
+  let erros = [];
+  if (
+    !req.body.nome ||
+    typeof req.body.nome == undefined ||
+    req.body.nome == null
+  ) {
+    erros.push({ texto: "Nome da forma de pagamento precisa ser maior!" });
+  }
+  if (req.body.nome.length < 2) {
+    erros.push({ texto: "Nome da forma de pagamento precisa ser maior!" });
+  }
+  if (erros.length > 0) {
+    res.render("admin/addpagamentos", { erros: erros });
+  } else {
+    const novoPagamento = {
+      nome: req.body.nome,
+      nomeLoja: req.user.nomeLoja,
+    };
+    try {
+      new Pagamento(novoPagamento).save();
+      res.redirect(`/${req.user.nomeLoja}/admin/pagamentos`);
+      req.flash("success_msg", "Forma de pagamento registrada com sucesso!");
+    } catch (error) {
+      req.flash(
+        "error_msg",
+        "Houve um erro ao cadastrar a forma de pagamento!"
+      );
+    }
+  }
+});
+
+router.get("/pagamentos/edit/:id", UserAuth, eAdmin, (req, res) => {
+  Pagamento.findOne({ _id: req.params.id })
+    .lean()
+    .then((pagamento) => {
+      res.render("admin/editpagamentos", { pagamento: pagamento });
+    })
+    .catch((err) => {
+      req.flash("error_msg", "Essa forma de pagamento não existe!");
+      res.redirect("/admin/pagamentos");
+    });
+});
+
+router.post("/pagamentos/edit", UserAuth, eAdmin, (req, res) => {
+  let erros = [];
+  if (
+    !req.body.nome ||
+    typeof req.body.nome == undefined ||
+    req.body.nome == null
+  ) {
+    erros.push({ texto: "Nome inválido!" });
+  }
+  if (req.body.nome.length < 2) {
+    erros.push({ texto: "Nome da forma de pagamento é inválido!" });
+  }
+  if (erros.length > 0) {
+    res.render("editpagamentos", { erros: erros });
+    res.redirect(`/${req.user.nomeLoja}/admin/pagamentos/edit/${req.body.id}`);
+  } else {
+    Pagamento.findOne({ _id: req.body.id })
+      .then((pagamento) => {
+        (pagamento.nome = req.body.nome),
+        pagamento
+            .save()
+            .then(() => {
+              req.flash("success_msg", "Forma de pagamento atualizada!");
+              res.redirect(`/${req.user.nomeLoja}/admin/pagamentos`);
+            })
+            .catch((err) => {
+              req.flash(
+                "error_msg",
+                "Houve um erro ao editar a forma de pagamento!"
+              );
+              res.redirect(`/${req.user.nomeLoja}/admin/pagamentos`);
+            });
+      })
+      .catch((err) => {
+        req.flash("error_msg", "Houve um erro ao editar a forma de pagamento");
+        res.redirect(`/${req.user.nomeLoja}/admin/pagamentos`);
+      });
+  }
+});
+
+router.post("/pagamentos/deletar", UserAuth, eAdmin, (req, res) => {
+  Adicional.deleteOne({ _id: req.body.id })
+    .then(() => {
+      req.flash("success_msg", "Forma de pagamento deletada com sucesso!");
+      res.redirect(`/${req.user.nomeLoja}/admin/pagamentos`);
+    })
+    .catch((err) => {
+      req.flash("error_msg", "Houve um erro ao deletar a forma de pagamento!");
+      res.redirect(`/${req.user.nomeLoja}/admin/pagamentos`);
+    });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//Bairros
+router.get("/bairros", UserAuth, eAdmin, (req, res) => {
+  Bairro.find({ nomeLoja: req.user.nomeLoja })
+    .sort({ date: "desc" })
+    .lean()
+    .then((bairros) => {
+      res.render("admin/bairros", { bairros: bairros });
+    })
+    .catch((err) => {
+      req.flash(
+        "error_msg",
+        "Houve um erro ao listar os bairros cadastrados"
+      );
+      res.redirect(`"/${req.user.nomeLoja}/admin`);
+    });
+});
+
+router.get("/bairros/add", UserAuth, eAdmin, (req, res) => {
+  try {
+    res.render("admin/addbairros");
+  } catch (error) {
+    console.log(error);
+    res.redirect(`/${req.user.nomeLoja}/admin/bairros`);
+  }
+});
+
+router.post("/bairros/nova", UserAuth, eAdmin, (req, res) => {
+  let erros = [];
+  if (
+    !req.body.nome ||
+    typeof req.body.nome == undefined ||
+    req.body.nome == null
+  ) {
+    erros.push({ texto: "Nome do bairro inválido!" });
+  }
+  if (req.body.nome.length < 2) {
+    erros.push({ texto: "Nome do bairro precisa ser maior!" });
+  }
+  if (erros.length > 0) {
+    res.render("admin/addbairros", { erros: erros });
+  } else {
+    const novoBairro = {
+      nome: req.body.nome,
+      taxa: req.body.taxa,
+      nomeLoja: req.user.nomeLoja,
+    };
+    try {
+      new Bairro(novoBairro).save();
+      res.redirect(`/${req.user.nomeLoja}/admin/bairros`);
+      req.flash("success_msg", "Bairro registrado com sucesso!");
+    } catch (error) {
+      req.flash(
+        "error_msg",
+        "Houve um erro ao cadastrar o bairro!"
+      );
+    }
+  }
+});
+
+router.get("/bairros/edit/:id", UserAuth, eAdmin, (req, res) => {
+  Bairro.findOne({ _id: req.params.id })
+    .lean()
+    .then((bairro) => {
+      res.render("admin/editbairros", { bairro: bairro });
+    })
+    .catch((err) => {
+      req.flash("error_msg", "Essa forma de bairro não existe!");
+      res.redirect("/admin/bairros");
+    });
+});
+
+router.post("/bairros/edit", UserAuth, eAdmin, (req, res) => {
+  let erros = [];
+  if (
+    !req.body.nome ||
+    typeof req.body.nome == undefined ||
+    req.body.nome == null
+  ) {
+    erros.push({ texto: "Nome inválido!" });
+  }
+  if (req.body.nome.length < 2) {
+    erros.push({ texto: "Nome do bairro é inválido!" });
+  }
+  if (erros.length > 0) {
+    res.render("editbairros", { erros: erros });
+    res.redirect(`/${req.user.nomeLoja}/admin/bairros/edit/${req.body.id}`);
+  } else {
+    Bairro.findOne({ _id: req.body.id })
+      .then((bairro) => {
+        (bairro.nome = req.body.nome),
+        (bairro.taxa = req.body.taxa)
+        bairro
+            .save()
+            .then(() => {
+              req.flash("success_msg", "Bairro atualizado!");
+              res.redirect(`/${req.user.nomeLoja}/admin/bairros`);
+            })
+            .catch((err) => {
+              req.flash(
+                "error_msg",
+                "Houve um erro ao editar o bairro!"
+              );
+              res.redirect(`/${req.user.nomeLoja}/admin/bairros`);
+            });
+      })
+      .catch((err) => {
+        req.flash("error_msg", "Houve um erro ao editar o bairro");
+        res.redirect(`/${req.user.nomeLoja}/admin/bairros`);
+      });
+  }
+});
+
+router.post("/bairros/deletar", UserAuth, eAdmin, (req, res) => {
+  Bairro.deleteOne({ _id: req.body.id })
+    .then(() => {
+      req.flash("success_msg", "Bairro deletado com sucesso!");
+      res.redirect(`/${req.user.nomeLoja}/admin/bairros`);
+    })
+    .catch((err) => {
+      req.flash("error_msg", "Houve um erro ao deletar o bairro!");
+      res.redirect(`/${req.user.nomeLoja}/admin/bairros`);
     });
 });
 

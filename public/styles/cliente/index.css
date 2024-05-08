@@ -5,6 +5,19 @@ header {
   background-position: center;
 }
 
+:root {
+  --cor-categoria: #203552;
+  --cor-title: #203552;
+  --cor-descrition: #8995a5;
+  --cor-price: #eb520c;
+  --cor-adicionais: #202d33;
+  --cor-tema: #fd631c;
+  --cor-open: #10c94e;
+  --cor-close: #db2100;
+  --cor-btnAdicional: #203552;
+  --cor-adicionalQuantidade: #8995a5;
+}
+
 header > div {
   height: 100%;
   width: 100%;
@@ -63,13 +76,16 @@ header > div > .horarioFuncionamento span {
   background-color: #f8f8f8;
 }
 
+.menu {
+  margin-bottom: 15px;
+}
+
 #menu > .categorias {
   display: grid;
   margin-left: auto;
   margin-right: auto;
   max-width: 80rem;
-  padding: 8px;
-  margin-bottom: 16px;
+  padding: 0 8px;
 }
 
 @media (min-width: 768px) {
@@ -81,6 +97,9 @@ header > div > .horarioFuncionamento span {
 
 .containerDescricaoPreco {
   width: 100%;
+  flex-direction: column;
+  display: flex;
+  justify-content: space-evenly;
 }
 
 nav {
@@ -115,21 +134,20 @@ nav ul li {
 }
 
 nav ul li a {
-  color: #292929;
+  color: var(--cor-title);
   font-size: 18px;
   text-decoration: none;
 }
 
 .activeNav {
-  color: #0092aa;
-  border-bottom: 2px solid #0092aa;
+  color: var(--cor-tema);
+  border-bottom: 2px solid var(--cor-tema);
 }
 
 .containerProduto {
   display: flex;
   gap: 8px;
   border-bottom: 1px solid #dddfe2;
-  border-radius: 5px;
   padding: 10px;
   background-color: #ffffff;
   transition: 0.3s ease;
@@ -147,12 +165,15 @@ nav ul li a {
 }
 
 .spanTitleProduto {
-  font-weight: bold;
-  font-size: 14px;
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--cor-title);
 }
 
 .spanDescricaoProduto {
-  font-size: 11px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--cor-descrition);
 }
 
 .preco {
@@ -166,7 +187,8 @@ nav ul li a {
 .preco > p {
   display: flex;
   align-items: center;
-  font-weight: bold;
+  font-weight: 600;
+  color: var(--cor-price);
 }
 
 .preco > button {
@@ -185,14 +207,17 @@ nav ul li a {
 
 #menu > .containerSpanBebidas {
   max-width: 80rem;
-  padding: 0 8px 0 8px;
+  padding: 5px;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 30px 0 5px 10px;
 }
 
 #menu > .containerSpanBebidas > h2 {
-  font-weight: bold;
+  font-weight: 500;
+  color: var(--cor-categoria);
+  font-size: 26px;
 }
 
 .modal {
@@ -211,7 +236,7 @@ nav ul li a {
 
 .modalActive {
   display: flex;
-  animation: modalActive 0.5s ease;
+  animation: modalActive 0.4s ease;
 }
 
 .modal > div {
@@ -242,9 +267,9 @@ nav ul li a {
 }
 
 .headerModal > h2 {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 600;
-  color: #424242;
+  color: var(--cor-title);
 }
 .items > h2 {
   font-size: 20px;
@@ -253,6 +278,15 @@ nav ul li a {
 
 #containerPedido {
   margin-top: 58px;
+  gap: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+#containerPedido > p {
+  font-weight: 500;
+  color: var(--cor-title);
+
 }
 
 .items {
@@ -315,11 +349,12 @@ footer {
   z-index: 40;
   bottom: 0;
   width: 100%;
-  background-color: brown;
+  background-color: var(--cor-tema);
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 40px;
+  height: 45px;
+  box-shadow: h-shadow v-shadow blur spread color inset;
 }
 
 footer > button {
@@ -333,6 +368,7 @@ footer > button {
   border: none;
   gap: 8px;
   font-weight: bold;
+  font-size: 16px;
 }
 
 .containerItemCarrinho {
@@ -351,108 +387,18 @@ footer > button {
 }
 
 .atributosItemCarrinho > .spanItemName {
-  font-size: 1rem;
+  font-size: 18px;
   font-weight: bold;
+  color: var(--cor-title);
 }
 
 .atributosItemCarrinho > .spanItemPrice {
-  font-size: 1rem;
-  font-weight: bold;
+  font-size: 15px;
+  font-weight: 600;
   margin-top: 0.5rem;
+  color: var(--cor-price);
 }
 
-.containerEntrega {
-  display: none;
-  grid-template-columns: repeat(4, 1fr);
-
-  grid-template-areas:
-    "item1 item1 item1 item1"
-    "item2 item2 item2 item2"
-    "item3 item3 item3 item4"
-    "item5 item5 item5 item5"
-    "item6 item6 item6 item6"
-    "item7 item7 item7 item8"
-    "item9 item9 item9 item9"
-    "item10 item10 item10 item10";
-  gap: 20px;
-  background-color: #e7e7e7;
-  border-radius: 10px;
-  padding: 10px;
-  margin: 10px 0 0 0;
-}
-
-.containerEntrega > input {
-  height: 45px;
-  padding: 3px 10px 3px 10px;
-  border-radius: 5px;
-  border: 1px solid #dddfe2;
-  font-size: 18px;
-}
-
-.containerEntregaBtn {
-  margin-top: 20px;
-  width: 100%;
-  justify-content: center;
-  align-items: center;
-  display: flex;
-  gap: 5px;
-}
-
-.containerEntregaBtn > img {
-  width: 20px;
-}
-#btnEntrega {
-  background-color: transparent;
-  border: none;
-  border-radius: 10px;
-  font-size: 20px;
-  font-weight: bold;
-  color: #45a74a;
-}
-
-.item1 {
-  grid-area: item1;
-  font-size: 18px;
-  font-weight: bold;
-  color: rgb(49, 49, 49);
-}
-.item2 {
-  grid-area: item2;
-}
-.item3 {
-  grid-area: item3;
-}
-.item4 {
-  grid-area: item4;
-  @media (max-width: 880px) {
-    width: 90px;
-  }
-}
-
-.item5 {
-  grid-area: item5;
-}
-.item6 {
-  grid-area: item6;
-}
-.item7 {
-  grid-area: item7;
-}
-.item8 {
-  grid-area: item8;
-  @media (max-width: 880px) {
-    width: 90px;
-  }
-}
-.item9 {
-  grid-area: item9;
-  font-size: 18px;
-  font-weight: bold;
-  color: rgb(49, 49, 49);
-}
-.item10 {
-  grid-area: item10;
-}
 
 .activeSpanAlert {
   display: flex;
@@ -485,10 +431,11 @@ footer > button {
 .contentModalProduto {
   overflow-y: auto;
   height: 100%;
+  width: 100%;
   display: flex;
   flex-direction: column;
   margin-bottom: 72px;
-  padding-bottom: 20px;
+  padding: 20px;
 }
 
 .modalDisable {
@@ -501,15 +448,18 @@ footer > button {
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 10px;
+  height: 250px;
+  overflow-y: hidden;
 }
 
 .imgProduto {
   width: 100%;
-  border-radius: 10px;
 }
 
 .imgModalProduto {
-  box-shadow: 0 0 0 2px rgba(192, 192, 192, 0.3);
+  border-radius: 20px;
+  width: 100%;
 }
 
 @media (max-width: 450px) {
@@ -519,7 +469,7 @@ footer > button {
 }
 
 .modalProdutoDisable {
-  animation: modalDisable 0.5s ease;
+  animation: modalDisable 0.4s ease;
   display: flex;
 }
 
@@ -591,7 +541,7 @@ footer > button {
 }
 
 .footerProduto > button {
-  background-color: #0092aa;
+  background-color: var(--cor-tema);
   width: 80%;
   margin-right: 10px;
   height: 40px;
@@ -602,48 +552,233 @@ footer > button {
   font-size: 18px;
 }
 
+@media (min-width: 500px) {
+  .footerProduto > button {
+    width: 500px;
+  }
+}
+
 .informacaoProduto {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: 10px;
+  gap: 5px;
+  padding: 20px 0;
 }
 
 #nomeProduto {
-  font-style: normal;
-  color: rgb(43, 43, 43);
+  font-weight: 550;
+  color: var(--cor-title);
 }
 #valorProduto {
   font-size: 18px;
-  font-weight: bolder;
-  color: rgb(43, 43, 43);
+  font-weight: 550;
+  color: var(--cor-price);
 }
 
 #descricaoProduto {
   font-style: italic;
-  color: rgb(56, 56, 56);
+  color: var(--cor-descrition);
 }
 
 #quantidade {
   display: flex;
   gap: 15px;
   margin-right: 40px;
+  align-items: center;
+  justify-content: center;
 }
 
-#quantidade > img {
-  width: 25px;
+.btnSomaSubtrai {
+  background-color: transparent;
+  font-size: 30px;
+  border: none;
+  height: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--cor-title);
 }
 
 .categoria > h2 {
-  background-color: #f0fdff;
+  background-color: #f1eded;
   padding: 10px;
-  font-weight: 600;
-  color: #5a6e77;
+  font-weight: 550;
+  color: var(--cor-categoria);
   font-size: 18px;
-  margin: 10px 0;
+  border-radius: 5px;
+  margin: 15px 0 5px 0;
 }
 
 .categoria > li {
   list-style-type: none;
+  color: var(--cor-adicionais);
+  font-size: 16px;
+  gap: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.categoria > li > div {
+  display: flex;
+  margin-bottom: 7px;
+  padding: 0 15px;
+}
+
+.categoria > li > .listAdicional {
+  display: flex;
+  flex-direction: column;
+}
+
+.categoria > li > .listAdicional > span:first-child {
+  font-weight: 500;
+  font-size: 15px;
+}
+
+.categoria > li > div > .priceAdicional {
+  font-weight: bold;
+  font-size: 14px;
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+  color: var(--cor-price);
+}
+
+.categoria > li > div > button:first-child {
+  margin-right: 12.5px;
+}
+
+.categoria > li > div > button:last-child {
+  margin-left: 12.5px;
+}
+
+.categoria > li > div > button {
+  width: 30px;
+  height: 30px;
+  border-radius: 100%;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #e7e7e7;
+  font-weight: bold;
+  background-color: var(--cor-btnAdicional);
+  color: #fff;
+}
+
+#listAdicionais {
+  margin-left: 10px;
+}
+
+#listAdicionais > li {
+  display: flex;
+  align-items: center;
+  color: var(--cor-adicionalQuantidade);
+  font-weight: 450;
+  font-size: 13px;
+}
+
+#listAdicionais > li > p {
+  margin-right: 10px;
+  background-color: var(--cor-adicionalQuantidade);
+  border-radius: 3px;
+  padding: 2px;
+  color: #fff;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+}
+
+#divAddMaisItens {
+  width: 100%;
+  height: 50px;
+  border-bottom: 1px solid #dddfe2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#addMaisItens {
+  background-color: transparent;
+  color: var(--cor-tema);
+  border: none;
+  font-weight: 600;
+  font-size: 14px;
+  height: 90%;
+  width: 80%;
+}
+
+#divAddEndereco {
+  width: 100%;
+  height: 80px;
+  position: fixed;
+  bottom: 0;
+  border: 1px solid #dddfe2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#divAddEndereco > p {
+  color: var(--cor-price);
+  width: 50%;
+  color: var(--cor-price);
+  font-weight: 700;
+  font-size: 20px;
+  margin-left: 10px;
+}
+
+#cart-total {
+  margin-left: 20px;
+}
+
+#addEndereco {
+  color: #FFF;
+  background-color: var(--cor-open);
+  border: none;
+  font-weight: 500;
+  font-size: 15px;
+  height: 50px;
+  border-radius: 10px;
+  margin: 10px 20px 10px 0;
+  padding: 0 25px;
+  height: 40px;
+}
+
+
+/* MODAL ENDEREÇO */
+
+.modalEndereco {
+  display: none;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  background-color: #fff;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.modalEnderecoActive {
+  display: flex;
+  animation: modalActive 0.4s ease;
+}
+
+.modalEnderecoDisable {
+  display: flex;
+  animation: modalDisable 0.4s ease;
+}
+
+
+#close-modalEndereco-btn {
+  background-color: #fff;
+  border-radius: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
 }

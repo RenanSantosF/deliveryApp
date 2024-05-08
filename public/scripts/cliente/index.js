@@ -7,9 +7,9 @@ const checkoutBtn = document.getElementById("checkout-btn");
 const closeModalBtn = document.getElementById("close-modal-btn");
 const cartCounter = document.getElementById("cart-count");
 const addressWarn = document.getElementById("address-warn");
-const btnEntrega = document.getElementById("btnEntrega");
+// const btnEntrega = document.getElementById("btnEntrega");
 const containerEntrega = document.getElementById("containerEntrega");
-const imgEntrega = document.getElementById("imgEntrega");
+// const imgEntrega = document.getElementById("imgEntrega");
 
 const addressInput = document.getElementById("address");
 const enderecoInputs = document.querySelectorAll("#containerEntrega input");
@@ -44,7 +44,7 @@ document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
     const target = document.querySelector(this.getAttribute("href"));
 
     this.classList.add("activeNav");
-    const offset = target.offsetTop + -15;
+    const offset = target.offsetTop + 15;
 
     window.scrollTo({
       top: offset,
@@ -59,23 +59,23 @@ cartBtn.addEventListener("click", () => {
   updateCartModal();
 });
 
-// Fechar modal
-cartModal.addEventListener("click", (ev) => {
-  if (ev.target === cartModal) {
-    cartModal.classList.remove("modalActive");
-    cartModal.classList.add("modalDisable");
-    setTimeout(() => {
-      cartModal.classList.remove("modalDisable");
-    }, 300);
-  }
-});
-
-closeModalBtn.addEventListener("click", () => {
+function fechaModalCarrinho() {
   cartModal.classList.remove("modalActive");
   cartModal.classList.add("modalDisable");
   setTimeout(() => {
     cartModal.classList.remove("modalDisable");
   }, 300);
+}
+
+// Fechar modal
+cartModal.addEventListener("click", (ev) => {
+  if (ev.target === cartModal) {
+    fechaModalCarrinho()
+  }
+});
+
+closeModalBtn.addEventListener("click", () => {
+  fechaModalCarrinho()
 });
 
 menu.addEventListener("click", (ev) => {
@@ -97,31 +97,40 @@ function updateCartModal() {
     const cartItemElement = document.createElement("div");
     cartItemElement.classList.add("containerItemCarrinho");
 
+    total +=
+    item.valorTotalAdicional * item.quantityProduto +
+    item.price * item.quantityProduto;
+    let valor = item.valorTotalAdicional * item.quantityProduto +
+    item.price * item.quantityProduto;
+
     cartItemElement.innerHTML = `
     <div class="itemCarrinho">
       <div class="atributosItemCarrinho">
         <p class="spanItemName">${item.name}</p>
-        <p>Adicionais: ${item.quantityProduto}</p>
-        <p class="spanItemPrice">R$ ${item.price.toFixed(2)}</p>
+        <ul id="listAdicionais">
+        ${item.quantidadeNomeAdicionais.map(adicional => `<li><p>${adicional.quantidade}</p>${adicional.nome} - ${adicional.valor}</li>`).join('')}
+      </ul>
+        <p class="spanItemPrice">${valor.toLocaleString("pt-BR", {
+          style: "currency",
+          currency: "BRL",
+        })}</p>
       </div>
 
       <div id="quantidade">
-        <img data-name="${
+        <button data-name="${
           item.name
-        }" class="remove-from-cart-btn" src="./img/menos.png" />
+        }" class="remove-from-cart-btn btnSomaSubtrai">-</button>
         <span id="quantidadeTotalProduto">${item.quantityProduto}</span>
-        <img data-name="${
+        <button data-name="${
           item.name
-        }" class="add-from-cart-btn" src="./img/mais.png" />
+        }" class="add-from-cart-btn btnSomaSubtrai">+</button>
       </div>
 
     </div>
 
     `;
 
-    total +=
-      item.valorTotalAdicional * item.quantityProduto +
-      item.price * item.quantityProduto;
+
 
     cartItemsContainer.appendChild(cartItemElement);
   });
@@ -138,7 +147,7 @@ function updateCartModal() {
 cartItemsContainer.addEventListener("click", (ev) => {
   if (ev.target.classList.contains("remove-from-cart-btn")) {
     const name = ev.target.getAttribute("data-name");
-
+    
     removeItemCart(name);
   }
 
@@ -146,6 +155,7 @@ cartItemsContainer.addEventListener("click", (ev) => {
     const name = ev.target.getAttribute("data-name");
 
     addItemCart(name);
+    carrinhoVazio();
   }
 });
 
@@ -160,7 +170,12 @@ function removeItemCart(name) {
       updateCartModal();
       return;
     }
-
+    if (cart.length === 1) {
+      fechaModalCarrinho()
+      footer.style.display = "none";
+      menu.style.margin = "0 0 15px 0";
+    }
+    
     cart.splice(index, 1);
     updateCartModal();
   }
@@ -183,14 +198,14 @@ function addItemCart(name) {
   }
 }
 
-addressInput.addEventListener("input", (ev) => {
-  let inputValue = ev.target.value;
+// addressInput.addEventListener("input", (ev) => {
+//   let inputValue = ev.target.value;
 
-  if (inputValue !== "") {
-    addressWarn.classList.remove("activeSpanAlert");
-    addressInput.classList.remove("ActiveAddress");
-  }
-});
+//   if (inputValue !== "") {
+//     addressWarn.classList.remove("activeSpanAlert");
+//     addressInput.classList.remove("ActiveAddress");
+//   }
+// });
 
 //Finalizar pedido
 checkoutBtn.addEventListener("click", () => {
@@ -270,9 +285,9 @@ function checkRestaurantOpen() {
 const isOpen = checkRestaurantOpen();
 
 if (isOpen == true) {
-  spanItem.style.backgroundColor = "rgb(31, 148, 31)";
+  spanItem.style.backgroundColor = "var(--cor-open)";
 } else {
-  spanItem.style.backgroundColor = "rgb(206, 28, 28)";
+  spanItem.style.backgroundColor = "var(--cor-close)";
 }
 
 function defineFundoImg() {
@@ -283,13 +298,13 @@ function defineFundoImg() {
 }
 defineFundoImg();
 
-btnEntrega.addEventListener("click", (ev) => {
-  ev.preventDefault();
-  btnEntrega.style.display = "none";
-  containerEntrega.style.display = "grid";
-  imgEntrega.style.display = "none";
-  checkoutBtn.style.display = "flex";
-});
+// btnEntrega.addEventListener("click", (ev) => {
+//   ev.preventDefault();
+//   btnEntrega.style.display = "none";
+//   containerEntrega.style.display = "grid";
+//   imgEntrega.style.display = "none";
+//   checkoutBtn.style.display = "flex";
+// });
 
 function VerificaInputsEntrega() {
   enderecoInputs.forEach((enderecoInput) => {
@@ -334,7 +349,7 @@ function capturaProdutoParaModal(ev) {
   let parentButton = ev.target.closest(".containerProduto");
   if (parentButton) {
     const name = parentButton.getAttribute("data-name");
-    const price = parseFloat(parentButton.getAttribute("data-price"));
+    let price = parentButton.getAttribute("data-price");
     const descricao = parentButton.getAttribute("data-descricao");
     const imgProduto = parentButton.getAttribute("data-imgProduto");
     listaAdicionais = {};
@@ -356,6 +371,8 @@ function capturaProdutoParaModal(ev) {
       }
     });
 
+    price = parseFloat(price.replace(",", "."));
+
     produtoModal = {
       valorTotalAdicional: 0,
       name: name,
@@ -364,6 +381,7 @@ function capturaProdutoParaModal(ev) {
       imgProduto: imgProduto,
       quantityProduto: 1,
       listaAdicionais: listaAdicionais,
+      quantidadeNomeAdicionais: [],
     };
 
     const container = document.getElementById("adicionalProduto");
@@ -380,38 +398,75 @@ function capturaProdutoParaModal(ev) {
       const lista = produtoModal.listaAdicionais[categoria];
 
       lista.forEach((objeto) => {
+        const valorSpan = document.createElement("span");
+        const textSpan = document.createElement("span");
         const listItem = document.createElement("li");
-        listItem.textContent = `${objeto.nomeAdicional}: R$ ${objeto.valorAdicional}`;
+        textSpan.textContent = `${objeto.nomeAdicional}`;
+
+        valorSpan.textContent = `${Number(objeto.valorAdicional).toLocaleString(
+          "pt-BR",
+          {
+            style: "currency",
+            currency: "BRL",
+          }
+        )}`;
+        valorSpan.classList.add("priceAdicional");
+        const quantidadeSpan = document.createElement("span");
+        quantidadeSpan.textContent = objeto.quantidade;
+        quantidadeSpan.style.display = "none";
 
         const btnRemover = document.createElement("button");
         btnRemover.textContent = "-";
         btnRemover.type = "button";
+        btnRemover.style.display = "none";
         btnRemover.addEventListener("click", () => {
+          if (objeto.quantidade === 1) {
+            quantidadeSpan.style.display = "none";
+            btnRemover.style.display = "none";
+          }
+
           if (objeto.quantidade > 0) {
             objeto.quantidade--;
+            btnAdicionar.style.background = "var(--cor-btnAdicional)";
+            btnAdicionar.style.color = "#fff";
+            btnAdicionar.style.border = "1px solid #e7e7e7";
+
             quantidadeSpan.textContent = objeto.quantidade;
             atualizarQuantidade(objeto, categoria, objeto.quantidade);
             atualizarValorTotal();
+            subtraiValorAdicional(objeto)
           }
         });
-        listItem.appendChild(btnRemover);
 
-        const quantidadeSpan = document.createElement("span");
-        quantidadeSpan.textContent = objeto.quantidade;
-        listItem.appendChild(quantidadeSpan);
+        const divAlteraQuantidade = document.createElement("div");
+        const divConteudo = document.createElement("div");
+        divConteudo.classList.add("listAdicional");
 
         const btnAdicionar = document.createElement("button");
         btnAdicionar.textContent = "+";
         btnAdicionar.type = "button";
         btnAdicionar.addEventListener("click", () => {
+          if (objeto.quantidade < 1) {
+            quantidadeSpan.style.display = "flex";
+            btnRemover.style.display = "flex";
+          }
           if (objeto.quantidade < 10) {
             objeto.quantidade++;
             quantidadeSpan.textContent = objeto.quantidade;
             atualizarQuantidade(objeto, categoria, objeto.quantidade);
             atualizarValorTotal();
+            aumentaValorAdicional(objeto);
+          }
+          if (objeto.quantidade === 10) {
+            btnAdicionar.style.background = "transparent";
+            btnAdicionar.style.color = "transparent";
+            btnAdicionar.style.border = "1px solid transparent";
           }
         });
-        listItem.appendChild(btnAdicionar);
+
+        divConteudo.append(textSpan, valorSpan);
+        divAlteraQuantidade.append(btnRemover, quantidadeSpan, btnAdicionar);
+        listItem.append(divConteudo, divAlteraQuantidade);
 
         divCategoria.appendChild(listItem);
       });
@@ -422,6 +477,50 @@ function capturaProdutoParaModal(ev) {
       produtoModal.listaAdicionais[categoria].find(
         (item) => item === objeto
       ).quantidade = novaQuantidade;
+    }
+
+    function aumentaValorAdicional(objeto) {
+      // Verifica se o nome do adicional já está na lista
+      const adicionalExistente = produtoModal.quantidadeNomeAdicionais.find(
+        (adicional) => adicional.nome === objeto.nomeAdicional
+      );
+      if (adicionalExistente) {
+        // Se o adicional já existe na lista, atualiza a quantidade
+        adicionalExistente.quantidade += 1;
+      } else {
+        // Caso contrário, adiciona um novo objeto à lista
+        produtoModal.quantidadeNomeAdicionais.push({
+          quantidade: objeto.quantidade,
+          nome: objeto.nomeAdicional,
+          valor: parseFloat(objeto.valorAdicional).toLocaleString("pt-BR", {
+            style: "currency",
+            currency: "BRL",
+          })
+        });
+      }
+      console.log(produtoModal);
+    }
+
+    function subtraiValorAdicional(objeto) {
+      // Verifica se o nome do adicional já está na lista
+      const adicionalExistente = produtoModal.quantidadeNomeAdicionais.find(
+        (adicional) => adicional.nome === objeto.nomeAdicional
+      );
+      if (adicionalExistente) {
+        // Se o adicional já existe na lista, atualiza a quantidade
+        adicionalExistente.quantidade -= 1;
+      } else {
+        // Caso contrário, adiciona um novo objeto à lista
+        produtoModal.quantidadeNomeAdicionais.push({
+          quantidade: objeto.quantidade,
+          nome: objeto.nomeAdicional,
+          valor: parseFloat(objeto.valorAdicional).toLocaleString("pt-BR", {
+            style: "currency",
+            currency: "BRL",
+          })
+        });
+      }
+      console.log(produtoModal);
     }
 
     exibeDadosProduto();
@@ -461,7 +560,7 @@ function fechaModalProduto() {
       const container = document.getElementById("adicionalProduto");
       container.innerHTML = "";
     }, 300);
-  }, 100);
+  }, 50);
 }
 
 function exibeDadosProduto() {
@@ -484,16 +583,23 @@ function exibeDadosProduto() {
   descricaoProduto.textContent = produtoModal.descricao;
 }
 
-document.getElementById("somaItem").addEventListener("click", () => {
-  produtoModal.quantityProduto += 1;
+const subtraiItem = document.getElementById("subtraiItem");
+const somaItem = document.getElementById("somaItem");
+subtraiItem.style.color = "transparent";
 
+somaItem.addEventListener("click", () => {
+  produtoModal.quantityProduto += 1;
+  subtraiItem.style.color = "#000";
   exibeDadosProduto();
 });
 
-document.getElementById("subtraiItem").addEventListener("click", () => {
+subtraiItem.addEventListener("click", () => {
   if (produtoModal.quantityProduto > 1) {
     produtoModal.quantityProduto -= 1;
-
+    exibeDadosProduto();
+  }
+  if (produtoModal.quantityProduto === 1) {
+    subtraiItem.style.color = "transparent";
     exibeDadosProduto();
   }
 });
@@ -501,18 +607,89 @@ document.getElementById("subtraiItem").addEventListener("click", () => {
 document.getElementById("adicionarProduto").addEventListener("click", () => {
   addToCartCorreto();
   fechaModalProduto();
+  carrinhoVazio();
 });
 
 function addToCartCorreto() {
-  const existingItem = cart.find((item) => item.name === produtoModal.name);
+  const existingItem = cart.find((item) => {
+      // Verifica se o nome principal é igual
+      if (item.name !== produtoModal.name) {
+          return false;
+      }
+
+      // Verifica se os arrays quantidadeNomeAdicionais têm o mesmo comprimento
+      if (item.quantidadeNomeAdicionais.length !== produtoModal.quantidadeNomeAdicionais.length) {
+          return false;
+      }
+
+      // Verifica cada objeto dentro dos arrays quantidadeNomeAdicionais
+      for (let i = 0; i < item.quantidadeNomeAdicionais.length; i++) {
+          const existingAdicional = item.quantidadeNomeAdicionais[i];
+          const newAdicional = produtoModal.quantidadeNomeAdicionais[i];
+          
+          // Verifica se o nome e a quantidade são iguais para cada adicional
+          if (existingAdicional.nome !== newAdicional.nome || existingAdicional.quantidade !== newAdicional.quantidade) {
+              return false;
+          }
+      }
+
+      // Se todas as verificações passarem, os itens são iguais
+      return true;
+  });
 
   if (existingItem) {
-    existingItem.quantityProduto += produtoModal.quantityProduto;
-    console.log(cart);
+      existingItem.quantityProduto += produtoModal.quantityProduto;
+      console.log(cart);
   } else {
-    cart.push(produtoModal);
-    console.log(cart);
+      cart.push(produtoModal);
+      console.log(cart);
   }
 
   updateCartModal();
 }
+
+const footer = document.querySelector("footer");
+footer.style.display = "none";
+function carrinhoVazio() {
+  if (cart.length == 0) {
+    footer.style.display = "none";
+    menu.style.margin = "0 0 15px 0";
+  } else {
+    footer.style.display = "flex";
+    menu.style.margin = "0 0 45px 0";
+  }
+}
+
+
+// modal carrinho
+const addMaisItens = document.getElementById("addMaisItens")
+addMaisItens.addEventListener("click", () => {
+  fechaModalCarrinho()
+})
+
+
+// modal endereço
+const addEndereco = document.getElementById("addEndereco")
+const modalEndereco = document.getElementById("modalEndereco")
+addEndereco.addEventListener("click", (ev) => {
+  ev.preventDefault()
+  modalEndereco.classList.add("modalEnderecoActive")
+})
+
+
+
+
+function fechaModalEndereco() {
+  const modalEndereco = document.getElementById("modalEndereco")
+  
+  modalEndereco.classList.remove("modalEnderecoActive");
+  modalEndereco.classList.add("modalEnderecoDisable");
+  setTimeout(() => {
+    modalEndereco.classList.remove("modalEnderecoDisable");
+  }, 300);
+}
+
+const closeModalEnderecoBtn = document.getElementById("close-modalEndereco-btn")
+closeModalEnderecoBtn.addEventListener("click", () => {
+  fechaModalEndereco()
+});
