@@ -199,7 +199,7 @@ router.get("/produtos/add", UserAuth, eAdmin, (req, res) => {
           res.render("admin/addProduto", {
             categorias: categorias,
             adicionais: adicionais,
-            css: "/styles/addProdutos/index.css",
+            css: "/css/pages/addProduto.css",
             script: "/scripts/addProdutos/index.js",
           });
         })
@@ -309,7 +309,7 @@ router.get("/produtos/edit/:id", UserAuth, eAdmin, (req, res) => {
                 categorias: categorias,
                 produto: produto,
                 adicionais: adicionais,
-                css: "/styles/addProdutos/index.css",
+                css: "/css/pages/editProdutos.css",
                 script: "/scripts/addProdutos/index.js",
               });
             })

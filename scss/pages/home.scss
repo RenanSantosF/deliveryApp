@@ -1,21 +1,10 @@
+@import "../colors/colors.scss";
+
 header {
   width: 100%;
   height: 420px;
   background-size: cover;
   background-position: center;
-}
-
-:root {
-  --cor-categoria: #203552;
-  --cor-title: #203552;
-  --cor-descrition: #8995a5;
-  --cor-price: #eb520c;
-  --cor-adicionais: #202d33;
-  --cor-tema: #fd631c;
-  --cor-open: #10c94e;
-  --cor-close: #db2100;
-  --cor-btnAdicional: #203552;
-  --cor-adicionalQuantidade: #8995a5;
 }
 
 header > div {
@@ -134,14 +123,14 @@ nav ul li {
 }
 
 nav ul li a {
-  color: var(--cor-title);
+  color: $cor-title;
   font-size: 18px;
   text-decoration: none;
 }
 
 .activeNav {
-  color: var(--cor-tema);
-  border-bottom: 2px solid var(--cor-tema);
+  color: $cor-tema;
+  border-bottom: 2px solid $cor-tema;
 }
 
 .containerProduto {
@@ -167,13 +156,13 @@ nav ul li a {
 .spanTitleProduto {
   font-weight: 600;
   font-size: 16px;
-  color: var(--cor-title);
+  color: $cor-title;
 }
 
 .spanDescricaoProduto {
   font-size: 12px;
   font-weight: 500;
-  color: var(--cor-descrition);
+  color: $cor-descrition;
 }
 
 .preco {
@@ -188,7 +177,7 @@ nav ul li a {
   display: flex;
   align-items: center;
   font-weight: 600;
-  color: var(--cor-price);
+  color: $cor-price;
 }
 
 .preco > button {
@@ -216,7 +205,7 @@ nav ul li a {
 
 #menu > .containerSpanBebidas > h2 {
   font-weight: 500;
-  color: var(--cor-categoria);
+  color: $cor-categoria;
   font-size: 26px;
 }
 
@@ -262,6 +251,7 @@ nav ul li a {
   gap: 40px;
   position: fixed;
   width: 100%;
+  top: 0;
   background-color: #fff;
   z-index: 500;
 }
@@ -269,7 +259,7 @@ nav ul li a {
 .headerModal > h2 {
   font-size: 18px;
   font-weight: 600;
-  color: var(--cor-title);
+  color: $cor-title;
 }
 .items > h2 {
   font-size: 20px;
@@ -281,12 +271,12 @@ nav ul li a {
   gap: 20px;
   display: flex;
   flex-direction: column;
+  margin-bottom: 80px;
 }
 
 #containerPedido > p {
   font-weight: 500;
-  color: var(--cor-title);
-
+  color: $cor-title;
 }
 
 .items {
@@ -349,7 +339,7 @@ footer {
   z-index: 40;
   bottom: 0;
   width: 100%;
-  background-color: var(--cor-tema);
+  background-color: $cor-tema;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -389,16 +379,15 @@ footer > button {
 .atributosItemCarrinho > .spanItemName {
   font-size: 18px;
   font-weight: bold;
-  color: var(--cor-title);
+  color: $cor-title;
 }
 
 .atributosItemCarrinho > .spanItemPrice {
   font-size: 15px;
   font-weight: 600;
   margin-top: 0.5rem;
-  color: var(--cor-price);
+  color: $cor-price;
 }
-
 
 .activeSpanAlert {
   display: flex;
@@ -445,11 +434,12 @@ footer > button {
 
 #imgProduto {
   width: 100%;
+  min-height: 250px;
+  height: 250px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 10px;
-  height: 250px;
   overflow-y: hidden;
 }
 
@@ -541,12 +531,12 @@ footer > button {
 }
 
 .footerProduto > button {
-  background-color: var(--cor-tema);
+  background-color: $cor-tema;
   width: 80%;
   margin-right: 10px;
   height: 40px;
   border-radius: 5px;
-  border: 1px solid #dddfe2;
+  border: 1px solid $cor-tema;
   color: #fff;
   font-weight: bold;
   font-size: 18px;
@@ -568,17 +558,17 @@ footer > button {
 
 #nomeProduto {
   font-weight: 550;
-  color: var(--cor-title);
+  color: $cor-title;
 }
 #valorProduto {
   font-size: 18px;
   font-weight: 550;
-  color: var(--cor-price);
+  color: $cor-price;
 }
 
 #descricaoProduto {
   font-style: italic;
-  color: var(--cor-descrition);
+  color: $cor-descrition;
 }
 
 #quantidade {
@@ -597,22 +587,22 @@ footer > button {
   display: flex;
   justify-content: center;
   align-items: center;
-  color: var(--cor-title);
+  color: $cor-title;
 }
 
 .categoria > h2 {
-  background-color: #f1eded;
+  background-color: $cor-fundoCategoria;
   padding: 10px;
   font-weight: 550;
-  color: var(--cor-categoria);
+  color: $cor-textCategoria;
   font-size: 18px;
-  border-radius: 5px;
+  // border-radius: 5px;
   margin: 15px 0 5px 0;
 }
 
 .categoria > li {
   list-style-type: none;
-  color: var(--cor-adicionais);
+  color: $cor-adicionais;
   font-size: 16px;
   gap: 20px;
   display: flex;
@@ -639,9 +629,8 @@ footer > button {
 .categoria > li > div > .priceAdicional {
   font-weight: bold;
   font-size: 14px;
-  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
-    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
-  color: var(--cor-price);
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande", "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+  color: $cor-priceAdicional;
 }
 
 .categoria > li > div > button:first-child {
@@ -660,7 +649,7 @@ footer > button {
   align-items: center;
   border: 1px solid #e7e7e7;
   font-weight: bold;
-  background-color: var(--cor-btnAdicional);
+  background-color: $cor-btnAdicional;
   color: #fff;
 }
 
@@ -671,14 +660,14 @@ footer > button {
 #listAdicionais > li {
   display: flex;
   align-items: center;
-  color: var(--cor-adicionalQuantidade);
+  color: $cor-adicionalQuantidade;
   font-weight: 450;
   font-size: 13px;
 }
 
 #listAdicionais > li > p {
   margin-right: 10px;
-  background-color: var(--cor-adicionalQuantidade);
+  background-color: $cor-adicionalQuantidade;
   border-radius: 3px;
   padding: 2px;
   color: #fff;
@@ -701,7 +690,7 @@ footer > button {
 
 #addMaisItens {
   background-color: transparent;
-  color: var(--cor-tema);
+  color: $cor-tema;
   border: none;
   font-weight: 600;
   font-size: 14px;
@@ -718,12 +707,13 @@ footer > button {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background-color: #fff;
 }
 
 #divAddEndereco > p {
-  color: var(--cor-price);
+  color: $cor-price;
   width: 50%;
-  color: var(--cor-price);
+  color: $cor-price;
   font-weight: 700;
   font-size: 20px;
   margin-left: 10px;
@@ -734,8 +724,8 @@ footer > button {
 }
 
 #addEndereco {
-  color: #FFF;
-  background-color: var(--cor-open);
+  color: #fff;
+  background-color: $cor-tema;
   border: none;
   font-weight: 500;
   font-size: 15px;
@@ -746,11 +736,9 @@ footer > button {
   height: 40px;
 }
 
-
 /* MODAL ENDEREÇO */
-
 .modalEndereco {
-  display: none;
+  // display: none;
   width: 100%;
   height: 100%;
   position: fixed;
@@ -759,8 +747,13 @@ footer > button {
   z-index: 100;
   background-color: #fff;
   flex-direction: column;
-  align-items: center;
   gap: 15px;
+}
+
+.modalEndereco > div {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
 }
 
 .modalEnderecoActive {
@@ -773,7 +766,6 @@ footer > button {
   animation: modalDisable 0.4s ease;
 }
 
-
 #close-modalEndereco-btn {
   background-color: #fff;
   border-radius: 100px;
@@ -781,4 +773,90 @@ footer > button {
   align-items: center;
   justify-content: center;
   padding: 5px;
+}
+
+// entrega / retirada
+
+.radio-inputs {
+  margin-top: 70px;
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  border-radius: 0.5rem;
+  background-color: #f5b055;
+  box-sizing: border-box;
+  box-shadow: 0 0 0px 1px rgba(0, 0, 0, 0.06);
+  padding: 0.25rem;
+  width: 80%;
+  font-size: 14px;
+}
+
+.radio-inputs .radio {
+  flex: 1 1 auto;
+  text-align: center;
+  width: 100px;
+}
+
+.radio-inputs .radio input {
+  display: none;
+}
+
+.radio-inputs .radio .name {
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  border: none;
+  padding: 0.5rem 0;
+  // color: rgb(255, 255, 255);
+  transition: all 0.15s ease-in-out;
+}
+
+.radio-inputs .radio input:checked + .name {
+  background-color: #fff;
+  font-weight: 600;
+  color: #000;
+}
+
+// Input do endereço
+
+.entrega {
+  margin-top: 20px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+#cep {
+  width: 120px;
+}
+
+#rua {
+  width: 400px;
+}
+
+.input-endereco {
+  width: 100%;
+  height: 45px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1.5px solid lightgrey;
+  outline: none;
+  transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+  box-shadow: 0px 0px 20px -18px;
+}
+
+.input-endereco:hover {
+  border: 2px solid lightgrey;
+  box-shadow: 0px 0px 20px -17px;
+}
+
+.input-endereco:active {
+  transform: scale(0.95);
+}
+
+.input-endereco:focus {
+  border: 2px solid grey;
 }

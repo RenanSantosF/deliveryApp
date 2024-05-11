@@ -13,6 +13,7 @@ const containerEntrega = document.getElementById("containerEntrega");
 
 const addressInput = document.getElementById("address");
 const enderecoInputs = document.querySelectorAll("#containerEntrega input");
+
 const numeroInput = document.getElementById("numero");
 const pontoReferenciaInput = document.getElementById("pontoReferencia");
 const ruaInput = document.getElementById("rua");
@@ -501,14 +502,45 @@ function capturaProdutoParaModal(ev) {
       console.log(produtoModal);
     }
 
+    // function subtraiValorAdicional(objeto) {
+    //   // Verifica se o nome do adicional já está na lista
+    //   const adicionalExistente = produtoModal.quantidadeNomeAdicionais.find(
+    //     (adicional) => adicional.nome === objeto.nomeAdicional
+    //   );
+    //   if (adicionalExistente) {
+    //     // Se o adicional já existe na lista, atualiza a quantidade
+    //     adicionalExistente.quantidade -= 1;
+    //   } else {
+    //     // Caso contrário, adiciona um novo objeto à lista
+    //     produtoModal.quantidadeNomeAdicionais.push({
+    //       quantidade: objeto.quantidade,
+    //       nome: objeto.nomeAdicional,
+    //       valor: parseFloat(objeto.valorAdicional).toLocaleString("pt-BR", {
+    //         style: "currency",
+    //         currency: "BRL",
+    //       })
+    //     });
+    //   }
+    //   console.log(produtoModal);
+    // }
+
     function subtraiValorAdicional(objeto) {
       // Verifica se o nome do adicional já está na lista
-      const adicionalExistente = produtoModal.quantidadeNomeAdicionais.find(
+      const adicionalExistenteIndex = produtoModal.quantidadeNomeAdicionais.findIndex(
         (adicional) => adicional.nome === objeto.nomeAdicional
       );
-      if (adicionalExistente) {
-        // Se o adicional já existe na lista, atualiza a quantidade
+    
+      if (adicionalExistenteIndex !== -1) {
+        // Se o adicional já existe na lista
+        const adicionalExistente = produtoModal.quantidadeNomeAdicionais[adicionalExistenteIndex];
+    
+        // Diminui a quantidade
         adicionalExistente.quantidade -= 1;
+    
+        if (adicionalExistente.quantidade === 0) {
+          // Se a quantidade for zero, remove o adicional da lista
+          produtoModal.quantidadeNomeAdicionais.splice(adicionalExistenteIndex, 1);
+        }
       } else {
         // Caso contrário, adiciona um novo objeto à lista
         produtoModal.quantidadeNomeAdicionais.push({
@@ -520,6 +552,7 @@ function capturaProdutoParaModal(ev) {
           })
         });
       }
+    
       console.log(produtoModal);
     }
 

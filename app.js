@@ -140,7 +140,7 @@ app.get("/:nomeLoja", existeUsuario, (req, res) => {
             dadosUsuario: dadosUsuario,
             statusLoja: statusLoja,
             title: `${req.params.nomeLoja}`,
-            css: "/styles/cliente/index.css",
+            css: "/css/pages/home.css",
             script: "/scripts/cliente/index.js",
           });
 

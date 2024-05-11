@@ -21,14 +21,16 @@
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
-    "dev": "nodemon app.js",
-    "start": "npx tailwindcss -i ./public/styles/style.css -o ./public/styles/output.css --watch"
+    "start": "nodemon app.js",
+    "sass": "sass --watch scss:public/css",
+    "dev": "concurrently \"sass --watch scss:public/css --style compressed --no-source-map\" \"nodemon app.js\""
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "concurrently": "^8.2.2",
     "sucrase": "^3.35.0"
   }
 }

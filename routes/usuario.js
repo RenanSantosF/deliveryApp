@@ -24,7 +24,7 @@ const upload = multer({ storage: storage });
 // Rotas
 router.get("/registro", (req, res) => {
   res.render("usuarios/registro", {
-    css: "/styles/registro/index.css",
+    css: "/css/pages/registro.css",
     script: "/scripts/registro/index.js",
   });
 });
@@ -147,7 +147,7 @@ router.post(
 
 router.get("/login", (req, res) => {
   res.render("usuarios/login", {
-    css: "/styles/login/index.css",
+    css: "/css/pages/login.css",
     script: "/scripts/login/index.js",
   });
 });

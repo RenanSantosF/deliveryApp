@@ -5,11 +5,7 @@
       <h1>{{nomeLoja}}</h1>
       <span>{{rua}} {{numeroRua}}, {{bairro}}, {{cidade}} - {{estado}}</span>
       {{#each statusSituacao}}
-        <div
-          class="horarioFuncionamento"
-          data-status="{{status}}"
-          id="date-span"
-        >
+        <div class="horarioFuncionamento" data-status="{{status}}" id="date-span">
           <span>{{status}} - {{abertura}} às {{fechamento}}</span>
         </div>
       {{/each}}
@@ -34,23 +30,12 @@
       </div>
       <div class="categorias" id="menu">
         {{#each this}}
-          <div
-            class="containerProduto"
-            data-name="{{this.titulo}}"
-            data-price="{{this.preco}}"
-            data-descricao="{{this.descricao}}"
-            data-imgProduto="{{this.imgProduto}}"
-          >
+          <div class="containerProduto" data-name="{{this.titulo}}" data-price="{{this.preco}}" data-descricao="{{this.descricao}}" data-imgProduto="{{this.imgProduto}}">
 
             {{! Exibe lista com todos os adicionais }}
             <ul style="display: none;">
               {{#each this.adicionais}}
-                <li
-                  class="adicionaisLista"
-                  data-value="{{this.precoAdicional}}"
-                  data-produtoReferido="{{this.produtoReferido}}"
-                  data-categoria="{{this.categoriaAdicional}}"
-                >{{this.adicionais}}</li>
+                <li class="adicionaisLista" data-value="{{this.precoAdicional}}" data-produtoReferido="{{this.produtoReferido}}" data-categoria="{{this.categoriaAdicional}}">{{this.adicionais}}</li>
               {{else}}
                 <h1>Nenhum adicional</h1>
               {{/each}}
@@ -85,11 +70,7 @@
   <div class="contentModalProduto">
     <div id="imgProduto">
 
-      <img
-        id="imgModalProduto"
-        class="imgModalProduto"
-        src="./uploads/hamb-4.png1713677295624.png"
-      />
+      <img id="imgModalProduto" class="imgModalProduto" src="./uploads/hamb-4.png1713677295624.png" />
     </div>
 
     <div class="informacaoProduto">
@@ -130,16 +111,6 @@
           <button id="addMaisItens">Adicionar mais itens</button>
         </div>
 
-        {{! <div class="containerEntregaBtn">
-          <img id="imgEntrega" src="./img/imgEntrega.png" alt="" />
-          <button id="btnEntrega">Adicionar informações de entrega</button>
-        </div> }}
-
-        <div id="divAddEndereco">
-          <p>TOTAL<span id="cart-total">0.00</span></p>
-          <button id="addEndereco">Próximo</button>
-        </div>
-
         <span id="address-warn"></span>
 
         <div class="containerFinalizarPedido">
@@ -147,6 +118,11 @@
           <button id="checkout-btn">Finalizar pedido</button>
         </div>
 
+      </div>
+
+      <div id="divAddEndereco">
+        <p>TOTAL<span id="cart-total">0.00</span></p>
+        <button id="addEndereco">Próximo</button>
       </div>
 
     </div>
@@ -162,13 +138,31 @@
       </div>
       <h2>Informações da entrega</h2>
     </div>
-    <input type="text" placeholder="CEP" />
-    <input type="text" placeholder="Rua/Avenida" />
-    <input type="text" placeholder="Nº" />
-    <input type="text" placeholder="Ponto de referência" />
-    <input type="text" placeholder="Bairro" />
-    <input type="text" placeholder="Cidade" />
-    <input type="text" placeholder="UF" />
+
+    {{! Entrega / retirada }}
+    <div class="radio-inputs">
+      <label class="radio">
+        <input type="radio" name="radio" checked="" />
+        <span class="name">Entrega</span>
+      </label>
+
+      <label class="radio">
+        <input type="radio" name="radio" />
+        <span class="name">Retirar no local</span>
+      </label>
+    </div>
+
+    <div class="entrega">
+      <input class="input-endereco" id="cep" name="text" type="text" placeholder="CEP..." />
+      <input class="input-endereco" id="rua" name="text" type="text" placeholder="Rua/Avenida..." />
+      <input class="input-endereco" id="complemento" name="text" type="text" placeholder="Complemento" />
+      <input class="input-endereco" id="numero" name="text" type="text" placeholder="Nº..." />
+      <input class="input-endereco" id="pontoReferencia" name="text" type="text" placeholder="Ponto de referência..." />
+      <input class="input-endereco" id="bairro" name="text" type="text" placeholder="Bairro..." />
+      <input class="input-endereco" id="cidade" name="text" type="text" placeholder="Cidade..." />
+      <input class="input-endereco" id="uf" name="text" type="text" placeholder="UF..." />
+
+    </div>
 
     <input type="text" placeholder="DDD + número" />
   </div>
