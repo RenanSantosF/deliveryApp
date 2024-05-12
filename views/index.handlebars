@@ -131,7 +131,7 @@
 
 {{! MODAL ENTREGA }}
 <div id="modalEndereco" class="modalEndereco">
-  <div>
+  <div class="contentModalEndereco">
     <div class="headerModal">
       <div id="close-modalEndereco-btn">
         <img src="./img/botao-voltar.png" />
@@ -139,33 +139,87 @@
       <h2>Informações da entrega</h2>
     </div>
 
+    {{! contato }}
+
+    <div class="contatoEndereco">
+      <span>Telefone para contato</span>
+      <input class="input-endereco" name="text" id="inputTelefone" type="text" placeholder="(00) 00000-0000" />
+    </div>
+
     {{! Entrega / retirada }}
     <div class="radio-inputs">
       <label class="radio">
-        <input type="radio" name="radio" checked="" />
-        <span class="name">Entrega</span>
+        <input id="inputRadioEntrega" type="radio" name="radio" checked="" />
+        <span id="spanEntrega" data-entrega="true" class="name">Entrega</span>
       </label>
 
       <label class="radio">
-        <input type="radio" name="radio" />
-        <span class="name">Retirar no local</span>
+        <input id="inputRadioRetirada" type="radio" name="radio" />
+        <span id="spanRetirada" class="name">Retirar no local</span>
       </label>
     </div>
 
-    <div class="entrega">
-      <input class="input-endereco" id="cep" name="text" type="text" placeholder="CEP..." />
-      <input class="input-endereco" id="rua" name="text" type="text" placeholder="Rua/Avenida..." />
-      <input class="input-endereco" id="complemento" name="text" type="text" placeholder="Complemento" />
-      <input class="input-endereco" id="numero" name="text" type="text" placeholder="Nº..." />
-      <input class="input-endereco" id="pontoReferencia" name="text" type="text" placeholder="Ponto de referência..." />
-      <input class="input-endereco" id="bairro" name="text" type="text" placeholder="Bairro..." />
-      <input class="input-endereco" id="cidade" name="text" type="text" placeholder="Cidade..." />
-      <input class="input-endereco" id="uf" name="text" type="text" placeholder="UF..." />
+    {{#each dadosUsuario}}
+      <div class="containerRetirada" id="containerRetirada">
+        <p>Retire seu pedido em:</p>
+        <div>
+          <span>{{rua}}, Nº{{numeroRua}}, {{bairro}}</span>
+          <span>{{cidade}} - {{estado}}</span>
+          <span>{{pontoReferencia}}</span>
+        </div>
+
+      </div>
+    {{/each}}
+
+    <div class="containerEntrega" id="containerEntrega">
+      <input style="grid-area: cep" class="input-endereco" id="cep" name="text" type="text" placeholder="CEP..." />
+      <input style="grid-area: rua" class="input-endereco" id="rua" name="text" type="text" placeholder="Rua/Avenida..." />
+      <input style="grid-area: numero" class="input-endereco" id="numero" name="text" type="text" placeholder="Nº..." />
+      <input style="grid-area: complemento" class="input-endereco" id="complemento" name="text" type="text" placeholder="Complemento..." />
+      <input style="grid-area: pontoReferencia" class="input-endereco" id="pontoReferencia" name="text" type="text" placeholder="Ponto de referência..." />
+
+      <select id="bairro" style="grid-area: bairro" class="selectBairro">
+        <option value="">Selecione o bairro</option>
+        {{#each bairrosCadastrados}}
+          <option value="{{taxa}}">{{nome}}</option>
+        {{/each}}
+        <option value="">Outros</option>
+      </select>
+
+      <input style="grid-area: cidade" class="input-endereco" id="cidade" name="text" type="text" placeholder="Cidade..." />
+      <input style="grid-area: uf" class="input-endereco" id="uf" name="text" type="text" placeholder="UF..." />
+    </div>
+
+    <div id="formaPagamento" class="formaPagamento">
+      <div id="open-close-FormaPagamento">
+        <span>Forma de pagamento</span>
+        <img src="./img/botao-voltar.png">
+      </div>
+
+      <div class="radio-group">
+        {{#each formasPagamento}}
+          <input class="radio-input" name="radio-group" id="{{nome}}" type="radio" />
+          <label class="radio-label" for="{{nome}}">
+            <span class="radio-inner-circle"></span>
+            {{nome}}
+          </label>
+        {{/each}}
+      </div>
 
     </div>
 
-    <input type="text" placeholder="DDD + número" />
   </div>
+
+  <div class="footerEndereco">
+    <div>
+      <span>ENTREGA<span class="valorEndereco" id="valorEntrega">0,00</span></span>
+      <span>SUBTOTAL<span class="valorEndereco" id="valorSubtotal">0,00</span></span>
+      <p class="valorEnderecoTotal">TOTAL<span class="valorEndereco" id="totalPedidoValor">0.00</span></p>
+    </div>
+
+    <button id="confirmaEndereco">Finalizar pedido</button>
+  </div>
+
 </div>
 
 <footer>

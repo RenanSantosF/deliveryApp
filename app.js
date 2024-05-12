@@ -20,6 +20,10 @@ const Usuario = mongoose.model("usuarios");
 require("./config/auth")(passport);
 require("./models/Usuario");
 const cors = require("cors");
+require("./models/Pagamento");
+const Pagamento = mongoose.model("pagamentos");
+require("./models/Bairro");
+const Bairro = mongoose.model("bairros");
 
 // Configurações
 // Sessão
@@ -85,6 +89,8 @@ app.get("/404", (req, res) => {
 app.get("/:nomeLoja", existeUsuario, (req, res) => {
   let dadosUsuario = [];
   let statusLoja = [];
+  let formasPagamento = [];
+  let bairrosCadastrados = [];
   Usuario.find({ nomeLoja: req.params.nomeLoja })
     .lean()
     .then((usuario) => {
@@ -110,6 +116,18 @@ app.get("/:nomeLoja", existeUsuario, (req, res) => {
       // res.send('erro ao exibir usuário')
     });
 
+  Pagamento.find({ nomeLoja: req.params.nomeLoja })
+    .lean()
+    .then((pagamentos) => {
+      formasPagamento = pagamentos;
+    });
+
+  Bairro.find({ nomeLoja: req.params.nomeLoja })
+    .lean()
+    .then((bairros) => {
+      bairrosCadastrados = bairros;
+    });
+
   Produto.find({ nomeLoja: req.params.nomeLoja })
     .lean()
     .populate("categoria")
@@ -126,9 +144,7 @@ app.get("/:nomeLoja", existeUsuario, (req, res) => {
           });
 
           produtos.forEach((produto) => {
-            const categoria = categorias.find(
-              (cat) => cat.nome === produto.categoria.nome
-            );
+            const categoria = categorias.find((cat) => cat.nome === produto.categoria.nome);
 
             if (categoria) {
               produtosPorCategoria[categoria.nome].push(produto);
@@ -139,13 +155,12 @@ app.get("/:nomeLoja", existeUsuario, (req, res) => {
             produtosPorCategoria: produtosPorCategoria,
             dadosUsuario: dadosUsuario,
             statusLoja: statusLoja,
+            formasPagamento: formasPagamento,
+            bairrosCadastrados: bairrosCadastrados,
             title: `${req.params.nomeLoja}`,
             css: "/css/pages/home.css",
             script: "/scripts/cliente/index.js",
           });
-
-          console.log(produtosPorCategoria)
-          
         })
         .catch((err) => {
           res.send("Erro interno");
@@ -212,10 +227,7 @@ app.get("/:nomeLoja/categorias/:slug", existeUsuario, (req, res) => {
       }
     })
     .catch((err) => {
-      req.flash(
-        "error_msg",
-        "Houve um erro interno ao carregar a página desta categoria"
-      );
+      req.flash("error_msg", "Houve um erro interno ao carregar a página desta categoria");
       res.redirect(`/${usuario.nomeLoja}/`);
     });
 });
@@ -241,25 +253,16 @@ function verificarHorarioDeFuncionamento(element) {
   if (diaSemana in element) {
     const horarioFuncionamento = element[diaSemana];
     const horaAbertura = parseInt(horarioFuncionamento.abertura.split(":")[0]);
-    const minutoAbertura = parseInt(
-      horarioFuncionamento.abertura.split(":")[1]
-    );
-    const horaFechamento = parseInt(
-      horarioFuncionamento.fechamento.split(":")[0]
-    );
-    const minutoFechamento = parseInt(
-      horarioFuncionamento.fechamento.split(":")[1]
-    );
+    const minutoAbertura = parseInt(horarioFuncionamento.abertura.split(":")[1]);
+    const horaFechamento = parseInt(horarioFuncionamento.fechamento.split(":")[0]);
+    const minutoFechamento = parseInt(horarioFuncionamento.fechamento.split(":")[1]);
 
     // Verificar se o horário atual está dentro do intervalo de funcionamento
     const horarioAtualEmMinutos = horaAtual * 60 + minutoAtual;
     const horarioAberturaEmMinutos = horaAbertura * 60 + minutoAbertura;
     const horarioFechamentoEmMinutos = horaFechamento * 60 + minutoFechamento;
 
-    if (
-      horarioAtualEmMinutos >= horarioAberturaEmMinutos &&
-      horarioAtualEmMinutos <= horarioFechamentoEmMinutos
-    ) {
+    if (horarioAtualEmMinutos >= horarioAberturaEmMinutos && horarioAtualEmMinutos <= horarioFechamentoEmMinutos) {
       return [
         {
           status: "aberta",
