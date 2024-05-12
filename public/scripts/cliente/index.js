@@ -740,25 +740,6 @@ function formaDePagamentoSelecionada() {
   return selectedRadio;
 }
 
-function recuperaDadosPedido() {
-  console.log(cart);
-
-  // pegando forma de entrega
-  if (spanEntrega.dataset.entrega === "true") {
-    console.log("é entrega");
-  } else {
-    console.log("vai buscar");
-  }
-
-  // Pegando forma de pagamento
-  let selectedRadio = formaDePagamentoSelecionada();
-  if (selectedRadio !== null) {
-    console.log("Rádio selecionado:", selectedRadio.id);
-  } else {
-    console.log("Nenhum rádio selecionado.");
-  }
-}
-
 //Finalizar pedido
 const confirmaEndereco = document.getElementById("confirmaEndereco");
 confirmaEndereco.addEventListener("click", () => {
@@ -780,26 +761,22 @@ confirmaEndereco.addEventListener("click", () => {
 
   // Enviar pedido para a api
   const cartItems = cart
-  .map((item) => {
-    const produtoString = `*Produto:* ${item.name}\n*Quantidade:* (${item.quantityProduto})\n*Preço:* ${item.price.toLocaleString("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    })}\n`;
-    
-    const adicionaisString = item.quantidadeNomeAdicionais.map((adicional) => {
-      return `_${adicional.quantidade} - ${adicional.nome}_`;
-    }).join(", ");
-    
-    return produtoString + (adicionaisString ? `*Adicionais:* ${adicionaisString}` : "");
-  })
-  .join("\n\n");
+    .map((item) => {
+      const produtoString = `*Produto:* ${item.name}\n*Quantidade:* (${item.quantityProduto})\n*Preço:* ${item.price.toLocaleString("pt-BR", {
+        style: "currency",
+        currency: "BRL",
+      })}\n`;
 
-  console.log(cartItems);
+      const adicionaisString = item.quantidadeNomeAdicionais
+        .map((adicional) => {
+          return `_${adicional.quantidade} - ${adicional.nome}_`;
+        })
+        .join(", ");
 
-  return
+      return produtoString + (adicionaisString ? `*Adicionais:* ${adicionaisString}` : "");
+    })
+    .join("\n\n");
 
-  const message = encodeURIComponent(cartItems);
-  const phone = cartModal.dataset.contact;
   const endereco = {
     numero: cep.value,
     pontoReferencia: pontoReferencia.value,
@@ -810,6 +787,61 @@ confirmaEndereco.addEventListener("click", () => {
     contato: inputTelefone.value,
   };
 
+  const enderecoFormatted = `
+    *Endereço:*
+    Número: ${endereco.numero}
+    Ponto de Referência: ${endereco.pontoReferencia}
+    Rua: ${endereco.rua}
+    Bairro: ${endereco.Bairro}
+    Cidade: ${endereco.Cidade}
+    UF: ${endereco.UF}
+    Contato: ${endereco.contato}
+`;
+
+  let totalPedido = 0;
+  cart.forEach((item) => {
+    totalPedido += item.valorTotalAdicional * item.quantityProduto + item.price * item.quantityProduto;
+  });
+
+  totalPedido += parseFloat(meuSelect.value);
+
+  // Pegando forma de pagamento
+  let selectedRadio = formaDePagamentoSelecionada();
+  if (selectedRadio === null) {
+    console.log("Nenhum rádio selecionado.");
+    return;
+  }
+
+  function entrega() {
+    if (spanEntrega.dataset.entrega === "true") {
+      console.log("é entrega");
+      return "Entrega";
+    } else {
+      console.log("vai buscar");
+      return "Retirada";
+    }
+  }
+
+  const formaEntrega = entrega();
+
+  console.log(formaEntrega);
+
+  const phone = cartModal.dataset.contact;
+  const pedidoFormatted = `
+    *Número de Telefone:* ${phone}
+    *Valor Total do Pedido:* ${totalPedido.toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    })}
+    *Forma de Pagamento:* ${selectedRadio.id}
+    *Entrega ou Retirada:* ${formaEntrega}
+  `;
+
+  const message = encodeURIComponent(`${cartItems}\n\n${enderecoFormatted}\n\n${pedidoFormatted}`);
+
+  console.log(`${cartItems}\n\n${enderecoFormatted}\n\n${pedidoFormatted}`);
+
+  return;
   window.open(`https://wa.me/${phone}?text=${message} Endereço: Rua:${endereco.rua}, Nº:${endereco.numero}, Referência:${endereco.pontoReferencia}, Bairro: ${endereco.Bairro}, Cidade: ${endereco.Cidade}, UF: ${endereco.UF}`, "_blank");
 
   cart = [];
