@@ -1,3 +1,5 @@
+// Importações
+
 const menu = document.getElementById("menu");
 const cartBtn = document.getElementById("cart-btn");
 const cartModal = document.getElementById("cart-modal");
@@ -27,8 +29,11 @@ const pontoReferencia = document.getElementById("pontoReferencia");
 const cidade = document.getElementById("cidade");
 const uf = document.getElementById("uf");
 
+// Pegando dados Erros
+const phoneError = document.getElementById("phoneError");
+
 // pegando dados telefone
-const inputTelefone = document.getElementById("inputTelefone");
+const inputTelefone = document.getElementById("inputTelefone")
 
 let cart = [];
 let pedido = [];
@@ -743,6 +748,7 @@ function formaDePagamentoSelecionada() {
 //Finalizar pedido
 const confirmaEndereco = document.getElementById("confirmaEndereco");
 confirmaEndereco.addEventListener("click", () => {
+  // Validações
   const isOpen = checkRestaurantOpen();
   if (!isOpen) {
     Toastify({
@@ -762,10 +768,10 @@ confirmaEndereco.addEventListener("click", () => {
   // Enviar pedido para a api
   const cartItems = cart
     .map((item) => {
-      const produtoString = `*Produto:* ${item.name}\n*Quantidade:* (${item.quantityProduto})\n*Preço:* ${item.price.toLocaleString("pt-BR", {
+      const produtoString = `*Produto: ${item.name}*\n*Quantidade: (${item.quantityProduto})*\n*Preço: ${item.price.toLocaleString("pt-BR", {
         style: "currency",
         currency: "BRL",
-      })}\n`;
+      })}*\n`;
 
       const adicionaisString = item.quantidadeNomeAdicionais
         .map((adicional) => {
@@ -778,24 +784,25 @@ confirmaEndereco.addEventListener("click", () => {
     .join("\n\n");
 
   const endereco = {
-    numero: cep.value,
+    cep: cep.value,
+    numero: numero.value,
     pontoReferencia: pontoReferencia.value,
     rua: rua.value,
-    Bairro: meuSelect.value,
+    Bairro: meuSelect.options[meuSelect.selectedIndex].text,
     Cidade: cidade.value,
     UF: uf.value,
     contato: inputTelefone.value,
   };
 
   const enderecoFormatted = `
-    *Endereço:*
-    Número: ${endereco.numero}
+    *Endereço de entrega:*
+    *Número: ${endereco.numero}*
     Ponto de Referência: ${endereco.pontoReferencia}
-    Rua: ${endereco.rua}
-    Bairro: ${endereco.Bairro}
-    Cidade: ${endereco.Cidade}
-    UF: ${endereco.UF}
-    Contato: ${endereco.contato}
+    *Rua: ${endereco.rua}*
+    *Bairro: ${endereco.Bairro}*
+    *Cidade: ${endereco.Cidade}*
+    *UF: ${endereco.UF}*
+    *Contato: ${endereco.contato}*
 `;
 
   let totalPedido = 0;
@@ -822,24 +829,24 @@ confirmaEndereco.addEventListener("click", () => {
     }
   }
 
-  const formaEntrega = entrega();
-
-  console.log(formaEntrega);
+  let formaEntrega = entrega();
 
   const phone = cartModal.dataset.contact;
   const pedidoFormatted = `
-    *Número de Telefone:* ${phone}
-    *Valor Total do Pedido:* ${totalPedido.toLocaleString("pt-BR", {
+    *Número de Telefone: ${phone}*
+    *Valor Total do Pedido: ${totalPedido.toLocaleString("pt-BR", {
       style: "currency",
       currency: "BRL",
-    })}
-    *Forma de Pagamento:* ${selectedRadio.id}
-    *Entrega ou Retirada:* ${formaEntrega}
+    })}*
+    *Forma de Pagamento: ${selectedRadio.id}*
+    *Entrega ou Retirada? ${formaEntrega}*
   `;
+
+  let isEntrega = formaEntrega == "Retirada" ? `${pedidoFormatted}` : `${enderecoFormatted}\n\n${pedidoFormatted}`
 
   const message = encodeURIComponent(`${cartItems}\n\n${enderecoFormatted}\n\n${pedidoFormatted}`);
 
-  console.log(`${cartItems}\n\n${enderecoFormatted}\n\n${pedidoFormatted}`);
+  console.log(`${cartItems}\n\n${isEntrega}`);
 
   return;
   window.open(`https://wa.me/${phone}?text=${message} Endereço: Rua:${endereco.rua}, Nº:${endereco.numero}, Referência:${endereco.pontoReferencia}, Bairro: ${endereco.Bairro}, Cidade: ${endereco.Cidade}, UF: ${endereco.UF}`, "_blank");

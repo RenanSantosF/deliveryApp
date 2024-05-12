@@ -158,7 +158,7 @@ app.get("/:nomeLoja", existeUsuario, (req, res) => {
             formasPagamento: formasPagamento,
             bairrosCadastrados: bairrosCadastrados,
             title: `${req.params.nomeLoja}`,
-            css: "/css/pages/home.css",
+            css: "/css/pages/home/index.css",
             script: "/scripts/cliente/index.js",
           });
         })

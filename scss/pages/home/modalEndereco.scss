@@ -1,0 +1,375 @@
+.modalEndereco {
+  display: none;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  background-color: #fff;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.contentModalEndereco {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  overflow-y: auto;
+  height: calc(100% - 60px);
+}
+
+.modalEnderecoActive {
+  display: flex;
+  animation: modalActive 0.4s ease;
+}
+
+.modalEnderecoDisable {
+  display: flex;
+  animation: modalDisable 0.4s ease;
+}
+
+#close-modalEndereco-btn {
+  background-color: #fff;
+  border-radius: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+}
+
+// entrega / retirada
+.contatoEndereco {
+  background-color: $cor-backgroundEndereco;
+  margin-top: 70px;
+  width: 90%;
+  padding: 15px 10px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.contatoEndereco > span {
+  color: $cor-title;
+}
+
+.contatoEndereco > input {
+  width: 80%;
+  // margin-left: 20px;
+}
+
+.radio-inputs {
+  margin-top: 20px;
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  border-radius: 0.5rem;
+  background-color: $cor-temaClaro;
+  box-sizing: border-box;
+  box-shadow: 0 0 0px 1px rgba(0, 0, 0, 0.06);
+  padding: 0.25rem;
+  width: 80%;
+  font-size: 14px;
+}
+
+.radio-inputs .radio {
+  flex: 1 1 auto;
+  text-align: center;
+  width: 100px;
+  color: $cor-title;
+}
+
+.radio-inputs .radio input {
+  display: none;
+}
+
+.radio-inputs .radio .name {
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  border: none;
+  padding: 0.5rem 0;
+  transition: all 0.15s ease-in-out;
+}
+
+.radio-inputs .radio input:checked + .name {
+  background-color: #fff;
+  font-weight: 600;
+  color: $cor-title;
+}
+
+// Input do endereço
+.containerEntrega {
+  background-color: $cor-backgroundEndereco;
+  margin-top: 20px;
+  display: none;
+  width: 100%;
+  display: none;
+  grid-template-columns: 1fr 1fr 1fr 100px;
+  grid-template-areas:
+    "cep cep cep cep"
+    "rua rua rua rua "
+    " numero complemento complemento complemento "
+    "pontoReferencia pontoReferencia pontoReferencia pontoReferencia"
+    "bairro bairro bairro bairro"
+    "cidade cidade cidade uf";
+  gap: 15px;
+  padding: 10px 15px 15px 10px;
+  border-radius: 10px;
+  width: 90%;
+}
+
+.containerRetirada {
+  width: 90%;
+  display: none;
+  margin-top: 20px;
+  border-radius: 10px;
+  padding: 15px;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  background-color: #f0f0f0;
+}
+
+.containerRetirada > p {
+  width: 100%;
+  font-weight: 500;
+  color: $cor-adicionais;
+}
+
+.containerRetirada > div {
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+}
+
+.containerRetirada > div > span {
+  font-weight: 600;
+  color: #525252;
+}
+
+.containerEntregaActive {
+  display: grid;
+  animation: modalActive 0.4s ease;
+}
+
+.containerRetiradaActive {
+  animation: modalActive 0.4s ease;
+  display: flex;
+}
+
+.containerEntregaDisable {
+  display: grid;
+  animation: modalDisable 0.4s ease;
+}
+
+.containerRetiradaDisable {
+  display: flex;
+  animation: modalDisable 0.4s ease;
+}
+
+#cep {
+  width: 200px;
+}
+
+.input-endereco {
+  width: 100%;
+  height: 40px;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1.5px solid lightgrey;
+  outline: none;
+  transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+  box-shadow: 0px 0px 20px -18px;
+  color: $cor-title;
+}
+
+.input-endereco:hover {
+  border: 2px solid lightgrey;
+  box-shadow: 0px 0px 20px -17px;
+}
+
+.input-endereco:active {
+  transform: scale(0.95);
+}
+
+.input-endereco:focus {
+  border: 2px solid grey;
+}
+
+.footerEndereco {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background-color: $cor-backgroundEndereco;
+}
+
+.footerEndereco > div {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+  color: #858585;
+  font-size: 13px;
+}
+
+.valorEndereco {
+  margin-left: 15px;
+}
+
+.valorEnderecoTotal {
+  font-weight: 700;
+  font-size: 19px;
+  color: $cor-tema;
+}
+
+#confirmaEndereco {
+  border-radius: 5px;
+  background-color: $cor-tema;
+  color: #fff;
+  border: none;
+  font-weight: 600px;
+  font-size: 16px;
+  padding: 5px 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+// Radio input forma de pagamento {
+.formaPagamento {
+  transition: 0.3s ease;
+  background-color: $cor-backgroundEndereco;
+  gap: 10px;
+  margin: 30px 0 70px 0;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+  animation: modalActive 0.4s ease;
+  color: $cor-title;
+}
+
+.formaPagamento div:first-child {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 15px;
+}
+
+.radio-group {
+  display: none;
+  flex-direction: column;
+  padding: 0 15px 15px 15px;
+  transition: height 0.3s ease;
+  color: $cor-title;
+}
+
+.radio-groupActive {
+  display: flex;
+}
+
+.radio-label {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0.5em;
+  margin-bottom: 0.5em;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  transition: background-color 0.2s, border-color 0.2s;
+  color: $cor-title;
+}
+
+.radio-label:hover {
+  background-color: #e6e6e6;
+}
+
+.radio-input {
+  position: absolute;
+  opacity: 0;
+}
+
+.radio-input:checked + .radio-label {
+  background-color: $cor-temaClaro;
+  border-color: $cor-tema;
+}
+
+.radio-input:focus + .radio-label {
+  outline: 2px solid $cor-tema;
+}
+
+.radio-inner-circle {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  border: 2px solid $cor-descrition;
+  border-radius: 50%;
+  margin-right: 0.5em;
+  transition: border-color 0.2s;
+  position: relative;
+}
+
+.radio-label:hover .radio-inner-circle {
+  border-color: #555;
+}
+
+.radio-input:checked + .radio-label .radio-inner-circle {
+  border-color: $cor-tema;
+}
+
+.radio-input:checked + .radio-label .radio-inner-circle::after {
+  content: "";
+  display: block;
+  width: 0.5em;
+  height: 0.5em;
+  background-color: $cor-tema;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+// select bairros
+.selectBairro {
+  height: 40px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  color: $cor-tema;
+}
+
+#teste {
+  color: red;
+}
+
+/* Estilo quando o select está focado */
+.selectBairro:focus {
+  outline: none;
+  border-color: dodgerblue;
+}
+
+/* Estilo para seta do select */
+.selectBairro::after {
+  content: "\25BC"; /* Unicode para uma seta para baixo */
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  pointer-events: none; /* Evita que o elemento de pseudo-elemento seja clicável */
+}

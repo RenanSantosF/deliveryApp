@@ -199,7 +199,7 @@ router.get("/produtos/add", UserAuth, eAdmin, (req, res) => {
           res.render("admin/addProduto", {
             categorias: categorias,
             adicionais: adicionais,
-            css: "/css/pages/addProduto.css",
+            css: "/css/pages/addProduto/index.css",
             script: "/scripts/addProdutos/index.js",
           });
         })
@@ -309,7 +309,7 @@ router.get("/produtos/edit/:id", UserAuth, eAdmin, (req, res) => {
                 categorias: categorias,
                 produto: produto,
                 adicionais: adicionais,
-                css: "/css/pages/editProdutos.css",
+                css: "/css/pages/editProdutos/index.css",
                 script: "/scripts/addProdutos/index.js",
               });
             })
@@ -670,30 +670,6 @@ router.post("/pagamentos/deletar", UserAuth, eAdmin, (req, res) => {
       res.redirect(`/${req.user.nomeLoja}/admin/pagamentos`);
     });
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //Bairros
 router.get("/bairros", UserAuth, eAdmin, (req, res) => {
