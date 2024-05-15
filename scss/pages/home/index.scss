@@ -2,32 +2,40 @@
 
 @import "./modalEndereco.scss";
 
+@import "./pedidoConcluido.scss";
+
 header {
   width: 100%;
-  height: 420px;
+  height: 200px;
   background-size: cover;
   background-position: center;
+  margin-bottom: 20px;
 }
 
 header > div {
   height: 100%;
   width: 100%;
   display: flex;
-  justify-content: center;
   align-items: center;
   flex-direction: column;
   background-color: rgba(0, 0, 0, 0.5);
+  position: relative;
 }
 
 header > div > img {
-  width: 82px;
-  height: 82px;
+  width: 150px;
+  height: 150px;
   border-radius: 100%;
-  transition: 0.2s ease;
+  position: absolute;
+  bottom: -20px;
+  z-index: 30;
+  opacity: 0.9;
+  box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.4);
+  transition: transform 0.3s ease-in-out;
 }
 
 header > div > img:hover {
-  scale: 1.1;
+  transform: translateY(-3.5px);
 }
 
 header > div > h1 {
@@ -42,14 +50,32 @@ header > div > span {
 }
 
 header > div > .horarioFuncionamento {
-  padding: 4px 16px 4px 16px;
-  border-radius: 10px;
-  margin: 1.5rem 0 1.5rem 0;
+  padding: 4px 5px 4px 10px;
+  border-radius: 2.5px;
+  position: absolute;
+  right: 10px;
+  bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 header > div > .horarioFuncionamento span {
   color: white;
-  font-size: 16px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+header > div > .horarioFuncionamento img {
+  margin-top: 2px;
+  width: 20px;
+}
+
+@media (max-width: 370px) {
+  header > div > img {
+    width: 120px;
+    height: 120px;
+  }
 }
 
 .spanConhecaMenu {
@@ -99,8 +125,8 @@ nav {
   color: #303030;
   position: sticky;
   top: 0;
-  border: 1px solid #e7e7e7;
-  box-shadow: 10px 3px 10px #a5a5a5;
+  // border: 1px solid #e7e7e7;
+  box-shadow: 0 4px 4px -5px rgba(0, 0, 0, 0.5);
   overflow-x: auto;
   overflow-y: hidden;
   white-space: nowrap;
@@ -202,12 +228,12 @@ nav ul li a {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 30px 0 5px 10px;
+  padding: 10px 0 5px 10px;
 }
 
 #menu > .containerSpanBebidas > h2 {
   font-weight: 500;
-  color: $cor-categoria;
+  color: $cor-texto-cinzaEscuro;
   font-size: 26px;
 }
 

@@ -22,8 +22,7 @@ const storage = multer.diskStorage({
     cb(null, "public/uploads/");
   },
   filename: function (req, file, cb) {
-    const uniqueFileName =
-      file.originalname + Date.now() + path.extname(file.originalname);
+    const uniqueFileName = file.originalname + Date.now() + path.extname(file.originalname);
     req.generatedFileName = uniqueFileName;
     cb(null, uniqueFileName);
   },
@@ -37,12 +36,10 @@ function UserAuth(req, res, next) {
   next();
 }
 
-router.get("/", UserAuth, (req, res) => {
-  res.render("admin/index");
-});
-
-router.get("/:nomeLoja/posts", UserAuth, eAdmin, (req, res) => {
-  res.send("Página de posts");
+router.get("/", UserAuth, eAdmin, (req, res) => {
+  res.render("admin/index", {
+    user: req.user,
+  });
 });
 
 router.get("/categorias", UserAuth, eAdmin, (req, res) => {
@@ -53,6 +50,7 @@ router.get("/categorias", UserAuth, eAdmin, (req, res) => {
       res.render("admin/categorias", {
         categorias: categorias,
         usuarioAtual: req.user.nomeLoja,
+        user: req.user,
       });
     })
     .catch((err) => {
@@ -62,23 +60,17 @@ router.get("/categorias", UserAuth, eAdmin, (req, res) => {
 });
 
 router.get("/categorias/add", UserAuth, eAdmin, (req, res) => {
-  res.render("admin/addcategorias");
+  res.render("admin/addcategorias", {
+    user: req.user,
+  });
 });
 
 router.post("/categorias/nova", UserAuth, eAdmin, (req, res) => {
   let erros = [];
-  if (
-    !req.body.nome ||
-    typeof req.body.nome == undefined ||
-    req.body.nome == null
-  ) {
+  if (!req.body.nome || typeof req.body.nome == undefined || req.body.nome == null) {
     erros.push({ texto: "Nome inválido" });
   }
-  if (
-    !req.body.slug ||
-    typeof req.body.slug == undefined ||
-    req.body.slug == null
-  ) {
+  if (!req.body.slug || typeof req.body.slug == undefined || req.body.slug == null) {
     erros.push({ texto: "Slug inválido" });
   }
   if (req.body.nome.length < 2) {
@@ -106,7 +98,10 @@ router.get("/categorias/edit/:id", UserAuth, eAdmin, (req, res) => {
   Categoria.findOne({ _id: req.params.id })
     .lean()
     .then((categoria) => {
-      res.render("admin/editCategorias", { categoria: categoria });
+      res.render("admin/editCategorias", {
+        categoria: categoria,
+        user: req.user,
+      });
     })
     .catch((err) => {
       req.flash("error_msg", "Essa categoria não existe!");
@@ -116,18 +111,10 @@ router.get("/categorias/edit/:id", UserAuth, eAdmin, (req, res) => {
 
 router.post("/categorias/edit", UserAuth, eAdmin, (req, res) => {
   let erros = [];
-  if (
-    !req.body.nome ||
-    typeof req.body.nome == undefined ||
-    req.body.nome == null
-  ) {
+  if (!req.body.nome || typeof req.body.nome == undefined || req.body.nome == null) {
     erros.push({ texto: "Nome inválido" });
   }
-  if (
-    !req.body.slug ||
-    typeof req.body.slug == undefined ||
-    req.body.slug == null
-  ) {
+  if (!req.body.slug || typeof req.body.slug == undefined || req.body.slug == null) {
     erros.push({ texto: "Slug inválido" });
   }
   if (req.body.nome.length < 2) {
@@ -147,10 +134,7 @@ router.post("/categorias/edit", UserAuth, eAdmin, (req, res) => {
             res.redirect(`/${req.user.nomeLoja}/admin/categorias`);
           })
           .catch((err) => {
-            req.flash(
-              "error_msg",
-              "Houve um erro interno ao salvar a categoria!"
-            );
+            req.flash("error_msg", "Houve um erro interno ao salvar a categoria!");
             res.redirect(`/${req.user.nomeLoja}/admin/categorias`);
           });
       })
@@ -181,7 +165,10 @@ router.get("/produtos", UserAuth, eAdmin, (req, res) => {
     .sort({ date: "desc" })
     .lean()
     .then((produtos) => {
-      res.render("admin/produtos", { produtos: produtos });
+      res.render("admin/produtos", {
+        produtos: produtos,
+        user: req.user,
+      });
     })
     .catch((err) => {
       req.flash("error_msg", "Houve um erro ao listar as produtos");
@@ -201,6 +188,7 @@ router.get("/produtos/add", UserAuth, eAdmin, (req, res) => {
             adicionais: adicionais,
             css: "/css/pages/addProduto/index.css",
             script: "/scripts/addProdutos/index.js",
+            user: req.user,
           });
         })
         .catch((err) => {
@@ -214,86 +202,62 @@ router.get("/produtos/add", UserAuth, eAdmin, (req, res) => {
     });
 });
 
-router.post(
-  "/produtos/nova",
-  upload.single("imgProduto"),
-  UserAuth,
-  eAdmin,
-  (req, res, e) => {
-    let erros = [];
-    if (
-      !req.body.titulo ||
-      typeof req.body.titulo == undefined ||
-      req.body.titulo == null
-    ) {
-      erros.push({ texto: "Título inválido" });
-    }
-    if (
-      !req.body.slug ||
-      typeof req.body.slug == undefined ||
-      req.body.slug == null
-    ) {
-      erros.push({ texto: "Slug inválido" });
-    }
-    if (
-      !req.body.descricao ||
-      typeof req.body.descricao == undefined ||
-      req.body.descricao == null
-    ) {
-      erros.push({ texto: "Descrição inválida" });
-    }
-
-    if (
-      !req.body.preco ||
-      typeof req.body.preco == undefined ||
-      req.body.preco == null
-    ) {
-      erros.push({ texto: "Valor inválido" });
-    }
-    if (req.body.categoria == "0") {
-      erros.push({ texto: "categoria inválida, registre uma categoria" });
-    }
-    if (erros.length > 0) {
-      res.render("admin/addProduto", { erros: erros });
-    } else {
-      const novosAdicionais = [];
-
-      const adicionais = Array.isArray(req.body.adicionais)
-        ? req.body.adicionais
-        : [req.body.adicionais];
-
-      for (let i = 0; i < adicionais.length; i++) {
-        novosAdicionais.push({
-          adicionais: adicionais[i],
-          precoAdicional: req.body.precoAdicional[i],
-          produtoReferido: req.body.titulo,
-          categoriaAdicional: req.body.categoriaAdicional[i],
-        });
-      }
-
-      const novaproduto = {
-        titulo: req.body.titulo,
-        slug: req.body.slug,
-        descricao: req.body.descricao,
-        preco: req.body.preco,
-        categoria: req.body.categoria,
-        nomeLoja: req.user.nomeLoja,
-        imgProduto: req.generatedFileName,
-        adicionais: novosAdicionais,
-      };
-      new Produto(novaproduto)
-        .save()
-        .then(() => {
-          req.flash("success_msg", "produto criado com sucesso!");
-          res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
-        })
-        .catch((err) => {
-          req.flash("error_msg", "Houve um erro na criação da produto!");
-          res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
-        });
-    }
+router.post("/produtos/nova", upload.single("imgProduto"), UserAuth, eAdmin, (req, res, e) => {
+  let erros = [];
+  if (!req.body.titulo || typeof req.body.titulo == undefined || req.body.titulo == null) {
+    erros.push({ texto: "Título inválido" });
   }
-);
+  if (!req.body.slug || typeof req.body.slug == undefined || req.body.slug == null) {
+    erros.push({ texto: "Slug inválido" });
+  }
+  if (!req.body.descricao || typeof req.body.descricao == undefined || req.body.descricao == null) {
+    erros.push({ texto: "Descrição inválida" });
+  }
+
+  if (!req.body.preco || typeof req.body.preco == undefined || req.body.preco == null) {
+    erros.push({ texto: "Valor inválido" });
+  }
+  if (req.body.categoria == "0") {
+    erros.push({ texto: "categoria inválida, registre uma categoria" });
+  }
+  if (erros.length > 0) {
+    res.render("admin/addProduto", { erros: erros });
+  } else {
+    const novosAdicionais = [];
+
+    const adicionais = Array.isArray(req.body.adicionais) ? req.body.adicionais : [req.body.adicionais];
+
+    for (let i = 0; i < adicionais.length; i++) {
+      novosAdicionais.push({
+        adicionais: adicionais[i],
+        precoAdicional: req.body.precoAdicional[i],
+        produtoReferido: req.body.titulo,
+        categoriaAdicional: req.body.categoriaAdicional[i],
+      });
+    }
+
+    const novaproduto = {
+      titulo: req.body.titulo,
+      slug: req.body.slug,
+      descricao: req.body.descricao,
+      preco: req.body.preco,
+      categoria: req.body.categoria,
+      nomeLoja: req.user.nomeLoja,
+      imgProduto: req.generatedFileName,
+      adicionais: novosAdicionais,
+    };
+    new Produto(novaproduto)
+      .save()
+      .then(() => {
+        req.flash("success_msg", "produto criado com sucesso!");
+        res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
+      })
+      .catch((err) => {
+        req.flash("error_msg", "Houve um erro na criação da produto!");
+        res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
+      });
+  }
+});
 
 router.get("/produtos/edit/:id", UserAuth, eAdmin, (req, res) => {
   Produto.findOne({ _id: req.params.id })
@@ -311,6 +275,7 @@ router.get("/produtos/edit/:id", UserAuth, eAdmin, (req, res) => {
                 adicionais: adicionais,
                 css: "/css/pages/editProdutos/index.css",
                 script: "/scripts/addProdutos/index.js",
+                user: req.user,
               });
             })
             .catch((err) => {
@@ -324,65 +289,54 @@ router.get("/produtos/edit/:id", UserAuth, eAdmin, (req, res) => {
         });
     })
     .catch((err) => {
-      req.flash(
-        "error_msg",
-        "Houve um erro ao carregar o formulário de edição"
-      );
+      req.flash("error_msg", "Houve um erro ao carregar o formulário de edição");
       res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
     });
 });
 
-router.post(
-  "/produto/edit",
-  upload.single("imgProduto"),
-  UserAuth,
-  eAdmin,
-  (req, res) => {
-    Produto.findOne({ _id: req.body.id })
-      .then((produto) => {
-        const novosAdicionais = [];
+router.post("/produto/edit", upload.single("imgProduto"), UserAuth, eAdmin, (req, res) => {
+  Produto.findOne({ _id: req.body.id })
+    .then((produto) => {
+      const novosAdicionais = [];
 
-        const adicionais = Array.isArray(req.body.adicionais)
-          ? req.body.adicionais
-          : [req.body.adicionais];
+      const adicionais = Array.isArray(req.body.adicionais) ? req.body.adicionais : [req.body.adicionais];
 
-        for (let i = 0; i < adicionais.length; i++) {
-          novosAdicionais.push({
-            adicionais: adicionais[i],
-            precoAdicional: req.body.precoAdicional[i],
-            produtoReferido: req.body.titulo,
-            categoriaAdicional: req.body.categoriaAdicional[i],
-          });
-        }
+      for (let i = 0; i < adicionais.length; i++) {
+        novosAdicionais.push({
+          adicionais: adicionais[i],
+          precoAdicional: req.body.precoAdicional[i],
+          produtoReferido: req.body.titulo,
+          categoriaAdicional: req.body.categoriaAdicional[i],
+        });
+      }
 
-        const preco = req.body.preco;
+      const preco = req.body.preco;
 
-        produto.titulo = req.body.titulo;
-        produto.slug = req.body.slug;
-        produto.descricao = req.body.descricao;
-        produto.categoria = req.body.categoria;
-        produto.preco = preco;
-        produto.nomeLoja = req.user.nomeLoja;
-        produto.imgProduto = req.generatedFileName;
-        produto.adicionais = novosAdicionais;
+      produto.titulo = req.body.titulo;
+      produto.slug = req.body.slug;
+      produto.descricao = req.body.descricao;
+      produto.categoria = req.body.categoria;
+      produto.preco = preco;
+      produto.nomeLoja = req.user.nomeLoja;
+      produto.imgProduto = req.generatedFileName;
+      produto.adicionais = novosAdicionais;
 
-        produto
-          .save()
-          .then(() => {
-            req.flash("success_msg", "produto editada com sucesso!");
-            res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
-          })
-          .catch((err) => {
-            req.flash("error_msg", "Erro interno");
-            res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
-          });
-      })
-      .catch((err) => {
-        req.flash("error_msg", "Houve um erro ao salvar a edição");
-        res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
-      });
-  }
-);
+      produto
+        .save()
+        .then(() => {
+          req.flash("success_msg", "produto editada com sucesso!");
+          res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
+        })
+        .catch((err) => {
+          req.flash("error_msg", "Erro interno");
+          res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
+        });
+    })
+    .catch((err) => {
+      req.flash("error_msg", "Houve um erro ao salvar a edição");
+      res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
+    });
+});
 
 router.get("/produtos/deletar/:id", UserAuth, eAdmin, (req, res) => {
   Produto.deleteOne({ _id: req.params.id })
@@ -402,13 +356,13 @@ router.get("/adicionais", UserAuth, eAdmin, (req, res) => {
     .sort({ date: "desc" })
     .lean()
     .then((adicionais) => {
-      res.render("admin/adicionais", { adicionais: adicionais });
+      res.render("admin/adicionais", {
+        adicionais: adicionais,
+        user: req.user,
+      });
     })
     .catch((err) => {
-      req.flash(
-        "error_msg",
-        "Houve um erro ao listar os adicionais cadastrados"
-      );
+      req.flash("error_msg", "Houve um erro ao listar os adicionais cadastrados");
       res.redirect(`"/${req.user.nomeLoja}/admin`);
     });
 });
@@ -419,6 +373,7 @@ router.get("/adicionais/add", UserAuth, eAdmin, (req, res) => {
     .then((categorias) => {
       res.render("admin/addadicionais", {
         categorias: categorias,
+        user: req.user,
       });
     })
     .catch((err) => {
@@ -429,18 +384,10 @@ router.get("/adicionais/add", UserAuth, eAdmin, (req, res) => {
 
 router.post("/adicionais/nova", UserAuth, eAdmin, (req, res) => {
   let erros = [];
-  if (
-    !req.body.nome ||
-    typeof req.body.nome == undefined ||
-    req.body.nome == null
-  ) {
+  if (!req.body.nome || typeof req.body.nome == undefined || req.body.nome == null) {
     erros.push({ texto: "Nome inválido" });
   }
-  if (
-    !req.body.taxa ||
-    typeof req.body.taxa == undefined ||
-    req.body.taxa == null
-  ) {
+  if (!req.body.taxa || typeof req.body.taxa == undefined || req.body.taxa == null) {
     erros.push({ texto: "Valor da taxa é inválido" });
   }
   if (req.body.nome.length < 2) {
@@ -475,6 +422,7 @@ router.get("/adicionais/edit/:id", UserAuth, eAdmin, (req, res) => {
           res.render("admin/editadicionais", {
             adicional: adicional,
             categorias: categorias,
+            user: req.user,
           });
         })
         .catch((err) => {
@@ -490,18 +438,10 @@ router.get("/adicionais/edit/:id", UserAuth, eAdmin, (req, res) => {
 
 router.post("/adicionais/edit", UserAuth, eAdmin, (req, res) => {
   let erros = [];
-  if (
-    !req.body.nome ||
-    typeof req.body.nome == undefined ||
-    req.body.nome == null
-  ) {
+  if (!req.body.nome || typeof req.body.nome == undefined || req.body.nome == null) {
     erros.push({ texto: "Nome inválido" });
   }
-  if (
-    !req.body.taxa ||
-    typeof req.body.taxa == undefined ||
-    req.body.taxa == null
-  ) {
+  if (!req.body.taxa || typeof req.body.taxa == undefined || req.body.taxa == null) {
     erros.push({ texto: "Valor inválido" });
   }
   if (req.body.nome.length < 2) {
@@ -513,9 +453,7 @@ router.post("/adicionais/edit", UserAuth, eAdmin, (req, res) => {
   } else {
     Adicional.findOne({ _id: req.body.id })
       .then((adicional) => {
-        (adicional.nome = req.body.nome),
-          (adicional.taxa = req.body.taxa),
-          (adicional.categoria = req.body.categoria);
+        (adicional.nome = req.body.nome), (adicional.taxa = req.body.taxa), (adicional.categoria = req.body.categoria);
         adicional
           .save()
           .then(() => {
@@ -523,10 +461,7 @@ router.post("/adicionais/edit", UserAuth, eAdmin, (req, res) => {
             res.redirect(`/${req.user.nomeLoja}/admin/adicionais`);
           })
           .catch((err) => {
-            req.flash(
-              "error_msg",
-              "Houve um erro interno ao adicionar o adicional!"
-            );
+            req.flash("error_msg", "Houve um erro interno ao adicionar o adicional!");
             res.redirect(`/${req.user.nomeLoja}/admin/adicionais`);
           });
       })
@@ -555,20 +490,22 @@ router.get("/pagamentos", UserAuth, eAdmin, (req, res) => {
     .sort({ date: "desc" })
     .lean()
     .then((pagamentos) => {
-      res.render("admin/pagamentos", { pagamentos: pagamentos });
+      res.render("admin/pagamentos", {
+        pagamentos: pagamentos,
+        user: req.user,
+      });
     })
     .catch((err) => {
-      req.flash(
-        "error_msg",
-        "Houve um erro ao listar as formas de pagamentos cadastradas"
-      );
+      req.flash("error_msg", "Houve um erro ao listar as formas de pagamentos cadastradas");
       res.redirect(`"/${req.user.nomeLoja}/admin`);
     });
 });
 
 router.get("/pagamentos/add", UserAuth, eAdmin, (req, res) => {
   try {
-    res.render("admin/addpagamentos");
+    res.render("admin/addpagamentos", {
+      user: req.user,
+    });
   } catch (error) {
     console.log(error);
     res.redirect(`/${req.user.nomeLoja}/admin/pagamentos`);
@@ -577,11 +514,7 @@ router.get("/pagamentos/add", UserAuth, eAdmin, (req, res) => {
 
 router.post("/pagamentos/nova", UserAuth, eAdmin, (req, res) => {
   let erros = [];
-  if (
-    !req.body.nome ||
-    typeof req.body.nome == undefined ||
-    req.body.nome == null
-  ) {
+  if (!req.body.nome || typeof req.body.nome == undefined || req.body.nome == null) {
     erros.push({ texto: "Nome da forma de pagamento precisa ser maior!" });
   }
   if (req.body.nome.length < 2) {
@@ -599,10 +532,7 @@ router.post("/pagamentos/nova", UserAuth, eAdmin, (req, res) => {
       res.redirect(`/${req.user.nomeLoja}/admin/pagamentos`);
       req.flash("success_msg", "Forma de pagamento registrada com sucesso!");
     } catch (error) {
-      req.flash(
-        "error_msg",
-        "Houve um erro ao cadastrar a forma de pagamento!"
-      );
+      req.flash("error_msg", "Houve um erro ao cadastrar a forma de pagamento!");
     }
   }
 });
@@ -611,7 +541,10 @@ router.get("/pagamentos/edit/:id", UserAuth, eAdmin, (req, res) => {
   Pagamento.findOne({ _id: req.params.id })
     .lean()
     .then((pagamento) => {
-      res.render("admin/editpagamentos", { pagamento: pagamento });
+      res.render("admin/editpagamentos", {
+        pagamento: pagamento,
+        user: req.user,
+      });
     })
     .catch((err) => {
       req.flash("error_msg", "Essa forma de pagamento não existe!");
@@ -621,11 +554,7 @@ router.get("/pagamentos/edit/:id", UserAuth, eAdmin, (req, res) => {
 
 router.post("/pagamentos/edit", UserAuth, eAdmin, (req, res) => {
   let erros = [];
-  if (
-    !req.body.nome ||
-    typeof req.body.nome == undefined ||
-    req.body.nome == null
-  ) {
+  if (!req.body.nome || typeof req.body.nome == undefined || req.body.nome == null) {
     erros.push({ texto: "Nome inválido!" });
   }
   if (req.body.nome.length < 2) {
@@ -638,17 +567,14 @@ router.post("/pagamentos/edit", UserAuth, eAdmin, (req, res) => {
     Pagamento.findOne({ _id: req.body.id })
       .then((pagamento) => {
         (pagamento.nome = req.body.nome),
-        pagamento
+          pagamento
             .save()
             .then(() => {
               req.flash("success_msg", "Forma de pagamento atualizada!");
               res.redirect(`/${req.user.nomeLoja}/admin/pagamentos`);
             })
             .catch((err) => {
-              req.flash(
-                "error_msg",
-                "Houve um erro ao editar a forma de pagamento!"
-              );
+              req.flash("error_msg", "Houve um erro ao editar a forma de pagamento!");
               res.redirect(`/${req.user.nomeLoja}/admin/pagamentos`);
             });
       })
@@ -677,20 +603,22 @@ router.get("/bairros", UserAuth, eAdmin, (req, res) => {
     .sort({ date: "desc" })
     .lean()
     .then((bairros) => {
-      res.render("admin/bairros", { bairros: bairros });
+      res.render("admin/bairros", {
+        bairros: bairros,
+        user: req.user,
+      });
     })
     .catch((err) => {
-      req.flash(
-        "error_msg",
-        "Houve um erro ao listar os bairros cadastrados"
-      );
+      req.flash("error_msg", "Houve um erro ao listar os bairros cadastrados");
       res.redirect(`"/${req.user.nomeLoja}/admin`);
     });
 });
 
 router.get("/bairros/add", UserAuth, eAdmin, (req, res) => {
   try {
-    res.render("admin/addbairros");
+    res.render("admin/addbairros", {
+      user: req.user,
+    });
   } catch (error) {
     console.log(error);
     res.redirect(`/${req.user.nomeLoja}/admin/bairros`);
@@ -699,11 +627,7 @@ router.get("/bairros/add", UserAuth, eAdmin, (req, res) => {
 
 router.post("/bairros/nova", UserAuth, eAdmin, (req, res) => {
   let erros = [];
-  if (
-    !req.body.nome ||
-    typeof req.body.nome == undefined ||
-    req.body.nome == null
-  ) {
+  if (!req.body.nome || typeof req.body.nome == undefined || req.body.nome == null) {
     erros.push({ texto: "Nome do bairro inválido!" });
   }
   if (req.body.nome.length < 2) {
@@ -722,10 +646,7 @@ router.post("/bairros/nova", UserAuth, eAdmin, (req, res) => {
       res.redirect(`/${req.user.nomeLoja}/admin/bairros`);
       req.flash("success_msg", "Bairro registrado com sucesso!");
     } catch (error) {
-      req.flash(
-        "error_msg",
-        "Houve um erro ao cadastrar o bairro!"
-      );
+      req.flash("error_msg", "Houve um erro ao cadastrar o bairro!");
     }
   }
 });
@@ -734,7 +655,10 @@ router.get("/bairros/edit/:id", UserAuth, eAdmin, (req, res) => {
   Bairro.findOne({ _id: req.params.id })
     .lean()
     .then((bairro) => {
-      res.render("admin/editbairros", { bairro: bairro });
+      res.render("admin/editbairros", {
+        bairro: bairro,
+        user: req.user,
+      });
     })
     .catch((err) => {
       req.flash("error_msg", "Essa forma de bairro não existe!");
@@ -744,11 +668,7 @@ router.get("/bairros/edit/:id", UserAuth, eAdmin, (req, res) => {
 
 router.post("/bairros/edit", UserAuth, eAdmin, (req, res) => {
   let erros = [];
-  if (
-    !req.body.nome ||
-    typeof req.body.nome == undefined ||
-    req.body.nome == null
-  ) {
+  if (!req.body.nome || typeof req.body.nome == undefined || req.body.nome == null) {
     erros.push({ texto: "Nome inválido!" });
   }
   if (req.body.nome.length < 2) {
@@ -760,21 +680,17 @@ router.post("/bairros/edit", UserAuth, eAdmin, (req, res) => {
   } else {
     Bairro.findOne({ _id: req.body.id })
       .then((bairro) => {
-        (bairro.nome = req.body.nome),
-        (bairro.taxa = req.body.taxa)
+        (bairro.nome = req.body.nome), (bairro.taxa = req.body.taxa);
         bairro
-            .save()
-            .then(() => {
-              req.flash("success_msg", "Bairro atualizado!");
-              res.redirect(`/${req.user.nomeLoja}/admin/bairros`);
-            })
-            .catch((err) => {
-              req.flash(
-                "error_msg",
-                "Houve um erro ao editar o bairro!"
-              );
-              res.redirect(`/${req.user.nomeLoja}/admin/bairros`);
-            });
+          .save()
+          .then(() => {
+            req.flash("success_msg", "Bairro atualizado!");
+            res.redirect(`/${req.user.nomeLoja}/admin/bairros`);
+          })
+          .catch((err) => {
+            req.flash("error_msg", "Houve um erro ao editar o bairro!");
+            res.redirect(`/${req.user.nomeLoja}/admin/bairros`);
+          });
       })
       .catch((err) => {
         req.flash("error_msg", "Houve um erro ao editar o bairro");

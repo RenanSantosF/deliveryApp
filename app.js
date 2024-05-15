@@ -60,6 +60,14 @@ app.use(express.json());
 // Handlebars
 app.engine("handlebars", handlebars.engine({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
+
+// Use o middleware CORS
+app.use(
+  cors({
+    origin: "http://localhost:3000/",
+  })
+);
+
 // Mongoose
 mongoose.Promise = global.Promise;
 try {
@@ -78,6 +86,22 @@ app.use("/usuarios", usuarios);
 // Rotas
 app.get("/", (req, res) => {
   res.send("principal");
+});
+
+app.post("/pedidos", (req, res) => {
+  const novoPedido = req.body;
+  console.log("Dados recebidos:", novoPedido);
+
+  novoPedido
+    .save()
+    .then(() => {
+      
+      res.json({ message: "Dados recebidos e salvos com sucesso!", data: receivedData });
+    })
+    .catch((error) => {
+      console.error("Erro ao salvar os dados no MongoDB", error);
+      res.status(500).json({ message: "Erro ao salvar os dados no MongoDB", error });
+    });
 });
 
 // Página da loja, de exibir erro
@@ -232,12 +256,6 @@ app.get("/:nomeLoja/categorias/:slug", existeUsuario, (req, res) => {
     });
 });
 
-// Outros
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log("Servidor rodando");
-});
-
 // Função para verificar se o horário atual está dentro do horário de funcionamento da loja
 function verificarHorarioDeFuncionamento(element) {
   // Obter o horário atual
@@ -292,3 +310,9 @@ function verificarHorarioDeFuncionamento(element) {
     ];
   }
 }
+
+// Outros
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log("Servidor rodando");
+});

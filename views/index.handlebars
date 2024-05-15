@@ -2,11 +2,13 @@
   <header data-img="./uploads/{{imgBg}}" id="headerImgFundo">
     <div>
       <img src="./uploads/{{imgLogo}}" />
-      <h1>{{nomeLoja}}</h1>
-      <span>{{rua}} {{numeroRua}}, {{bairro}}, {{cidade}} - {{estado}}</span>
+      <h1 id="nomeLoja">{{nomeLoja}}</h1>
+      {{!-- <span>{{rua}} {{numeroRua}}, {{bairro}}, {{cidade}} - {{estado}}</span> --}}
       {{#each statusSituacao}}
         <div class="horarioFuncionamento" data-status="{{status}}" id="date-span">
-          <span>{{status}} - {{abertura}} às {{fechamento}}</span>
+          {{!-- <span>{{status}} - {{abertura}} às {{fechamento}}</span> --}}
+          <span>{{status}}</span>
+          <img src="./img/botao-voltar-branco.png" />
         </div>
       {{/each}}
     </div>
@@ -60,7 +62,17 @@
       <h2>Nenhum produto encontrado</h2>
     {{/each}}
   </div>
+</div>
 
+<div id="pedidoConcluido" class="pedidoConcluido">
+  <div>
+    <div class="imgPedidoConcluido">
+      <img src="./img/concluido.png" alt="" />
+    </div>
+    <div>
+      <span>Seu pedido foi enviado com sucesso!</span>
+    </div>
+  </div>
 </div>
 
 <div class="modalProduto" id="modalProduto">
@@ -131,18 +143,25 @@
 
 {{! MODAL ENTREGA }}
 <div id="modalEndereco" class="modalEndereco">
-  <div class="contentModalEndereco">
-    <div class="headerModal">
-      <div id="close-modalEndereco-btn">
-        <img src="./img/botao-voltar.png" />
-      </div>
-      <h2 >Informações da entrega</h2>
+  <div class="headerModal">
+    <div id="close-modalEndereco-btn">
+      <img src="./img/botao-voltar.png" />
     </div>
+    <h2>Informações da entrega</h2>
+  </div>
+  <div class="contentModalEndereco">
 
     {{! contato }}
     <div class="contatoEndereco">
-      <span>Telefone para contato</span>
-      <input class="input-endereco" name="text" id="inputTelefone" type="text" placeholder="(00) 00000-0000" />
+      <div class="containerNomeNumero">
+        <span>Nome</span>
+        <input class="input-endereco inputNomeNumero" name="text" id="inputNome" type="text" placeholder="Seu nome" />
+      </div>
+
+      <div class="containerNomeNumero">
+        <span>Contato</span>
+        <input class="input-endereco inputNomeNumero" name="text" maxlength="15" id="inputTelefone" type="text" placeholder="(00) 00000-0000" />
+      </div>
     </div>
 
     {{! Entrega / retirada }}
@@ -192,7 +211,7 @@
     <div id="formaPagamento" class="formaPagamento">
       <div id="open-close-FormaPagamento">
         <span>Forma de pagamento</span>
-        <img src="./img/botao-voltar.png">
+        <img src="./img/botao-voltar.png" />
       </div>
 
       <div class="radio-group">

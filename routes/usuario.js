@@ -156,22 +156,16 @@ router.post("/cadastrar", (req, res) => {
   res.redirect("/usuarios/registro");
 });
 
-// router.post("/login", (req, res, next) => {
-//   passport.authenticate("local", {
-//     successRedirect: `/`,
-//     failureRedirect: "/usuarios/login",
-//     failureFlash: true,
-//   })(req, res, next);
-// });
-router.get("/logout", (req, res) => {
-  req.logout();
-  req.flash("success_msg", "Deslogado com sucesso");
-  res.redirect("/");
+router.get("/logout", (req, res, next) => {
+  req.logout((err) => {
+    if (err) { return next(err); }
+    req.flash("success_msg", "Deslogado com sucesso");
+    res.redirect("/usuarios/login");
+  });
 });
 
-
 router.post("/login", (req, res, next) => {
-  passport.authenticate("local", (err, user, info) => {
+  passport.authenticate("local", (err, user) => {
     if (err) {
       return next(err);
     }

@@ -22,3 +22,38 @@ function alterarTipoInput(value) {
   novoInput.name = "senha";
   input.parentNode.replaceChild(novoInput, input);
 }
+
+const inputEmail = document.getElementById("email");
+inputEmail.addEventListener("input", () => {
+  retornaBordaOriginal(inputEmail);
+});
+const inputSenha = document.getElementById("senha");
+inputSenha.addEventListener("input", () => {
+  retornaBordaOriginal(inputSenha);
+});
+
+function verificaVazio(input, arr) {
+  if (input.value === "") {
+    input.style.border = "2px solid var(--cor-alerta)";
+    arr.push({Erro: "Erro"})
+  }
+}
+
+export function retornaBordaOriginal(input) {
+  if (input.value !== "") {
+    input.style.border = "1px solid #dddfe2";
+  }
+  console.log(input);
+}
+
+const btnLogar = document.getElementById("logar");
+
+btnLogar.addEventListener("click", (e) => {
+  let erros = []
+  verificaVazio(inputEmail, erros);
+  verificaVazio(inputSenha, erros);
+  if (erros.length >= 1) {
+    e.preventDefault()
+  }
+  erros = []
+});

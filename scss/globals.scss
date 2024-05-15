@@ -1,9 +1,10 @@
+@import "./colors/colors.scss";
+
 * {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
   font-family: "Poppins", sans-serif;
-
 }
 
 ::-webkit-scrollbar {
@@ -17,3 +18,19 @@
   border-radius: 5px; /* Borda arredondada do botão */
 }
 
+.alert {
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  height: 30px;
+  color: #fff;
+  font-weight: 600px;
+  font-size: 17px;
+}
+.alert-success {
+  background-color: $cor-sucesso;
+}
+
+.alert-danger {
+  background-color: $cor-falha;
+}

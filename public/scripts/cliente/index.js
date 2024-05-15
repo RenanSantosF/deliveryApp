@@ -1,4 +1,6 @@
 // Importações
+import { formataNumeroTelefone, verificaVazio, verificarSelectVazio, retornaBordaOriginal, formataCEP } from "./validacao.js";
+import { enviaPedido } from "./enviaPedido.js";
 
 const menu = document.getElementById("menu");
 const cartBtn = document.getElementById("cart-btn");
@@ -10,10 +12,9 @@ const closeModalBtn = document.getElementById("close-modal-btn");
 const cartCounter = document.getElementById("cart-count");
 const addressWarn = document.getElementById("address-warn");
 const containerEntrega = document.getElementById("containerEntrega");
+const nomeLoja = document.getElementById("nomeLoja");
 
-const addressInput = document.getElementById("address");
 const enderecoInputs = document.querySelectorAll("#containerEntrega input");
-const contatoInput = document.getElementById("contatoInput");
 const valorSubtotal = document.getElementById("valorSubtotal");
 
 const totalPedidoValor = document.getElementById("totalPedidoValor");
@@ -28,12 +29,13 @@ const complemento = document.getElementById("complemento");
 const pontoReferencia = document.getElementById("pontoReferencia");
 const cidade = document.getElementById("cidade");
 const uf = document.getElementById("uf");
+const inputNome = document.getElementById("inputNome");
 
 // Pegando dados Erros
 const phoneError = document.getElementById("phoneError");
-
+const ruaError = document.getElementById("ruaError");
 // pegando dados telefone
-const inputTelefone = document.getElementById("inputTelefone")
+const inputTelefone = document.getElementById("inputTelefone");
 
 let cart = [];
 let pedido = [];
@@ -118,7 +120,15 @@ function updateCartModal() {
       <div class="atributosItemCarrinho">
         <p class="spanItemName">${item.name}</p>
         <ul id="listAdicionais">
-        ${item.quantidadeNomeAdicionais.map((adicional) => `<li><p>${adicional.quantidade}</p>${adicional.nome} - ${adicional.valor}</li>`).join("")}
+        ${item.quantidadeNomeAdicionais
+          .map(
+            (adicional) =>
+              `<li><p>${adicional.quantidade}</p>${adicional.nome} - ${adicional.valor.toLocaleString("pt-BR", {
+                style: "currency",
+                currency: "BRL",
+              })}</li>`
+          )
+          .join("")}
       </ul>
         <p class="spanItemPrice">${valor.toLocaleString("pt-BR", {
           style: "currency",
@@ -426,10 +436,7 @@ function capturaProdutoParaModal(ev) {
         produtoModal.quantidadeNomeAdicionais.push({
           quantidade: objeto.quantidade,
           nome: objeto.nomeAdicional,
-          valor: parseFloat(objeto.valorAdicional).toLocaleString("pt-BR", {
-            style: "currency",
-            currency: "BRL",
-          }),
+          valor: parseFloat(objeto.valorAdicional),
         });
       }
       console.log(produtoModal);
@@ -650,9 +657,7 @@ function verificarSelecaoRetirada() {
     selecionaEntrega = false;
     animationDisplayClose(containerEntregaEndereco, "containerEntregaActive", "containerEntregaDisable");
 
-    setTimeout(() => {
-      containerRetiradaEndereco.classList.add("containerRetiradaActive");
-    }, 300);
+    containerRetiradaEndereco.classList.add("containerRetiradaActive");
   }
 
   meuSelect.selectedIndex = 0;
@@ -683,18 +688,14 @@ function verificarSelecaoEntrega() {
 
     animationDisplayClose(containerRetiradaEndereco, "containerRetiradaActive", "containerRetiradaDisable");
 
-    setTimeout(() => {
-      containerEntrega.classList.add("containerEntregaActive");
-    }, 300);
+    containerEntrega.classList.add("containerEntregaActive");
   }
 }
 
 function animationDisplayClose(element, classActive, classDisable) {
   element.classList.remove(`${classActive}`);
   element.classList.add(`${classDisable}`);
-  setTimeout(() => {
-    element.classList.remove(`${classDisable}`);
-  }, 300);
+  element.classList.remove(`${classDisable}`);
 }
 
 valorEntrega.textContent = "R$ 0,00";
@@ -748,6 +749,7 @@ function formaDePagamentoSelecionada() {
 //Finalizar pedido
 const confirmaEndereco = document.getElementById("confirmaEndereco");
 confirmaEndereco.addEventListener("click", () => {
+  let erros = [];
   // Validações
   const isOpen = checkRestaurantOpen();
   if (!isOpen) {
@@ -760,62 +762,9 @@ confirmaEndereco.addEventListener("click", () => {
       stopOnFocus: true,
       style: {
         background: "linear-gradient(90deg, rgba(255,95,109,1) 0%, rgba(196,91,38,1) 100%)",
+        borderRadius: "10px",
       },
     }).showToast();
-    return;
-  }
-
-  // Enviar pedido para a api
-  const cartItems = cart
-    .map((item) => {
-      const produtoString = `*Produto: ${item.name}*\n*Quantidade: (${item.quantityProduto})*\n*Preço: ${item.price.toLocaleString("pt-BR", {
-        style: "currency",
-        currency: "BRL",
-      })}*\n`;
-
-      const adicionaisString = item.quantidadeNomeAdicionais
-        .map((adicional) => {
-          return `_${adicional.quantidade} - ${adicional.nome}_`;
-        })
-        .join(", ");
-
-      return produtoString + (adicionaisString ? `*Adicionais:* ${adicionaisString}` : "");
-    })
-    .join("\n\n");
-
-  const endereco = {
-    cep: cep.value,
-    numero: numero.value,
-    pontoReferencia: pontoReferencia.value,
-    rua: rua.value,
-    Bairro: meuSelect.options[meuSelect.selectedIndex].text,
-    Cidade: cidade.value,
-    UF: uf.value,
-    contato: inputTelefone.value,
-  };
-
-  const enderecoFormatted = `
-    *Endereço de entrega:*
-    *Número: ${endereco.numero}*
-    Ponto de Referência: ${endereco.pontoReferencia}
-    *Rua: ${endereco.rua}*
-    *Bairro: ${endereco.Bairro}*
-    *Cidade: ${endereco.Cidade}*
-    *UF: ${endereco.UF}*
-    *Contato: ${endereco.contato}*
-`;
-
-  let totalPedido = 0;
-  cart.forEach((item) => {
-    totalPedido += item.valorTotalAdicional * item.quantityProduto + item.price * item.quantityProduto;
-  });
-
-  totalPedido += parseFloat(meuSelect.value);
-
-  // Pegando forma de pagamento
-  let selectedRadio = formaDePagamentoSelecionada();
-  if (selectedRadio === null) {
-    console.log("Nenhum rádio selecionado.");
     return;
   }
 
@@ -828,12 +777,215 @@ confirmaEndereco.addEventListener("click", () => {
       return "Retirada";
     }
   }
-
   let formaEntrega = entrega();
 
+  if (formaEntrega == "Entrega") {
+    verificaVazio(inputTelefone, erros);
+    verificaVazio(rua, erros);
+    verificaVazio(complemento, erros);
+    verificaVazio(numero, erros);
+    verificaVazio(cep, erros);
+    verificaVazio(pontoReferencia, erros);
+    verificaVazio(cidade, erros);
+    verificaVazio(uf, erros);
+    verificaVazio(inputNome, erros);
+    verificarSelectVazio(meuSelect, erros);
+
+    if (erros.length >= 1) {
+      Toastify({
+        text: "Verifique os campos vazios",
+        duration: 3000,
+        close: true,
+        gravity: "top",
+        position: "center",
+        stopOnFocus: true,
+        style: {
+          background: "linear-gradient(90deg, rgba(255,112,35,1) 0%, rgba(231,131,16,1) 100%)",
+          background: "rgb(255,112,35)",
+          borderRadius: "10px",
+        },
+      }).showToast();
+    }
+
+    setTimeout(() => {
+      erros = [];
+    }, 2000);
+  }
+
+  if (erros.length >= 1) {
+    return;
+  }
+
+  // Enviar pedido para a api
+  // const cartItems = cart
+  //   .map((item) => {
+  //     const produtoString = `*Produto: ${item.name}*\n*Quantidade: (${item.quantityProduto})*\n*Preço: ${item.price.toLocaleString("pt-BR", {
+  //       style: "currency",
+  //       currency: "BRL",
+  //     })}*\n`;
+
+  //     let totalAdicionais = 0;
+  //     const adicionaisString = item.quantidadeNomeAdicionais
+  //       .map((adicional) => {
+  //         const precoAdicional = parseFloat(adicional.valor) * adicional.quantidade;
+  //         console.log(adicional);
+  //         totalAdicionais += precoAdicional;
+  //         return `_${adicional.quantidade} - ${adicional.nome}_ (${precoAdicional.toLocaleString("pt-BR", {
+  //           style: "currency",
+  //           currency: "BRL",
+  //         })})`;
+  //       })
+  //       .join("\n");
+
+  //     const totalLanche = item.price + totalAdicionais;
+
+  //     return (
+  //       produtoString +
+  //       (adicionaisString ? `*Adicionais:*\n${adicionaisString}\n` : "") +
+  //       `*Total do Lanche: ${totalLanche.toLocaleString("pt-BR", {
+  //         style: "currency",
+  //         currency: "BRL",
+  //       })}*`
+  //     );
+  //   })
+  //   .join("\n\n");
+
+  // console.log(cartItems);
+
+  let taxa = meuSelect.value ? parseFloat(meuSelect.value) : 0;
+  let subtotal = 0;
+
+  const cartItems = cart
+    .map((item) => {
+      const produtoString = `*Produto: ${item.name}*\n*Quantidade: (${item.quantityProduto})*\n*Preço: ${item.price.toLocaleString("pt-BR", {
+        style: "currency",
+        currency: "BRL",
+      })}*\n`;
+
+      let totalAdicionais = 0;
+      const adicionaisString = item.quantidadeNomeAdicionais
+        .map((adicional) => {
+          const precoAdicional = parseFloat(adicional.valor) * adicional.quantidade;
+          totalAdicionais += precoAdicional;
+          return `_${adicional.quantidade} - ${adicional.nome}_ (${precoAdicional.toLocaleString("pt-BR", {
+            style: "currency",
+            currency: "BRL",
+          })})`;
+        })
+        .join("\n");
+
+      const totalLanche = item.price + totalAdicionais;
+      subtotal += totalLanche;
+
+      return (
+        produtoString +
+        (adicionaisString ? `*Adicionais:*\n${adicionaisString}\n` : "") +
+        `*Total do Lanche: ${totalLanche.toLocaleString("pt-BR", {
+          style: "currency",
+          currency: "BRL",
+        })}*`
+      );
+    })
+    .join("\n\n");
+
+  const total = subtotal + taxa;
+
+  const resumoFinal = `
+
+  *Taxa: ${taxa.toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  })}*
+  *Subtotal: ${subtotal.toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  })}*
+  *Total: ${total.toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  })}*
+`;
+
+  const mensagemFinal = `${cartItems}\n\n${resumoFinal}`;
+
+  console.log(mensagemFinal);
+
+  const endereco = {
+    cep: cep.value,
+    numero: numero.value,
+    pontoReferencia: pontoReferencia.value,
+    rua: rua.value,
+    Bairro: meuSelect.options[meuSelect.selectedIndex].text,
+    Cidade: cidade.value,
+    UF: uf.value,
+    contato: inputTelefone.value,
+  };
+
+  const loja = `
+    *${nomeLoja.textContent}*
+  `;
+
+  const enderecoFormatted = `
+    *Endereço de entrega:*
+    *Número: ${endereco.numero}*
+    *Ponto de Referência: ${endereco.pontoReferencia}
+    *Rua: ${endereco.rua}*
+    *Bairro: ${endereco.Bairro}*
+    *Cidade: ${endereco.Cidade}*
+    *UF: ${endereco.UF}*
+    *Contato: ${endereco.contato}*
+`;
+
+  let totalPedido = 0;
+  cart.forEach((item) => {
+    totalPedido += item.valorTotalAdicional * item.quantityProduto + item.price * item.quantityProduto;
+  });
+
+  if (formaEntrega == "Entrega") {
+    totalPedido += parseFloat(meuSelect.value);
+  }
+
+  // Pegando forma de pagamento
+  let selectedRadio = formaDePagamentoSelecionada();
+  if (selectedRadio === null) {
+    Toastify({
+      text: "Defina a forma de pagamento",
+      duration: 3000,
+      close: true,
+      gravity: "top",
+      position: "center",
+      stopOnFocus: true,
+      style: {
+        background: "linear-gradient(90deg, rgba(255,112,35,1) 0%, rgba(231,131,16,1) 100%)",
+        background: "rgb(255,112,35)",
+        borderRadius: "10px",
+      },
+    }).showToast();
+    return;
+  }
+
+  const pedido = {
+    nomeLoja: nomeLoja.textContent,
+    nome: inputNome.value,
+    telefone: inputTelefone.value,
+    valorTotal: totalPedido,
+    pagamento: selectedRadio.id,
+    entrega: formaEntrega,
+    numero: endereco.numero,
+    referencia: endereco.pontoReferencia,
+    rua: endereco.rua,
+    bairro: endereco.bairro,
+    cidade: endereco.cidade,
+    uf: endereco.UF,
+    taxa: taxa,
+    cart: cart,
+  };
+
   const phone = cartModal.dataset.contact;
+
   const pedidoFormatted = `
-    *Número de Telefone: ${phone}*
+  *Nome: ${inputNome.value}*
+    *Número de Telefone: ${inputTelefone.value}*
     *Valor Total do Pedido: ${totalPedido.toLocaleString("pt-BR", {
       style: "currency",
       currency: "BRL",
@@ -842,11 +994,13 @@ confirmaEndereco.addEventListener("click", () => {
     *Entrega ou Retirada? ${formaEntrega}*
   `;
 
-  let isEntrega = formaEntrega == "Retirada" ? `${pedidoFormatted}` : `${enderecoFormatted}\n\n${pedidoFormatted}`
+  let isEntrega = formaEntrega == "Retirada" ? `${pedidoFormatted}` : `${enderecoFormatted}\n\n${pedidoFormatted}`;
 
-  const message = encodeURIComponent(`${cartItems}\n\n${enderecoFormatted}\n\n${pedidoFormatted}`);
+  const message = encodeURIComponent(`${loja}\n\n${mensagemFinal}\n\n${isEntrega}`);
 
-  console.log(`${cartItems}\n\n${isEntrega}`);
+  enviaPedido(pedido);
+
+  console.log(`${loja}\n\n${mensagemFinal}\n\n${isEntrega}`);
 
   return;
   window.open(`https://wa.me/${phone}?text=${message} Endereço: Rua:${endereco.rua}, Nº:${endereco.numero}, Referência:${endereco.pontoReferencia}, Bairro: ${endereco.Bairro}, Cidade: ${endereco.Cidade}, UF: ${endereco.UF}`, "_blank");
@@ -854,3 +1008,28 @@ confirmaEndereco.addEventListener("click", () => {
   cart = [];
   updateCartModal();
 });
+
+inputTelefone.addEventListener("input", (e) => {
+  formataNumeroTelefone(e);
+});
+
+cep.addEventListener("input", (e) => {
+  formataCEP(e);
+});
+
+inputTelefone.addEventListener("input", () => retornaBordaOriginal(inputTelefone));
+rua.addEventListener("input", () => retornaBordaOriginal(rua));
+complemento.addEventListener("input", () => retornaBordaOriginal(complemento));
+cep.addEventListener("input", () => retornaBordaOriginal(cep));
+numero.addEventListener("input", () => retornaBordaOriginal(numero));
+pontoReferencia.addEventListener("input", () => retornaBordaOriginal(pontoReferencia));
+cidade.addEventListener("input", () => retornaBordaOriginal(cidade));
+uf.addEventListener("input", () => retornaBordaOriginal(uf));
+meuSelect.addEventListener("change", () => retornaBordaOriginal(meuSelect));
+inputNome.addEventListener("change", () => retornaBordaOriginal(inputNome));
+
+
+const pedidoConcluido = document.getElementById("pedidoConcluido")
+pedidoConcluido.addEventListener("click", () => {
+  pedidoConcluido.classList.remove("pedidoConcluidoActive")
+})
