@@ -1,0 +1,109 @@
+@import "../../colors/colors.scss";
+
+.body {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+form {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.label {
+  width: 90%;
+  font-size: 15px;
+  font-weight: 550;
+  color: $cor-texto-cinzaEscuro;
+  margin-top: 10px;
+  margin-bottom: 2px;
+}
+
+.title {
+  color: $cor-texto-cinzaEscuro;
+  width: 100%;
+  margin-bottom: 10px;
+  margin-left: 30px;
+}
+
+.card {
+  width: 95%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 5px;
+  padding: 10px 0 30px 0;
+}
+
+@media (min-width: 700px) {
+  .card {
+    width: 700px;
+  }
+}
+
+.select {
+  width: 90%;
+  border: 1.5px solid lightgrey;
+  border-radius: 7px;
+  height: 45px;
+  font-size: 15px;
+}
+
+.input {
+  width: 100%;
+  max-width: 90%;
+  height: 45px;
+  padding: 12px;
+  border-radius: 7px;
+  border: 1.5px solid lightgrey;
+  outline: none;
+  transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+  box-shadow: 0px 0px 20px -18px;
+}
+
+.input:hover {
+  border: 2px solid lightgrey;
+  box-shadow: 0px 0px 20px -17px;
+}
+
+.input:active {
+  transform: scale(0.95);
+}
+
+.input:focus {
+  border: 2px solid grey;
+}
+
+#btnEnviar {
+  padding: 12.5px 30px;
+  border: 0;
+  width: 70%;
+  border-radius: 10px;
+  background-color: #2ba8fb;
+  color: #ffffff;
+  font-weight: Bold;
+  font-size: 16px;
+  transition: all 0.5s;
+  -webkit-transition: all 0.5s;
+  margin-top: 20px;
+}
+
+#btnEnviar:hover {
+  background-color: #6fc5ff;
+  box-shadow: 0 0 20px #6fc5ff50;
+  transform: scale(1.1);
+}
+
+#btnEnviar:active {
+  background-color: #3d94cf;
+  transition: all 0.25s;
+  -webkit-transition: all 0.25s;
+  box-shadow: none;
+  transform: scale(0.98);
+}
+
+.required {
+  color: rgb(199, 0, 0);
+}

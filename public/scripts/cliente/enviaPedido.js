@@ -8,14 +8,13 @@ export function enviaPedido(pedido) {
   })
     .then((response) => response.json())
     .then((data) => {
-      const pedidoConcluido = document.getElementById("pedidoConcluido")
-      pedidoConcluido.classList.add("pedidoConcluidoActive")
+      console.log(data);
+      if (data.message === "enviado!") {
+        const pedidoConcluido = document.getElementById("pedidoConcluido");
+        pedidoConcluido.classList.add("pedidoConcluidoActive");
+      }
     })
     .catch((error) => {
       console.error("Erro ao enviar dados:", error);
     });
 }
-
-
-
-  

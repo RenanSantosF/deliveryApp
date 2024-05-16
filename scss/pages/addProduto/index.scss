@@ -1,0 +1,89 @@
+@import "../../colors/colors.scss";
+
+@import "./inputFile.scss";
+
+@import "./inputText.scss";
+
+@import "./inputCheckbox.scss";
+
+@import "./inputCadastrar.scss";
+
+.imagemSelecionada {
+  max-height: 300px;
+  border-radius: 10px;
+  opacity: 0.9;
+  // box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+}
+
+.card {
+  width: 95%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  // background-color: $cor-backgroundEndereco;
+  border-radius: 5px;
+  padding: 10px 0 30px 0;
+}
+
+form {
+  width: 100%;
+  justify-content: center;
+  display: flex;
+}
+
+@media (min-width: 700px) {
+  .card {
+    width: 700px;
+  }
+}
+
+.label {
+  width: 90%;
+  font-size: 15px;
+  font-weight: 550;
+  color: $cor-texto-cinzaEscuro;
+  margin-top: 10px;
+}
+
+.required {
+  color: rgb(199, 0, 0);
+}
+
+.select {
+  width: 90%;
+  border: 1.5px solid lightgrey;
+  border-radius: 7px;
+  height: 45px;
+  font-size: 15px;
+}
+
+.labelCategoriaAdicionais {
+  display: flex;
+  font-weight: 700;
+  color: $cor-texto-cinzaEscuro;
+  gap: 10px;
+  width: 90%;
+  margin: 8px 0 0 100px;
+}
+
+.labelAdicionais {
+  display: flex;
+  gap: 10px;
+  width: 90%;
+  margin: 8px 0 0 100px;
+}
+
+.labelAdicionais > span {
+  color: $cor-texto-cinzaEscuro;
+}
+
+.body {
+  width: 100%;
+}
+
+.title {
+  color: $cor-texto-cinzaEscuro;
+  width: 100%;
+  margin-bottom: 10px;
+  margin-left: 30px;
+}

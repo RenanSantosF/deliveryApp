@@ -24,6 +24,8 @@ require("./models/Pagamento");
 const Pagamento = mongoose.model("pagamentos");
 require("./models/Bairro");
 const Bairro = mongoose.model("bairros");
+require("./models/Pedido");
+const Pedido = mongoose.model("pedidos");
 
 // Configurações
 // Sessão
@@ -88,20 +90,17 @@ app.get("/", (req, res) => {
   res.send("principal");
 });
 
-app.post("/pedidos", (req, res) => {
-  const novoPedido = req.body;
-  console.log("Dados recebidos:", novoPedido);
+app.post("/pedidos", async (req, res) => {
+  try {
+    const dadosPedido = req.body;
+    const novoPedido = new Pedido(dadosPedido);
+    await novoPedido.save();
 
-  novoPedido
-    .save()
-    .then(() => {
-      
-      res.json({ message: "Dados recebidos e salvos com sucesso!", data: receivedData });
-    })
-    .catch((error) => {
-      console.error("Erro ao salvar os dados no MongoDB", error);
-      res.status(500).json({ message: "Erro ao salvar os dados no MongoDB", error });
-    });
+    res.status(201).json({ message: 'enviado!' });
+  } catch (error) {
+    console.error('Erro ao salvar pedido:', error);
+    res.status(500).json({ message: 'Erro ao salvar pedido', error });
+  }
 });
 
 // Página da loja, de exibir erro

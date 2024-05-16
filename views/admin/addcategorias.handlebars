@@ -1,20 +1,17 @@
-{{>_navbar}}
+{{!-- {{>_navbar}} --}}
 
 {{#each erros}}
   <div class="alert alert-danger">{{texto}}</div>
 {{else}}
 {{/each}}
 
-<div class="card">
-  <div class="card-body">
-      <form action="/{{loja}}/admin/categorias/nova" method="post">
-    <label for="nome">Nome: </label>
-      <input class="form-control" type="text" id="nome" name="nome" placeholder="nome da categoria">
-    <br>
-    <label for="slug">Slug: </label>
-      <input class="form-control" type="text" id="slug" name="slug" placeholder="Slug da categoria">
-    <br>
-    <button type="submit" class="btn btn-success">Criar categoria</button>
+<div class="body">
+  <form action="/{{loja}}/admin/categorias/nova" method="post">
+    <div class="card">
+      <h2 class="title">Cadastrar categoria</h2>
+      <label class="label"  for="nome">Nome<span class="required">*</span> </label>
+      <input class="input" type="text" id="nome" name="nome" placeholder="nome da categoria" />
+      <button id="btnEnviar" type="submit">Criar categoria</button>
+    </div>
   </form>
-  </div>
 </div>

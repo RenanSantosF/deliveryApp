@@ -1,29 +1,34 @@
-{{>_navbar}}
+{{!-- {{>_navbar}} --}}
 
 {{#each erros}}
   <div class="alert alert-danger">{{texto}}</div>
 {{else}}
 {{/each}}
 
-<div class="card">
-  <div class="card-body">
-      <form action="/{{loja}}/admin/adicionais/nova" method="post">
-    <label for="nome">Nome: </label>
-      <input class="form-control" type="text" id="nome" name="nome" placeholder="nome do adicional">
-    <br>
-    <label for="taxa">Taxa de entrega: </label>
-      <input class="form-control" type="text" id="taxa" name="taxa" placeholder="Taxa de entrega">
-    <br>
+<div class="body">
+  <form action="/{{loja}}/admin/adicionais/nova" method="post">
+    <div class="card">
+      <h2 class="title">Cadastrar adicional</h2>
+      <label class="label" for="nome">Nome<span class="required">*</span> </label>
+      <input class="input" type="text" id="nome" name="nome" />
+      <br />
+      <label class="label" for="taxa">Valor do Adicional<span class="required">*</span> </label>
+      <input class="input" type="text" id="valor" name="taxa" />
+      <br />
 
-    <select name="categoria">
-      {{#each categorias}}
-        <option value="{{nome}}">{{nome}}</option>
-      {{else}}
-        <option value="0">Nenhuma categoria registrada</option>
-      {{/each}}
-    </select>
+      <label class="label" for="categoria">Catetegoria<span class="required">*</span></label>
+      <select id="select" class="select" name="categoria">
+        <option value="">Selecione a categoria</option>
+        {{#each categorias}}
+          <option value="{{nome}}">{{nome}}</option>
+        {{else}}
+          <option value="">Cadastre uma categoria</option>
+        {{/each}}
+      </select>
 
-    <button type="submit" class="btn btn-success">Incluir Adicional</button>
+      <button type="submit" id="btnEnviar">Incluir Adicional</button>
+    </div>
   </form>
-  </div>
+
 </div>
+

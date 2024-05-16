@@ -816,42 +816,6 @@ confirmaEndereco.addEventListener("click", () => {
     return;
   }
 
-  // Enviar pedido para a api
-  // const cartItems = cart
-  //   .map((item) => {
-  //     const produtoString = `*Produto: ${item.name}*\n*Quantidade: (${item.quantityProduto})*\n*Preço: ${item.price.toLocaleString("pt-BR", {
-  //       style: "currency",
-  //       currency: "BRL",
-  //     })}*\n`;
-
-  //     let totalAdicionais = 0;
-  //     const adicionaisString = item.quantidadeNomeAdicionais
-  //       .map((adicional) => {
-  //         const precoAdicional = parseFloat(adicional.valor) * adicional.quantidade;
-  //         console.log(adicional);
-  //         totalAdicionais += precoAdicional;
-  //         return `_${adicional.quantidade} - ${adicional.nome}_ (${precoAdicional.toLocaleString("pt-BR", {
-  //           style: "currency",
-  //           currency: "BRL",
-  //         })})`;
-  //       })
-  //       .join("\n");
-
-  //     const totalLanche = item.price + totalAdicionais;
-
-  //     return (
-  //       produtoString +
-  //       (adicionaisString ? `*Adicionais:*\n${adicionaisString}\n` : "") +
-  //       `*Total do Lanche: ${totalLanche.toLocaleString("pt-BR", {
-  //         style: "currency",
-  //         currency: "BRL",
-  //       })}*`
-  //     );
-  //   })
-  //   .join("\n\n");
-
-  // console.log(cartItems);
-
   let taxa = meuSelect.value ? parseFloat(meuSelect.value) : 0;
   let subtotal = 0;
 
@@ -863,24 +827,38 @@ confirmaEndereco.addEventListener("click", () => {
       })}*\n`;
 
       let totalAdicionais = 0;
-      const adicionaisString = item.quantidadeNomeAdicionais
-        .map((adicional) => {
-          const precoAdicional = parseFloat(adicional.valor) * adicional.quantidade;
+      const categorizedAddons = {};
+
+      // Iterando sobre as categorias de adicionais
+      for (const category in item.listaAdicionais) {
+        categorizedAddons[category] = [];
+
+        // Iterando sobre os adicionais dentro de cada categoria
+        item.listaAdicionais[category].forEach((addon, index) => {
+          const precoAdicional = parseFloat(addon.valorAdicional) * addon.quantidade;
           totalAdicionais += precoAdicional;
-          return `_${adicional.quantidade} - ${adicional.nome}_ (${precoAdicional.toLocaleString("pt-BR", {
-            style: "currency",
-            currency: "BRL",
-          })})`;
-        })
-        .join("\n");
+          categorizedAddons[category].push(
+            `_${addon.quantidade} - ${addon.nomeAdicional}_ (R$ ${precoAdicional.toLocaleString("pt-BR", {
+              style: "currency",
+              currency: "BRL",
+            })})`
+          );
+        });
+      }
 
       const totalLanche = item.price + totalAdicionais;
       subtotal += totalLanche;
 
+      let adicionaisString = "";
+      // Exibindo os adicionais por categoria
+      for (const category in categorizedAddons) {
+        adicionaisString += `*${category.toUpperCase()}*\n${categorizedAddons[category].join("\n")}\n`;
+      }
+
       return (
         produtoString +
         (adicionaisString ? `*Adicionais:*\n${adicionaisString}\n` : "") +
-        `*Total do Lanche: ${totalLanche.toLocaleString("pt-BR", {
+        `*Total do pedido: ${totalLanche.toLocaleString("pt-BR", {
           style: "currency",
           currency: "BRL",
         })}*`
@@ -964,21 +942,29 @@ confirmaEndereco.addEventListener("click", () => {
     return;
   }
 
+  const dataAtual = new Date();
+  const dataFormatada = `${dataAtual.getDate().toString().padStart(2, "0")}/${(dataAtual.getMonth() + 1).toString().padStart(2, "0")}/${dataAtual.getFullYear()}`;
+  const horaFormatada = `${dataAtual.getHours().toString().padStart(2, "0")}:${dataAtual.getMinutes().toString().padStart(2, "0")}`;
+
+  console.log(`Data atual: ${dataFormatada} ${horaFormatada}`);
+
+  
   const pedido = {
     nomeLoja: nomeLoja.textContent,
     nome: inputNome.value,
     telefone: inputTelefone.value,
-    valorTotal: totalPedido,
+    valorTotal: totalPedido.toFixed(2),
     pagamento: selectedRadio.id,
-    entrega: formaEntrega,
+    entrega: formaEntrega == "Entrega" ? true : false,
     numero: endereco.numero,
     referencia: endereco.pontoReferencia,
     rua: endereco.rua,
-    bairro: endereco.bairro,
-    cidade: endereco.cidade,
+    bairro: meuSelect.options[meuSelect.selectedIndex].text,
+    cidade: endereco.Cidade,
     uf: endereco.UF,
     taxa: taxa,
     cart: cart,
+    data: `${dataFormatada} ${horaFormatada}`,
   };
 
   const phone = cartModal.dataset.contact;
@@ -999,6 +985,7 @@ confirmaEndereco.addEventListener("click", () => {
   const message = encodeURIComponent(`${loja}\n\n${mensagemFinal}\n\n${isEntrega}`);
 
   enviaPedido(pedido);
+  console.log(pedido);
 
   console.log(`${loja}\n\n${mensagemFinal}\n\n${isEntrega}`);
 
@@ -1028,8 +1015,7 @@ uf.addEventListener("input", () => retornaBordaOriginal(uf));
 meuSelect.addEventListener("change", () => retornaBordaOriginal(meuSelect));
 inputNome.addEventListener("change", () => retornaBordaOriginal(inputNome));
 
-
-const pedidoConcluido = document.getElementById("pedidoConcluido")
+const pedidoConcluido = document.getElementById("pedidoConcluido");
 pedidoConcluido.addEventListener("click", () => {
-  pedidoConcluido.classList.remove("pedidoConcluidoActive")
-})
+  pedidoConcluido.classList.remove("pedidoConcluidoActive");
+});

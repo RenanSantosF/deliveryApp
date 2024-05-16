@@ -1,21 +1,21 @@
-{{>_navbar}}
+{{!-- {{>_navbar}} --}}
 {{#each erros}}
   <div class="alert alert-danger">{{texto}}</div>
 {{else}}
 {{/each}}
 
-<div class="card">
-  <div class="card-body">
-    <form action="/{{loja}}/admin/bairros/edit" method="post">
-    <input type="hidden" name="id" value="{{bairro._id}}">
-      <label for="nome">Bairro: </label>
-        <input class="form-control" type="text" id="nome" name="nome" value="{{bairro.nome}}">
+<div class="body">
+  <form action="/{{loja}}/admin/bairros/edit" method="post">
+    <div class="card">
+      <h2 class="title">Cadastrar bairro</h2>
+      <input type="hidden" name="id" value="{{bairro._id}}" />
+      <label class="label" for="nome">Bairro<span class="required">*</span> </label>
+      <input class="input" type="text" id="nome" name="nome" value="{{bairro.nome}}" />
+      <label class="label" for="nome">Taxa de entrega<span class="required">*</span> </label>
+      <input class="input" type="text" id="valor" name="taxa" value="{{bairro.taxa}}" />
+      <br />
 
-      <label for="nome">Taxa de entrega: </label>
-        <input class="form-control" type="text" id="taxa" name="taxa" value="{{bairro.taxa}}">
-      <br>
-
-      <button type="submit" class="btn btn-success">Editar bairro</button>
-    </form>
-  </div>
+      <button id="btnEnviar" type="submit">Editar bairro</button>
+    </div>
+  </form>
 </div>

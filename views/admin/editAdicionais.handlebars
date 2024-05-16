@@ -1,30 +1,33 @@
-{{>_navbar}}
+{{!-- {{>_navbar}} --}}
 {{#each erros}}
   <div class="alert alert-danger">{{texto}}</div>
 {{else}}
 {{/each}}
 
-<div class="card">
-  <div class="card-body">
-    <form action="/{{loja}}/admin/adicionais/edit" method="post">
-    <input type="hidden" name="id" value="{{adicional._id}}">
-      <label for="nome">Nome: </label>
-        <input class="form-control" type="text" id="nome" name="nome" value="{{adicional.nome}}">
-      <br>
-      <label for="taxa">Taxa de entrega: </label>
-        <input class="form-control" type="text" id="slug" name="taxa" value="{{adicional.taxa}}">
-      <br>
-      
-      
-    <select name="categoria">
-      {{#each categorias}}
-        <option value="{{nome}}">{{nome}}</option>
-      {{else}}
-        <option value="0">Nenhuma categoria registrada</option>
-      {{/each}}
-    </select>
-      
-      <button type="submit" class="btn btn-success">Editar adicional</button>
-    </form>
-  </div>
+<div class="body">
+  <form action="/{{loja}}/admin/adicionais/edit" method="post">
+    <div class="card">
+      <h2 class="title">Editar adicional</h2>
+      <input class="input" type="hidden" name="id" value="{{adicional._id}}" />
+      <label class="label" for="nome">Nome<span class="required">*</span> </label>
+      <input class="input" type="text" id="nome" name="nome" value="{{adicional.nome}}" />
+      <br />
+      <label class="label" for="taxa">Taxa de entrega<span class="required">*</span> </label>
+      <input class="input" type="text" id="valor" name="taxa" value="{{adicional.taxa}}" />
+      <br />
+
+      <label class="label" for="categoria">Categoria<span class="required">*</span></label>
+      <select id="select" class="select" name="categoria">
+        <option value="">Selecione a categoria</option>
+        {{#each categorias}}
+          <option value="{{nome}}">{{nome}}</option>
+        {{else}}
+          <option value="">Registre uma categoria</option>
+        {{/each}}
+      </select>
+
+      <button id="btnEnviar" type="submit">Editar adicional</button>
+    </div>
+  </form>
+
 </div>

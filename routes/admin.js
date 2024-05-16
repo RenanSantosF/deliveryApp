@@ -12,6 +12,8 @@ require("../models/Pagamento");
 const Pagamento = mongoose.model("pagamentos");
 require("../models/Bairro");
 const Bairro = mongoose.model("bairros");
+require("../models/Pedido");
+const Pedido = mongoose.model("pedidos");
 
 const multer = require("multer");
 const path = require("path");
@@ -62,6 +64,8 @@ router.get("/categorias", UserAuth, eAdmin, (req, res) => {
 router.get("/categorias/add", UserAuth, eAdmin, (req, res) => {
   res.render("admin/addcategorias", {
     user: req.user,
+    css: "/css/pages/addCategoria/index.css",
+    script: "/scripts/addCategoria/index.js",
   });
 });
 
@@ -69,9 +73,6 @@ router.post("/categorias/nova", UserAuth, eAdmin, (req, res) => {
   let erros = [];
   if (!req.body.nome || typeof req.body.nome == undefined || req.body.nome == null) {
     erros.push({ texto: "Nome inválido" });
-  }
-  if (!req.body.slug || typeof req.body.slug == undefined || req.body.slug == null) {
-    erros.push({ texto: "Slug inválido" });
   }
   if (req.body.nome.length < 2) {
     erros.push({ texto: "Nome da categoria precisa ser maior" });
@@ -101,6 +102,8 @@ router.get("/categorias/edit/:id", UserAuth, eAdmin, (req, res) => {
       res.render("admin/editCategorias", {
         categoria: categoria,
         user: req.user,
+        css: "/css/pages/editCategoria/index.css",
+        script: "/scripts/editCategoria/index.js",
       });
     })
     .catch((err) => {
@@ -114,14 +117,11 @@ router.post("/categorias/edit", UserAuth, eAdmin, (req, res) => {
   if (!req.body.nome || typeof req.body.nome == undefined || req.body.nome == null) {
     erros.push({ texto: "Nome inválido" });
   }
-  if (!req.body.slug || typeof req.body.slug == undefined || req.body.slug == null) {
-    erros.push({ texto: "Slug inválido" });
-  }
   if (req.body.nome.length < 2) {
     erros.push({ texto: "Nome da categoria precisa ser maior" });
   }
   if (erros.length > 0) {
-    res.render("editCategorias", { erros: erros });
+    res.render("admin/editCategorias", { erros: erros });
     res.redirect(`/${req.user.nomeLoja}/admin/categorias/edit/${req.body.id}`);
   } else {
     Categoria.findOne({ _id: req.body.id })
@@ -168,6 +168,8 @@ router.get("/produtos", UserAuth, eAdmin, (req, res) => {
       res.render("admin/produtos", {
         produtos: produtos,
         user: req.user,
+        css: "/css/pages/produtos/index.css",
+        script: "/scripts/produtos/index.js",
       });
     })
     .catch((err) => {
@@ -183,9 +185,33 @@ router.get("/produtos/add", UserAuth, eAdmin, (req, res) => {
       Categoria.find({ nomeLoja: req.user.nomeLoja })
         .lean()
         .then((categorias) => {
+          function reorganizarPorCategoria(adicionais) {
+            // Objeto para armazenar os adicionais por categoria
+            const adicionaisPorCategoria = {};
+
+            // Iterar sobre os adicionais
+            adicionais.forEach((adicional) => {
+              // Verificar se a categoria já existe no objeto
+              if (!adicionaisPorCategoria.hasOwnProperty(adicional.categoria)) {
+                // Se não existir, criar um novo array para essa categoria
+                adicionaisPorCategoria[adicional.categoria] = [];
+              }
+              // Adicionar o adicional ao array correspondente à sua categoria
+              adicionaisPorCategoria[adicional.categoria].push(adicional);
+            });
+
+            return adicionaisPorCategoria;
+          }
+
+          // Chamar a função para reorganizar os adicionais por categoria
+          const adicionaisPorCategoria = reorganizarPorCategoria(adicionais);
+
+          // Exibir o resultado
+          console.log(adicionaisPorCategoria);
+
           res.render("admin/addProduto", {
             categorias: categorias,
-            adicionais: adicionais,
+            adicionais: adicionaisPorCategoria,
             css: "/css/pages/addProduto/index.css",
             script: "/scripts/addProdutos/index.js",
             user: req.user,
@@ -207,12 +233,6 @@ router.post("/produtos/nova", upload.single("imgProduto"), UserAuth, eAdmin, (re
   if (!req.body.titulo || typeof req.body.titulo == undefined || req.body.titulo == null) {
     erros.push({ texto: "Título inválido" });
   }
-  if (!req.body.slug || typeof req.body.slug == undefined || req.body.slug == null) {
-    erros.push({ texto: "Slug inválido" });
-  }
-  if (!req.body.descricao || typeof req.body.descricao == undefined || req.body.descricao == null) {
-    erros.push({ texto: "Descrição inválida" });
-  }
 
   if (!req.body.preco || typeof req.body.preco == undefined || req.body.preco == null) {
     erros.push({ texto: "Valor inválido" });
@@ -228,17 +248,19 @@ router.post("/produtos/nova", upload.single("imgProduto"), UserAuth, eAdmin, (re
     const adicionais = Array.isArray(req.body.adicionais) ? req.body.adicionais : [req.body.adicionais];
 
     for (let i = 0; i < adicionais.length; i++) {
-      novosAdicionais.push({
-        adicionais: adicionais[i],
-        precoAdicional: req.body.precoAdicional[i],
-        produtoReferido: req.body.titulo,
-        categoriaAdicional: req.body.categoriaAdicional[i],
-      });
+      if (adicionais[i]) {
+        novosAdicionais.push({
+          adicionais: adicionais[i],
+          precoAdicional: req.body.precoAdicional[i],
+          produtoReferido: req.body.titulo,
+          categoriaAdicional: req.body.categoriaAdicional[i],
+        });
+      }
     }
 
     const novaproduto = {
       titulo: req.body.titulo,
-      slug: req.body.slug,
+      // slug: req.body.slug,
       descricao: req.body.descricao,
       preco: req.body.preco,
       categoria: req.body.categoria,
@@ -269,12 +291,36 @@ router.get("/produtos/edit/:id", UserAuth, eAdmin, (req, res) => {
           Categoria.find({ nomeLoja: req.user.nomeLoja })
             .lean()
             .then((categorias) => {
+              function reorganizarPorCategoria(adicionais) {
+                // Objeto para armazenar os adicionais por categoria
+                const adicionaisPorCategoria = {};
+
+                // Iterar sobre os adicionais
+                adicionais.forEach((adicional) => {
+                  // Verificar se a categoria já existe no objeto
+                  if (!adicionaisPorCategoria.hasOwnProperty(adicional.categoria)) {
+                    // Se não existir, criar um novo array para essa categoria
+                    adicionaisPorCategoria[adicional.categoria] = [];
+                  }
+                  // Adicionar o adicional ao array correspondente à sua categoria
+                  adicionaisPorCategoria[adicional.categoria].push(adicional);
+                });
+
+                return adicionaisPorCategoria;
+              }
+
+              // Chamar a função para reorganizar os adicionais por categoria
+              const adicionaisPorCategoria = reorganizarPorCategoria(adicionais);
+
+              // Exibir o resultado
+              console.log(adicionaisPorCategoria);
+
               res.render("admin/editprodutos", {
                 categorias: categorias,
                 produto: produto,
-                adicionais: adicionais,
-                css: "/css/pages/editProdutos/index.css",
-                script: "/scripts/addProdutos/index.js",
+                adicionais: adicionaisPorCategoria,
+                css: "/css/pages/editProduto/index.css",
+                script: "/scripts/editProduto/index.js",
                 user: req.user,
               });
             })
@@ -313,7 +359,7 @@ router.post("/produto/edit", upload.single("imgProduto"), UserAuth, eAdmin, (req
       const preco = req.body.preco;
 
       produto.titulo = req.body.titulo;
-      produto.slug = req.body.slug;
+      // produto.slug = req.body.slug;
       produto.descricao = req.body.descricao;
       produto.categoria = req.body.categoria;
       produto.preco = preco;
@@ -374,6 +420,8 @@ router.get("/adicionais/add", UserAuth, eAdmin, (req, res) => {
       res.render("admin/addadicionais", {
         categorias: categorias,
         user: req.user,
+        css: "/css/pages/addAdicional/index.css",
+        script: "/scripts/addAdicional/index.js",
       });
     })
     .catch((err) => {
@@ -423,6 +471,8 @@ router.get("/adicionais/edit/:id", UserAuth, eAdmin, (req, res) => {
             adicional: adicional,
             categorias: categorias,
             user: req.user,
+            css: "/css/pages/editAdicional/index.css",
+            script: "/scripts/editAdicional/index.js",
           });
         })
         .catch((err) => {
@@ -493,6 +543,8 @@ router.get("/pagamentos", UserAuth, eAdmin, (req, res) => {
       res.render("admin/pagamentos", {
         pagamentos: pagamentos,
         user: req.user,
+        css: "/css/pages/pagamento/index.css",
+        script: "/scripts/pagamento/index.js",
       });
     })
     .catch((err) => {
@@ -505,6 +557,8 @@ router.get("/pagamentos/add", UserAuth, eAdmin, (req, res) => {
   try {
     res.render("admin/addpagamentos", {
       user: req.user,
+      css: "/css/pages/addPagamento/index.css",
+      script: "/scripts/addPagamento/index.js",
     });
   } catch (error) {
     console.log(error);
@@ -544,6 +598,8 @@ router.get("/pagamentos/edit/:id", UserAuth, eAdmin, (req, res) => {
       res.render("admin/editpagamentos", {
         pagamento: pagamento,
         user: req.user,
+        css: "/css/pages/editPagamento/index.css",
+        script: "/scripts/editPagamento/index.js",
       });
     })
     .catch((err) => {
@@ -618,6 +674,8 @@ router.get("/bairros/add", UserAuth, eAdmin, (req, res) => {
   try {
     res.render("admin/addbairros", {
       user: req.user,
+      css: "/css/pages/addBairro/index.css",
+      script: "/scripts/addBairro/index.js",
     });
   } catch (error) {
     console.log(error);
@@ -658,6 +716,8 @@ router.get("/bairros/edit/:id", UserAuth, eAdmin, (req, res) => {
       res.render("admin/editbairros", {
         bairro: bairro,
         user: req.user,
+        css: "/css/pages/editBairro/index.css",
+        script: "/scripts/editBairro/index.js",
       });
     })
     .catch((err) => {
@@ -708,6 +768,38 @@ router.post("/bairros/deletar", UserAuth, eAdmin, (req, res) => {
     .catch((err) => {
       req.flash("error_msg", "Houve um erro ao deletar o bairro!");
       res.redirect(`/${req.user.nomeLoja}/admin/bairros`);
+    });
+});
+
+//Bairros
+router.get("/pedidos", UserAuth, eAdmin, (req, res) => {
+  Pedido.find({ nomeLoja: req.user.nomeLoja })
+    .sort({ date: "desc" })
+    .lean()
+    .then((pedidos) => {
+      res.render("admin/pedidos", {
+        pedidos: pedidos,
+        nomeLoja: req.user.nomeLoja,
+        css: "/css/pages/pedidos/index.css",
+        script: "/scripts/pedidos/index.js",
+      });
+    })
+    .catch((err) => {
+      req.flash("error_msg", "Houve um erro ao listar os pedidos");
+      res.redirect(`"/${req.user.nomeLoja}/admin`);
+    });
+});
+
+router.get("/pedidosAPI", UserAuth, eAdmin, (req, res) => {
+  Pedido.find({ nomeLoja: req.user.nomeLoja })
+    .sort({ date: "desc" })
+    .lean()
+    .then((pedidos) => {
+      res.send({ pedidos: pedidos });
+    })
+    .catch((err) => {
+      req.flash("error_msg", "Houve um erro ao listar os pedidos");
+      res.redirect(`"/${req.user.nomeLoja}/admin`);
     });
 });
 

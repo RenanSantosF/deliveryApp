@@ -14,8 +14,7 @@ const storage = multer.diskStorage({
     cb(null, "public/uploads/");
   },
   filename: function (req, file, cb) {
-    const uniqueFileName =
-      file.fieldname + "-" + Date.now() + path.extname(file.originalname);
+    const uniqueFileName = file.fieldname + "-" + Date.now() + path.extname(file.originalname);
     cb(null, uniqueFileName);
   },
 });
@@ -38,25 +37,13 @@ router.post(
   (req, res) => {
     let erros = [];
 
-    if (
-      !req.body.nome ||
-      typeof req.body.nome == undefined ||
-      req.body.nome == null
-    ) {
+    if (!req.body.nome || typeof req.body.nome == undefined || req.body.nome == null) {
       erros.push({ texto: "Nome inválido" });
     }
-    if (
-      !req.body.email ||
-      typeof req.body.email == undefined ||
-      req.body.email == null
-    ) {
+    if (!req.body.email || typeof req.body.email == undefined || req.body.email == null) {
       erros.push({ texto: "Email inválido" });
     }
-    if (
-      !req.body.senha ||
-      typeof req.body.senha == undefined ||
-      req.body.senha == null
-    ) {
+    if (!req.body.senha || typeof req.body.senha == undefined || req.body.senha == null) {
       erros.push({ texto: "Senha inválida" });
     }
     if (req.body.senha.length < 4) {
@@ -73,10 +60,7 @@ router.post(
         .lean()
         .then((usuario) => {
           if (usuario) {
-            req.flash(
-              "error_msg",
-              "Já existe uma conta com este email no nosso sistema"
-            );
+            req.flash("error_msg", "Já existe uma conta com este email no nosso sistema");
             res.redirect("/usuarios/registro");
           } else {
             const novoUsuario = new Usuario({
@@ -112,10 +96,7 @@ router.post(
             bcrypt.genSalt(10, (erro, salt) => {
               bcrypt.hash(novoUsuario.senha, salt, (erro, hash) => {
                 if (erro) {
-                  req.flash(
-                    "error_msg",
-                    "Houve um erro durante o salvamento de usuário"
-                  );
+                  req.flash("error_msg", "Houve um erro durante o salvamento de usuário");
                   res.redirect("/");
                 } else {
                   novoUsuario.senha = hash;
@@ -126,10 +107,7 @@ router.post(
                       res.redirect("/");
                     })
                     .catch((err) => {
-                      req.flash(
-                        "error_msg",
-                        "Houve um erro  ao criar o usuario, tente novamente!"
-                      );
+                      req.flash("error_msg", "Houve um erro  ao criar o usuario, tente novamente!");
                       res.redirect("/usuarios/registro");
                     });
                 }
@@ -158,7 +136,9 @@ router.post("/cadastrar", (req, res) => {
 
 router.get("/logout", (req, res, next) => {
   req.logout((err) => {
-    if (err) { return next(err); }
+    if (err) {
+      return next(err);
+    }
     req.flash("success_msg", "Deslogado com sucesso");
     res.redirect("/usuarios/login");
   });
@@ -177,7 +157,7 @@ router.post("/login", (req, res, next) => {
       if (err) {
         return next(err);
       }
-      const userRoute = `/${req.user.nomeLoja}/admin`;
+      const userRoute = `/${req.user.nomeLoja}/admin/pagamentos/`;
       return res.redirect(userRoute);
     });
   })(req, res, next);

@@ -1,45 +1,77 @@
-{{>_navbar}}
+{{!-- {{>_navbar}} --}}
 {{#each erros}}
   <div class="alert alert-danger">{{texto}}</div>
 {{else}}
 {{/each}}
 
-<div class="card">
-  <div class="card-body">
+<div>
+  <div class="body">
     <form action="/{{loja}}/admin/produto/edit" method="post" enctype="multipart/form-data">
-      <input type="hidden" value="{{produto._id}}" name="id">
-      <label for="titulo">Título: </label>
-        <input type="text" name="titulo" value="{{produto.titulo}}">
-      <label for="slug">Slug: </label>
-        <input type="text" name="slug" value="{{produto.slug}}">
-      <label for="descricao">Descrição: </label>
-        <input type="text" name="descricao" value="{{produto.descricao}}">
-      <label for="preco">Preço: </label>
-        <input name="preco" value="{{produto.preco}}">
-      <label for="preco">Imagem: </label>
-        <input type="file" name="imgProduto">
-        <label for="categoria">Categoria: </label>
-        <select name="categoria">
-          {{#each categorias}}
-          <option value="{{_id}}">{{nome}}</option>
+      <div class="card">
+        <h2 class="title">Editar Produto</h2>
+
+        <label class="custum-file-upload" for="file">
+
+          <input type="file" id="file" name="imgProduto" accept="image/*" />
+          {{#if produto.imgProduto}}
+
+            <img id="imagemSelecionada" src="/uploads/{{produto.imgProduto}}" class="imagemSelecionada" alt="Imagem selecionada" />
           {{else}}
-          <option value="0">Nenhuma categoria registrada</option>
+            <div id="svg" class="icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="" viewBox="0 0 24 24"><g stroke-width="0" id="SVGRepo_bgCarrier"></g><g stroke-linejoin="round" stroke-linecap="round" id="SVGRepo_tracerCarrier"></g><g id="SVGRepo_iconCarrier"> <path fill="" d="M10 1C9.73478 1 9.48043 1.10536 9.29289 1.29289L3.29289 7.29289C3.10536 7.48043 3 7.73478 3 8V20C3 21.6569 4.34315 23 6 23H7C7.55228 23 8 22.5523 8 22C8 21.4477 7.55228 21 7 21H6C5.44772 21 5 20.5523 5 20V9H10C10.5523 9 11 8.55228 11 8V3H18C18.5523 3 19 3.44772 19 4V9C19 9.55228 19.4477 10 20 10C20.5523 10 21 9.55228 21 9V4C21 2.34315 19.6569 1 18 1H10ZM9 7H6.41421L9 4.41421V7ZM14 15.5C14 14.1193 15.1193 13 16.5 13C17.8807 13 19 14.1193 19 15.5V16V17H20C21.1046 17 22 17.8954 22 19C22 20.1046 21.1046 21 20 21H13C11.8954 21 11 20.1046 11 19C11 17.8954 11.8954 17 13 17H14V16V15.5ZM16.5 11C14.142 11 12.2076 12.8136 12.0156 15.122C10.2825 15.5606 9 17.1305 9 19C9 21.2091 10.7909 23 13 23H20C22.2091 23 24 21.2091 24 19C24 17.1305 22.7175 15.5606 20.9844 15.122C20.7924 12.8136 18.858 11 16.5 11Z" clip-rule="evenodd" fill-rule="evenodd"></path> </g></svg>
+            </div>
+            <div id="span" class="text">
+              <span>Selecionar imagem</span>
+            </div>
+            <img id="imagemSelecionada" class="imagemSelecionada" alt="Imagem selecionada" style="display: none;" />
+          {{/if}}
+
+        </label>
+
+        <input class="input" type="hidden" value="{{produto._id}}" name="id" />
+        <label class="label" for="titulo">Título<span class="required">*</span> </label>
+        <input class="input" type="text" id="titulo" name="titulo" value="{{produto.titulo}}" />
+        <label class="label" for="slug">Slug</label>
+        <input class="input" type="text" name="slug" value="{{produto.slug}}" />
+        <label class="label" for="descricao">Descrição</label>
+        <input class="input" type="text" name="descricao" value="{{produto.descricao}}" />
+        <label class="label" for="preco">Preço<span class="required">*</span></label>
+        <input class="input" name="preco" id="inputValue" value="{{produto.preco}}" />
+        <label class="label" for="categoria">Categoria<span class="required">*</span></label>
+        <select id="select" class="select" name="categoria">
+          <option value="">Selecione a categoria</option>
+          {{#each categorias}}
+            <option value="{{_id}}">{{nome}}</option>
+          {{else}}
+            <option value="0">Nenhuma categoria registrada</option>
           {{/each}}
         </select>
 
-        <label for="adicionais">Adicionais: </label>
-        {{#each adicionais}} 
-          <label for="{{_id}}">
-            <input class="adicional" type="checkbox" value="{{nome}}" name="adicionais">
-            <input type="text" name="precoAdicional" value="{{taxa}}" style="display: none;">
-            <input type="text" name="categoriaAdicional" value="{{categoria}}" style="display: none;">
-            {{nome}}
-          </label>  
+        <label class="label" for="adicionais">Adicionais: </label>
+        {{#each adicionais}}
+          <span class="labelCategoriaAdicionais">{{@key}}</span>
+          <!-- Exibe o nome da categoria -->
+
+          {{#each this}}
+            <!-- Itera sobre os adicionais dentro da categoria -->
+            <label class="labelAdicionais" for="{{_id}}">
+              <label class="container">
+                <input value="{{nome}}" name="adicionais" type="checkbox" />
+                <div class="checkmark"></div>
+              </label>
+
+              <input type="text" name="precoAdicional" value="{{taxa}}" style="display: none;" />
+              <input type="text" name="categoriaAdicional" value="{{categoria}}" style="display: none;" />
+              <span>{{nome}}</span>
+            </label>
+          {{/each}}
+
         {{else}}
           <option value="0">Nenhum adicional encontrado, cadastre algum.</option>
         {{/each}}
 
         <button id="btnEnviar" type="submit">Editar produto</button>
+      </div>
     </form>
   </div>
 </div>
