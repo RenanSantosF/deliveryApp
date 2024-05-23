@@ -39,6 +39,11 @@ body {
   flex-direction: column;
 }
 
+.spanPagamento {
+  font-size: 17px;
+  color: $cor-texto-cinzaEscuro;
+}
+
 .nome > h2 {
   font-weight: 400;
   font-size: 16px;

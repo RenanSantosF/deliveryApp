@@ -4,28 +4,24 @@ const Schema = mongoose.Schema;
 const Produto = new Schema({
   nomeLoja: {
     type: String,
-    require: true,
+    required: true,
   },
   titulo: {
     type: String,
-    require: true,
-  },
-  slug: {
-    type: String,
-    require: true,
+    required: true,
   },
   preco: {
     type: String,
-    require: true,
+    required: true,
   },
   descricao: {
     type: String,
-    require: true,
+    required: true,
   },
   categoria: {
     type: Schema.Types.ObjectId,
     ref: "categorias",
-    require: true,
+    required: true,
   },
   data: {
     type: Date,
@@ -40,6 +36,8 @@ const Produto = new Schema({
       precoAdicional: String,
       produtoReferido: String,
       categoriaAdicional: String,
+      minAdicionais: Number, // Adicionando campo para mínimo de adicionais
+      maxAdicionais: Number, // Adicionando campo para máximo de adicionais
     },
   ],
 });

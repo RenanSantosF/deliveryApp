@@ -48,7 +48,7 @@
         </select>
 
         <label class="label" for="adicionais">Adicionais: </label>
-        {{#each adicionais}}
+        {{!-- {{#each adicionais}}
           <span class="labelCategoriaAdicionais">{{@key}}</span>
           <!-- Exibe o nome da categoria -->
 
@@ -68,9 +68,45 @@
 
         {{else}}
           <option value="0">Nenhum adicional encontrado, cadastre algum.</option>
+        {{/each}} --}}
+
+
+                {{#each adicionais}}
+          <span class="labelCategoriaAdicionais">{{@key}}</span>
+          <!-- Exibe o nome da categoria -->
+
+          <div>
+            <!-- Inputs para definir quantidade mínima e máxima de adicionais selecionáveis -->
+            <label for="minAdicionais-{{@key}}">
+              Mínimo:
+              <input type="number" id="minAdicionais-{{@key}}" name="minAdicionais-{{@key}}" min="0" />
+            </label>
+            <label for="maxAdicionais-{{@key}}">
+              Máximo:
+              <input type="number" id="maxAdicionais-{{@key}}" name="maxAdicionais-{{@key}}" min="0" />
+            </label>
+          </div>
+
+          {{#each this}}
+            <!-- Itera sobre os adicionais dentro da categoria -->
+            <label class="labelAdicionais" for="{{_id}}">
+              <label class="container">
+                <input value="{{nome}}" name="adicionais-{{@../key}}" type="checkbox" />
+                <div class="checkmark"></div>
+              </label>
+
+              <input type="text" name="precoAdicional" value="{{taxa}}" style="display: none;" />
+              <input type="text" name="categoriaAdicional" value="{{categoria}}" style="display: none;" />
+              <span>{{nome}}</span>
+            </label>
+          {{/each}}
+
+        {{else}}
+          <option value="0">Nenhum adicional encontrado, cadastre algum.</option>
         {{/each}}
 
         <button id="btnEnviar" type="submit">Editar produto</button>
+
       </div>
     </form>
   </div>

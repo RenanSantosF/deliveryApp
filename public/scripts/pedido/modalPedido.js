@@ -41,19 +41,6 @@ export function modalPedido(dataPedido, pedidos) {
     addElement(modalDetalhes, "h3", `${item.quantityProduto}x - ${item.name}`);
     // addElement(modalDetalhes, "p", `Qnt: ${item.quantityProduto}`);
 
-    // // Adicionando adicionais
-    // if (item.quantidadeNomeAdicionais.length >= 1) {
-    //   const adicionaisDiv = document.createElement("div");
-    //   adicionaisDiv.innerHTML = `<span>Adicionais</span>`;
-    //   adicionaisDiv.classList.add("divAdicionais");
-    //   item.quantidadeNomeAdicionais.forEach((adicional) => {
-    //     addElement(adicionaisDiv, "p", `${adicional.nome}`);
-    //     addElement(adicionaisDiv, "p", `Qnt: ${adicional.quantidade}`);
-    //     addElement(adicionaisDiv, "p", `Valor: ${adicional.valor}`);
-    //   });
-    //   modalDetalhes.appendChild(adicionaisDiv);
-    // }
-
     modalContainer.classList.add("active");
 
     // Adicionais mapeados
@@ -116,7 +103,7 @@ export function modalPedido(dataPedido, pedidos) {
   modalDetalhes.appendChild(totalDiv);
 
   addElement(modalDetalhes, "p", "Forma de pagamento", "separador");
-  addElement(modalDetalhes, "p", `Pagamento: ${pedido.pagamento}`);
+  addElement(modalDetalhes, "p", `${pedido.pagamento}`, "spanPagamento");
 }
 
 // Adicionando eventListener ao botão de fechar após a criação do botão
