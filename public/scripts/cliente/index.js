@@ -948,11 +948,13 @@ confirmaEndereco.addEventListener("click", () => {
 
   console.log(`Data atual: ${dataFormatada} ${horaFormatada}`);
 
-  
+  const telefoneFormatado = inputTelefone.value.replace(/\D/g, ''); 
   const pedido = {
     nomeLoja: nomeLoja.textContent,
     nome: inputNome.value,
-    telefone: inputTelefone.value,
+    telefone: telefoneFormatado,
+    taxa: taxa,
+    subtotal: subtotal,
     valorTotal: totalPedido.toFixed(2),
     pagamento: selectedRadio.id,
     entrega: formaEntrega == "Entrega" ? true : false,
@@ -962,7 +964,6 @@ confirmaEndereco.addEventListener("click", () => {
     bairro: meuSelect.options[meuSelect.selectedIndex].text,
     cidade: endereco.Cidade,
     uf: endereco.UF,
-    taxa: taxa,
     cart: cart,
     data: `${dataFormatada} ${horaFormatada}`,
   };

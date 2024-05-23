@@ -25,10 +25,22 @@ body {
   align-items: center;
 }
 
+.titulo > h2 {
+  font-weight: 700;
+  font-size: 18px;
+  color: $cor-texto-cinzaEscuro;
+}
+
 .nome > h2 {
   font-weight: 400;
   font-size: 16px;
   color: $cor-texto-cinzaEscuro;
+}
+
+.taxa > h2 {
+  font-weight: 700;
+  font-size: 18px;
+  color: #47a2e4;
 }
 
 .card {

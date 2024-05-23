@@ -53,6 +53,8 @@ router.get("/categorias", UserAuth, eAdmin, (req, res) => {
         categorias: categorias,
         usuarioAtual: req.user.nomeLoja,
         user: req.user,
+        css: "/css/pages/categoria/index.css",
+        script: "/scripts/categoria/index.js",
       });
     })
     .catch((err) => {
@@ -88,7 +90,6 @@ router.post("/categorias/nova", UserAuth, eAdmin, (req, res) => {
     try {
       new Categoria(novaCategoria).save();
       res.redirect(`/${req.user.nomeLoja}/admin/categorias`);
-      req.flash("success_msg", "Categoria criada com sucesso!");
     } catch (error) {
       req.flash("error_msg", "Houve um erro ao salvar a categoria!");
     }
@@ -130,7 +131,6 @@ router.post("/categorias/edit", UserAuth, eAdmin, (req, res) => {
         categoria
           .save()
           .then(() => {
-            req.flash("success_msg", "Categoria editada com sucesso!");
             res.redirect(`/${req.user.nomeLoja}/admin/categorias`);
           })
           .catch((err) => {
@@ -148,7 +148,6 @@ router.post("/categorias/edit", UserAuth, eAdmin, (req, res) => {
 router.post("/categorias/deletar", UserAuth, eAdmin, (req, res) => {
   Categoria.deleteOne({ _id: req.body.id })
     .then(() => {
-      req.flash("success_msg", "Categoria deletada com sucesso!");
       res.redirect(`/${req.user.nomeLoja}/admin/categorias`);
     })
     .catch((err) => {
@@ -168,8 +167,8 @@ router.get("/produtos", UserAuth, eAdmin, (req, res) => {
       res.render("admin/produtos", {
         produtos: produtos,
         user: req.user,
-        css: "/css/pages/produtos/index.css",
-        script: "/scripts/produtos/index.js",
+        css: "/css/pages/produto/index.css",
+        script: "/scripts/produto/index.js",
       });
     })
     .catch((err) => {
@@ -267,11 +266,11 @@ router.post("/produtos/nova", upload.single("imgProduto"), UserAuth, eAdmin, (re
       nomeLoja: req.user.nomeLoja,
       imgProduto: req.generatedFileName,
       adicionais: novosAdicionais,
+      
     };
     new Produto(novaproduto)
       .save()
       .then(() => {
-        req.flash("success_msg", "produto criado com sucesso!");
         res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
       })
       .catch((err) => {
@@ -370,7 +369,6 @@ router.post("/produto/edit", upload.single("imgProduto"), UserAuth, eAdmin, (req
       produto
         .save()
         .then(() => {
-          req.flash("success_msg", "produto editada com sucesso!");
           res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
         })
         .catch((err) => {
@@ -387,7 +385,6 @@ router.post("/produto/edit", upload.single("imgProduto"), UserAuth, eAdmin, (req
 router.get("/produtos/deletar/:id", UserAuth, eAdmin, (req, res) => {
   Produto.deleteOne({ _id: req.params.id })
     .then(() => {
-      req.flash("success_msg", "produto deletada");
       res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
     })
     .catch((err) => {
@@ -405,6 +402,8 @@ router.get("/adicionais", UserAuth, eAdmin, (req, res) => {
       res.render("admin/adicionais", {
         adicionais: adicionais,
         user: req.user,
+        css: "/css/pages/adicional/index.css",
+        script: "/scripts/adicional/index.js",
       });
     })
     .catch((err) => {
@@ -453,7 +452,6 @@ router.post("/adicionais/nova", UserAuth, eAdmin, (req, res) => {
     try {
       new Adicional(novoAdicional).save();
       res.redirect(`/${req.user.nomeLoja}/admin/adicionais`);
-      req.flash("success_msg", "Adicional registrado com sucesso!");
     } catch (error) {
       req.flash("error_msg", "Houve um erro ao adicionar o adicional!");
     }
@@ -507,7 +505,6 @@ router.post("/adicionais/edit", UserAuth, eAdmin, (req, res) => {
         adicional
           .save()
           .then(() => {
-            req.flash("success_msg", "Adicional editado com sucesso!");
             res.redirect(`/${req.user.nomeLoja}/admin/adicionais`);
           })
           .catch((err) => {
@@ -525,7 +522,6 @@ router.post("/adicionais/edit", UserAuth, eAdmin, (req, res) => {
 router.post("/adicionais/deletar", UserAuth, eAdmin, (req, res) => {
   Adicional.deleteOne({ _id: req.body.id })
     .then(() => {
-      req.flash("success_msg", "Adicional deletado com sucesso!");
       res.redirect(`/${req.user.nomeLoja}/admin/adicionais`);
     })
     .catch((err) => {
@@ -584,7 +580,6 @@ router.post("/pagamentos/nova", UserAuth, eAdmin, (req, res) => {
     try {
       new Pagamento(novoPagamento).save();
       res.redirect(`/${req.user.nomeLoja}/admin/pagamentos`);
-      req.flash("success_msg", "Forma de pagamento registrada com sucesso!");
     } catch (error) {
       req.flash("error_msg", "Houve um erro ao cadastrar a forma de pagamento!");
     }
@@ -626,7 +621,6 @@ router.post("/pagamentos/edit", UserAuth, eAdmin, (req, res) => {
           pagamento
             .save()
             .then(() => {
-              req.flash("success_msg", "Forma de pagamento atualizada!");
               res.redirect(`/${req.user.nomeLoja}/admin/pagamentos`);
             })
             .catch((err) => {
@@ -642,9 +636,8 @@ router.post("/pagamentos/edit", UserAuth, eAdmin, (req, res) => {
 });
 
 router.post("/pagamentos/deletar", UserAuth, eAdmin, (req, res) => {
-  Adicional.deleteOne({ _id: req.body.id })
+  Pagamento.deleteOne({ _id: req.body.id })
     .then(() => {
-      req.flash("success_msg", "Forma de pagamento deletada com sucesso!");
       res.redirect(`/${req.user.nomeLoja}/admin/pagamentos`);
     })
     .catch((err) => {
@@ -662,6 +655,8 @@ router.get("/bairros", UserAuth, eAdmin, (req, res) => {
       res.render("admin/bairros", {
         bairros: bairros,
         user: req.user,
+        css: "/css/pages/bairro/index.css",
+        script: "/scripts/bairro/index.js",
       });
     })
     .catch((err) => {
@@ -702,7 +697,6 @@ router.post("/bairros/nova", UserAuth, eAdmin, (req, res) => {
     try {
       new Bairro(novoBairro).save();
       res.redirect(`/${req.user.nomeLoja}/admin/bairros`);
-      req.flash("success_msg", "Bairro registrado com sucesso!");
     } catch (error) {
       req.flash("error_msg", "Houve um erro ao cadastrar o bairro!");
     }
@@ -744,7 +738,6 @@ router.post("/bairros/edit", UserAuth, eAdmin, (req, res) => {
         bairro
           .save()
           .then(() => {
-            req.flash("success_msg", "Bairro atualizado!");
             res.redirect(`/${req.user.nomeLoja}/admin/bairros`);
           })
           .catch((err) => {
@@ -762,7 +755,6 @@ router.post("/bairros/edit", UserAuth, eAdmin, (req, res) => {
 router.post("/bairros/deletar", UserAuth, eAdmin, (req, res) => {
   Bairro.deleteOne({ _id: req.body.id })
     .then(() => {
-      req.flash("success_msg", "Bairro deletado com sucesso!");
       res.redirect(`/${req.user.nomeLoja}/admin/bairros`);
     })
     .catch((err) => {
@@ -780,8 +772,9 @@ router.get("/pedidos", UserAuth, eAdmin, (req, res) => {
       res.render("admin/pedidos", {
         pedidos: pedidos,
         nomeLoja: req.user.nomeLoja,
-        css: "/css/pages/pedidos/index.css",
-        script: "/scripts/pedidos/index.js",
+        user: req.user,
+        css: "/css/pages/pedido/index.css",
+        script: "/scripts/pedido/index.js",
       });
     })
     .catch((err) => {

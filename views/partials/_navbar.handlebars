@@ -1,32 +1,48 @@
-<nav>
-  <div>
-    <a href="">Menu</a>
-    <button>
-      <span></span>
-    </button>
-    <div>
-      <ul>
+<header class="header">
+  <div class="logo">{{nomeLojaExibicao}}</div>
+  <input type="checkbox" id="nav_check" hidden />
+  <nav>
+    <ul>
+      <li>
+        <a href="/{{loja}}/admin/" class="active">Home</a>
+      </li>
+      <li>
+        <a href="/{{loja}}/admin/pedidos">Pedidos</a>
+      </li>
+      <li>
+        <a href="/{{loja}}/admin/categorias">Categorias</a>
+      </li>
+      <li>
+        <a href="/{{loja}}/admin/pagamentos">Formas de pagamento</a>
+      </li>
+      <li>
+        <a href="/{{loja}}/admin/produtos">Produtos</a>
+      </li>
+      <li>
+        <a href="/{{loja}}/admin/adicionais">Adicionais</a>
+      </li>
+      <li>
+        <a href="/{{loja}}/admin/bairros">Bairros</a>
+      </li>
+      {{#if user}}
         <li>
-          <a href="/">Home</a>
-        </li>
-        <li>
-          <a href="/{{loja}}/admin/categorias">Categorias</a>
-        </li>
-        {{#if user}}
-          <li>
-            
-            <a href="/usuarios/logout">Sair</a>
-          </li>
 
-        {{else}}
-          <li>
-            <a href="/usuarios/login" aria-disabled="true">Login</a>
-          </li>
-          <li>
-            <a href="/usuarios/registro" aria-disabled="true">Registro</a>
-          </li>
-        {{/if}}
-      </ul>
-    </div>
-  </div>
-</nav>
+          <a href="/usuarios/logout">Sair</a>
+        </li>
+
+      {{else}}
+        <li>
+          <a href="/usuarios/login" aria-disabled="true">Login</a>
+        </li>
+        <li>
+          <a href="/usuarios/registro" aria-disabled="true">Registro</a>
+        </li>
+      {{/if}}
+    </ul>
+  </nav>
+  <label for="nav_check" class="hamburger">
+    <div></div>
+    <div></div>
+    <div></div>
+  </label>
+</header>

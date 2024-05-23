@@ -40,6 +40,7 @@ const Pedido = new Schema({
   data: String,
   rua: String,
   taxa: Number,
+  subtotal: Number,
   telefone: String,
   uf: String,
   valorTotal: Number,

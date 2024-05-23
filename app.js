@@ -255,59 +255,87 @@ app.get("/:nomeLoja/categorias/:slug", existeUsuario, (req, res) => {
     });
 });
 
-// Função para verificar se o horário atual está dentro do horário de funcionamento da loja
 function verificarHorarioDeFuncionamento(element) {
   // Obter o horário atual
   const agora = new Date();
   const horaAtual = agora.getHours();
   const minutoAtual = agora.getMinutes();
+  const horarioAtualEmMinutos = horaAtual * 60 + minutoAtual;
 
   // Obter o dia atual da semana (0 = Domingo, 1 = Segunda, ..., 6 = Sábado)
   const diaAtual = agora.getDay();
-  const diaSemana = ["dom", "seg", "ter", "qua", "qui", "sex", "sab"][diaAtual];
+  const diasSemana = ["dom", "seg", "ter", "qua", "qui", "sex", "sab"];
+  const diaSemana = diasSemana[diaAtual];
+  const diaSemanaAnterior = diasSemana[(diaAtual + 6) % 7]; // Dia anterior
+
+  // Função auxiliar para converter horário em minutos desde a meia-noite
+  function converterParaMinutos(horario) {
+    const [hora, minuto] = horario.split(":").map(Number);
+    return hora * 60 + minuto;
+  }
+
+  // Verificar se a loja está aberta no dia anterior
+  if (diaSemanaAnterior in element) {
+    const horarioAnterior = element[diaSemanaAnterior];
+    const aberturaAnteriorEmMinutos = converterParaMinutos(horarioAnterior.abertura);
+    const fechamentoAnteriorEmMinutos = converterParaMinutos(horarioAnterior.fechamento);
+
+    if (fechamentoAnteriorEmMinutos < aberturaAnteriorEmMinutos) {
+      // Caso a loja feche após a meia-noite do dia anterior
+      if (horarioAtualEmMinutos < fechamentoAnteriorEmMinutos) {
+        return [
+          {
+            status: "aberta",
+            dia: diaSemanaAnterior,
+            abertura: horarioAnterior.abertura,
+            fechamento: horarioAnterior.fechamento,
+          },
+        ];
+      }
+    }
+  }
 
   // Verificar se a loja está aberta no dia atual
   if (diaSemana in element) {
     const horarioFuncionamento = element[diaSemana];
-    const horaAbertura = parseInt(horarioFuncionamento.abertura.split(":")[0]);
-    const minutoAbertura = parseInt(horarioFuncionamento.abertura.split(":")[1]);
-    const horaFechamento = parseInt(horarioFuncionamento.fechamento.split(":")[0]);
-    const minutoFechamento = parseInt(horarioFuncionamento.fechamento.split(":")[1]);
+    const aberturaEmMinutos = converterParaMinutos(horarioFuncionamento.abertura);
+    const fechamentoEmMinutos = converterParaMinutos(horarioFuncionamento.fechamento);
 
-    // Verificar se o horário atual está dentro do intervalo de funcionamento
-    const horarioAtualEmMinutos = horaAtual * 60 + minutoAtual;
-    const horarioAberturaEmMinutos = horaAbertura * 60 + minutoAbertura;
-    const horarioFechamentoEmMinutos = horaFechamento * 60 + minutoFechamento;
-
-    if (horarioAtualEmMinutos >= horarioAberturaEmMinutos && horarioAtualEmMinutos <= horarioFechamentoEmMinutos) {
-      return [
-        {
-          status: "aberta",
-          dia: diaSemana,
-          abertura: horarioFuncionamento.abertura,
-          fechamento: horarioFuncionamento.fechamento,
-        },
-      ];
+    if (fechamentoEmMinutos < aberturaEmMinutos) {
+      // Caso a loja feche após a meia-noite
+      if (horarioAtualEmMinutos >= aberturaEmMinutos || horarioAtualEmMinutos < fechamentoEmMinutos) {
+        return [
+          {
+            status: "aberta",
+            dia: diaSemana,
+            abertura: horarioFuncionamento.abertura,
+            fechamento: horarioFuncionamento.fechamento,
+          },
+        ];
+      }
     } else {
-      return [
-        {
-          status: "fechada",
-          dia: diaSemana,
-          abertura: horarioFuncionamento.abertura,
-          fechamento: horarioFuncionamento.fechamento,
-        },
-      ];
+      // Caso a loja feche no mesmo dia
+      if (horarioAtualEmMinutos >= aberturaEmMinutos && horarioAtualEmMinutos <= fechamentoEmMinutos) {
+        return [
+          {
+            status: "aberta",
+            dia: diaSemana,
+            abertura: horarioFuncionamento.abertura,
+            fechamento: horarioFuncionamento.fechamento,
+          },
+        ];
+      }
     }
-  } else {
-    return [
-      {
-        status: "fechadaHoje",
-        dia: diaSemana,
-        abertura: horarioFuncionamento.abertura,
-        fechamento: horarioFuncionamento.fechamento,
-      },
-    ];
   }
+
+  return [
+    {
+      status: "fechada",
+      dia: diaSemana,
+      abertura: diaSemana in element ? element[diaSemana].abertura : null,
+      fechamento: diaSemana in element ? element[diaSemana].fechamento : null,
+    },
+  ];
 }
 
 // Outros

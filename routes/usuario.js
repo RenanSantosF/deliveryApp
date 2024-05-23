@@ -103,7 +103,6 @@ router.post(
                   novoUsuario
                     .save()
                     .then(() => {
-                      req.flash("success_msg", "Usuário criado com sucesso!");
                       res.redirect("/");
                     })
                     .catch((err) => {
@@ -157,7 +156,7 @@ router.post("/login", (req, res, next) => {
       if (err) {
         return next(err);
       }
-      const userRoute = `/${req.user.nomeLoja}/admin/pagamentos/`;
+      const userRoute = `/${req.user.nomeLoja}/admin/pedidos/`;
       return res.redirect(userRoute);
     });
   })(req, res, next);

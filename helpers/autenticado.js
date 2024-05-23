@@ -2,6 +2,7 @@ const autenticado = function (req, res, next) {
   
   try {
     res.locals.loja = req.user.nomeLoja;
+    res.locals.nomeLojaExibicao = req.user.nomeLoja;
     if (req.params.nomeLoja == req.user.nomeLoja) {
       
       return next();

@@ -3,10 +3,8 @@
     <div>
       <img src="./uploads/{{imgLogo}}" />
       <h1 id="nomeLoja">{{nomeLoja}}</h1>
-      {{!-- <span>{{rua}} {{numeroRua}}, {{bairro}}, {{cidade}} - {{estado}}</span> --}}
       {{#each statusSituacao}}
         <div class="horarioFuncionamento" data-status="{{status}}" id="date-span">
-          {{!-- <span>{{status}} - {{abertura}} às {{fechamento}}</span> --}}
           <span>{{status}}</span>
           <img src="./img/botao-voltar-branco.png" />
         </div>

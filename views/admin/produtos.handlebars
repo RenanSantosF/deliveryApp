@@ -1,23 +1,49 @@
 {{>_navbar}}
-<input type="hidden" type="text" name="nomeLojaProdutos" value="{{loja}}">
-<h2>Lista de produtos</h2>
-<hr>
-<a href="/{{loja}}/admin/produtos/add"><button>Nova produto</button></a>
 
+
+<div class="body">
+  <h2 class="title">Produtos</h2>
+  <div class="btnNova">
+    <a href="/{{loja}}/admin/produtos/add">
+      <button class="button">
+        <span>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"></path><path fill="currentColor" d="M11 11V5h2v6h6v2h-6v6h-2v-6H5v-2z"></path></svg>
+          Novo produto
+        </span>
+      </button>
+    </a>
+  </div>
 
 {{#each produtos}}
-  <div>
+  <div class="card">
+
     <div>
-      <h4>Título: {{titulo}}</h4>
-      <p>Descrição: {{descricao}}</p>
-      <p><strong>R$ {{preco}}</strong></p>
-      <br>
-      <small>Categoria: {{this.categoria.nome}}</small><br>
-      <a href="/{{nomeLoja}}/admin/produtos/edit/{{_id}}"><button>Editar produto</button></a>
-      <br>
-      <a href="/{{nomeLoja}}/admin/produtos/deletar/{{_id}}"><button>Deletar produto</button></a>
+      <div class="titulo">
+        <h2>{{titulo}}</h2>
+      </div>
+      <div class="taxa">
+        <h2>R$ {{preco}}</h2>
+      </div>
+      <div class="nome">
+        <h2>{{descricao}}</h2>
+      </div>
+      <div class="nome">
+        <h2>Categoria: {{this.categoria.nome}}</h2>
+      </div>
+    </div>
+
+    <div class="openModal" id="openModal">
+      <img class="abre" src="/img/3pontos.png" />
+    </div>
+
+    <div class="modal">
+      <a href="/{{nomeLoja}}/admin/produtos/edit/{{_id}}"><button class="btn edit" >Editar</button></a>
+      <form action="/{{nomeLoja}}/admin/produtos/deletar/{{_id}}" method="post">
+        <input type="hidden" name="id" value="{{_id}}" />
+        <button class="btn delete" type="submit">Deletar</button>
+      </form>
     </div>
   </div>
 {{else}}
-<p>Nenhuma produto registrada!</p>
+<p>Nenhum produto registrado!</p>
 {{/each}}

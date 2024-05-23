@@ -1,13 +1,25 @@
 {{>_navbar}}
-<h2>Pedidos</h2>
-<hr>
 
-<span style="display: none;" id="loja">{{nomeLoja}}</span>
+<div class="body">
+  <span style="display: none;" id="loja">{{nomeLoja}}</span>
+
+  <h2 class="title">Pedidos</h2>
+
+  <div id="pedidos"></div>
+
+  <div id="modalDetalhes" class="modalProduto">
+    
+    <div class="headerModal">
+      <div id="close-modalDetalhesProduto-btn">
+        <img src="/img/botao-voltar.png" />
+      </div>
+      <h2>Detalhes do produto</h2>
+    </div>
+    <div id="modalContent">
+
+    </div>
 
 
-<div id="pedidos">
-
+  </div>
 </div>
 
-<div id="modalDetalhes" style="display: none;" class="modal">
-</div>

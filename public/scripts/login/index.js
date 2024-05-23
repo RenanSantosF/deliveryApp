@@ -35,7 +35,7 @@ inputSenha.addEventListener("input", () => {
 function verificaVazio(input, arr) {
   if (input.value === "") {
     input.style.border = "2px solid var(--cor-alerta)";
-    arr.push({Erro: "Erro"})
+    arr.push({ Erro: "Erro" });
   }
 }
 
@@ -46,14 +46,16 @@ export function retornaBordaOriginal(input) {
   console.log(input);
 }
 
+
+
 const btnLogar = document.getElementById("logar");
 
 btnLogar.addEventListener("click", (e) => {
-  let erros = []
+  let erros = [];
   verificaVazio(inputEmail, erros);
   verificaVazio(inputSenha, erros);
   if (erros.length >= 1) {
-    e.preventDefault()
+    e.preventDefault();
   }
-  erros = []
+  erros = [];
 });

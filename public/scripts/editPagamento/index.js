@@ -7,6 +7,7 @@ nome.addEventListener("input", () => {
 
 btnEnviar.addEventListener("click", (e) => {
   let erros = [];
+  console.log("renan");
   verificaVazio(nome, erros);
   if (erros.length >= 1) {
     e.preventDefault();

@@ -1,19 +1,43 @@
-{{>_navbar}}
-<h2>Lista de categorias</h2>
-<hr>
-<a href="/{{loja}}/admin/categorias/add"><button class="btn btn-success">Nova categoria</button></a>
+
+
+<div class="body">
+  {{>_navbar}}
+  <h2 class="title">Categorias</h2>
+  <div class="btnNova">
+    <a href="/{{loja}}/admin/categorias/add">
+      <button class="button">
+        <span>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"></path><path fill="currentColor" d="M11 11V5h2v6h6v2h-6v6h-2v-6H5v-2z"></path></svg>
+          Nova categoria
+        </span>
+      </button>
+    </a>
+  </div>
+
 
 {{#each categorias}}
-  <div class="card mt-4">
-    <div class="card-body">
-      <h2>{{nome}}</h2>
-      <small>{{slug}}</small> 
-      <P>Data de criação: {{date}}</P>
-      <a href="/{{nomeLoja}}/admin/categorias/edit/{{_id}}"><button class="btn btn-success">Editar categoria</button></a>
+  <div class="card">
+    <div>
+      <div class="nome">
+        <h2>{{nome}}</h2>
+      </div>
+    </div>
+    <div >
+
+    <div class="openModal" id="openModal">
+      <img class="abre" src="/img/3pontos.png" />
+    </div>
+
+
+
+    <div class="modal">
+      <a href="/{{nomeLoja}}/admin/categorias/edit/{{_id}}"><button class="btn edit" >Editar</button></a>
       <form action="/{{nomeLoja}}/admin/categorias/deletar" method="post">
-        <input type="hidden" name="id" value="{{_id}}">
-        <button type="submit" class="btn btn-danger mt-2">Deletar categoria</button>
+        <input type="hidden" name="id" value="{{_id}}" />
+        <button class="btn delete" type="submit">Deletar</button>
       </form>
+    </div>
+
     </div>
   </div>
 
