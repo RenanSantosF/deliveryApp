@@ -35,7 +35,7 @@
             {{! Exibe lista com todos os adicionais }}
             <ul style="display: none;">
               {{#each this.adicionais}}
-                <li class="adicionaisLista" data-value="{{this.precoAdicional}}" data-produtoReferido="{{this.produtoReferido}}" data-categoria="{{this.categoriaAdicional}}">{{this.adicionais}}</li>
+                <li class="adicionaisLista" data-value="{{this.precoAdicional}}" data-produtoReferido="{{this.produtoReferido}}" data-categoria="{{this.categoriaAdicional}}" data-minCategoria="{{this.minAdicionais}}" data-maxCategoria="{{this.maxAdicionais}}">{{this.adicionais}}</li>
               {{else}}
                 <h1>Nenhum adicional</h1>
               {{/each}}
@@ -138,6 +138,34 @@
     </div>
   </div>
 {{/each}}
+
+{{! Modal troco }}
+<div id="modalTroco" class="modalTroco">
+  <div class="content">
+    <span>Precisa de troco?</span>
+    <div class="radio-inputs">
+      <label class="radio">
+        <input id="inputRadioTrocoSim" type="radio" name="radioTroco" checked="" />
+        <span class="name">Sim</span>
+      </label>
+
+      <label class="radio">
+        <input id="inputRadioTrocoNao" type="radio" name="radioTroco" />
+        <span class="name">Não</span>
+      </label>
+    </div>
+
+    <div id="valorTroco" class="valorTroco">
+      <span>Troco para quanto?</span>
+      <input class="input-endereco" id="inputValorTroco" placeholder="0,00" type="text" />
+    </div>
+
+    <div class="sectionFinaliza">
+      <button id="FinalizaTroco">Confirmar</button>
+    </div>
+  </div>
+
+</div>
 
 {{! MODAL ENTREGA }}
 <div id="modalEndereco" class="modalEndereco">

@@ -27,6 +27,19 @@ const Bairro = mongoose.model("bairros");
 require("./models/Pedido");
 const Pedido = mongoose.model("pedidos");
 
+const http = require("http");
+const socketio = require("socket.io");
+
+const server = http.createServer(app);
+const io = socketio(server, {
+  cors: {
+    origin: "*",  // Ajuste isso conforme necessário
+    methods: ["GET", "POST"]
+  }
+});
+
+
+
 // Configurações
 // Sessão
 app.use(
@@ -64,11 +77,8 @@ app.engine("handlebars", handlebars.engine({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
 // Use o middleware CORS
-app.use(
-  cors({
-    origin: "http://localhost:3000/",
-  })
-);
+app.use(cors());  // Middleware CORS
+
 
 // Mongoose
 mongoose.Promise = global.Promise;
@@ -92,14 +102,23 @@ app.get("/", (req, res) => {
 
 app.post("/pedidos", async (req, res) => {
   try {
+    const ultimoPedido = await Pedido.findOne().sort({ numeroPedido: -1 });
+
+    let novoNumeroPedido;
+    if (ultimoPedido) {
+      novoNumeroPedido = ultimoPedido.numeroPedido + 1;
+    } else {
+      novoNumeroPedido = 1;
+    }
     const dadosPedido = req.body;
+    dadosPedido.numeroPedido = novoNumeroPedido;
     const novoPedido = new Pedido(dadosPedido);
     await novoPedido.save();
 
-    res.status(201).json({ message: 'enviado!' });
+    res.status(201).json({ message: "enviado!", numeroPedido: novoNumeroPedido });
   } catch (error) {
-    console.error('Erro ao salvar pedido:', error);
-    res.status(500).json({ message: 'Erro ao salvar pedido', error });
+    console.error("Erro ao salvar pedido:", error);
+    res.status(500).json({ message: "Erro ao salvar pedido", error });
   }
 });
 
@@ -187,11 +206,13 @@ app.get("/:nomeLoja", existeUsuario, (req, res) => {
         })
         .catch((err) => {
           res.send("Erro interno");
+          console.log(err);
         });
     })
     .catch((err) => {
       req.flash("error_msg", "Houve um erro interno");
       res.send("Erro interno");
+      console.log(err);
     });
 });
 
@@ -204,12 +225,12 @@ app.get(`/:nomeLoja/produto/:slug`, existeUsuario, (req, res) => {
         res.render("produto/index", { produto, produto });
       } else {
         req.flash("error_msg", "Este produto não existe");
-        res.redirect(`/${usuario.nomeLoja}/`);
+        res.redirect(`/`);
       }
     })
     .catch((err) => {
       req.flash("error_msg", "Houve um erro interno");
-      res.redirect(`/${usuario.nomeLoja}/`);
+      res.redirect(`/`);
     });
 });
 
@@ -222,7 +243,7 @@ app.get("/:nomeLoja/categorias", existeUsuario, (req, res) => {
     })
     .catch((err) => {
       req.flash("error_msg", "Houve um erro ao listar as categorias");
-      res.redirect(`/${usuario.nomeLoja}/`);
+      res.redirect(`/`);
     });
 });
 
@@ -242,16 +263,16 @@ app.get("/:nomeLoja/categorias/:slug", existeUsuario, (req, res) => {
           })
           .catch((err) => {
             req.flash("error_msg", "Houve um erro ao listar as produtos");
-            res.redirect(`/${usuario.nomeLoja}/`);
+            res.redirect(`/`);
           });
       } else {
         req.flash("error_msg", "Esta categoria não existe");
-        res.redirect(`/${usuario.nomeLoja}/`);
+        res.redirect(`/`);
       }
     })
     .catch((err) => {
       req.flash("error_msg", "Houve um erro interno ao carregar a página desta categoria");
-      res.redirect(`/${usuario.nomeLoja}/`);
+      res.redirect(`/`);
     });
 });
 
@@ -338,8 +359,29 @@ function verificarHorarioDeFuncionamento(element) {
   ];
 }
 
+// Rota para servir o arquivo socket.io.js
+app.get('/socket.io/socket.io.js', (req, res) => {
+  res.sendFile(path.join(__dirname, '/node_modules/socket.io/client-dist/socket.io.js'));
+});
+
+io.on("connection", (socket) => {
+  console.log("Cliente conectado!");
+
+  socket.on("message", (message) => {
+    console.log("Mensagem recebida do cliente:", message);
+  });
+
+  socket.on("disconnect", (reason) => {
+    console.log("Cliente desconectado:", reason);
+  });
+
+  socket.on("connect_error", (err) => {
+    console.error("Erro de conexão:", err);
+  });
+});
+
 // Outros
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3005;
 app.listen(PORT, () => {
   console.log("Servidor rodando");
 });

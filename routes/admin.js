@@ -14,6 +14,7 @@ require("../models/Bairro");
 const Bairro = mongoose.model("bairros");
 require("../models/Pedido");
 const Pedido = mongoose.model("pedidos");
+const fs = require("fs");
 
 const multer = require("multer");
 const path = require("path");
@@ -263,7 +264,7 @@ router.get("/produtos/add", UserAuth, eAdmin, (req, res) => {
 //       nomeLoja: req.user.nomeLoja,
 //       imgProduto: req.generatedFileName,
 //       adicionais: novosAdicionais,
-      
+
 //     };
 //     new Produto(novaproduto)
 //       .save()
@@ -277,10 +278,9 @@ router.get("/produtos/add", UserAuth, eAdmin, (req, res) => {
 //   }
 // });
 
-
 router.post("/produtos/nova", upload.single("imgProduto"), UserAuth, eAdmin, (req, res) => {
   let erros = [];
-  
+
   if (!req.body.titulo || typeof req.body.titulo == undefined || req.body.titulo == null) {
     erros.push({ texto: "Título inválido" });
   }
@@ -297,10 +297,10 @@ router.post("/produtos/nova", upload.single("imgProduto"), UserAuth, eAdmin, (re
     res.render("admin/addProduto", { erros: erros });
   } else {
     const novosAdicionais = [];
-    const adicionaisCategorias = Object.keys(req.body).filter(key => key.startsWith('adicionais-'));
+    const adicionaisCategorias = Object.keys(req.body).filter((key) => key.startsWith("adicionais-"));
 
-    adicionaisCategorias.forEach(categoria => {
-      const categoriaNome = categoria.replace('adicionais-', '');
+    adicionaisCategorias.forEach((categoria) => {
+      const categoriaNome = categoria.replace("adicionais-", "");
       const adicionais = Array.isArray(req.body[categoria]) ? req.body[categoria] : [req.body[categoria]];
       const minAdicionais = req.body[`minAdicionais-${categoriaNome}`];
       const maxAdicionais = req.body[`maxAdicionais-${categoriaNome}`];
@@ -310,9 +310,9 @@ router.post("/produtos/nova", upload.single("imgProduto"), UserAuth, eAdmin, (re
           adicionais: adicional,
           precoAdicional: req.body.precoAdicional[index],
           produtoReferido: req.body.titulo,
-          categoriaAdicional: req.body.categoriaAdicional[index],
+          categoriaAdicional: req.body[`categoriaAdicional-${categoriaNome}-${index}`], // Modificado aqui
           minAdicionais: minAdicionais,
-          maxAdicionais: maxAdicionais
+          maxAdicionais: maxAdicionais,
         });
       });
     });
@@ -323,11 +323,11 @@ router.post("/produtos/nova", upload.single("imgProduto"), UserAuth, eAdmin, (re
       preco: req.body.preco,
       categoria: req.body.categoria,
       nomeLoja: req.user.nomeLoja,
-      imgProduto: req.file ? req.file.filename : null,
-      adicionais: novosAdicionais
+      imgProduto: req.file ? req.generatedFileName : null,
+      adicionais: novosAdicionais,
     };
 
-    console.log(novaproduto)
+    console.log(novaproduto);
 
     new Produto(novaproduto)
       .save()
@@ -337,11 +337,10 @@ router.post("/produtos/nova", upload.single("imgProduto"), UserAuth, eAdmin, (re
       .catch((err) => {
         req.flash("error_msg", "Houve um erro na criação do produto!");
         res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
-        console.log(err)
+        console.log(err);
       });
   }
 });
-
 
 router.get("/produtos/edit/:id", UserAuth, eAdmin, (req, res) => {
   Produto.findOne({ _id: req.params.id })
@@ -374,7 +373,6 @@ router.get("/produtos/edit/:id", UserAuth, eAdmin, (req, res) => {
               // Chamar a função para reorganizar os adicionais por categoria
               const adicionaisPorCategoria = reorganizarPorCategoria(adicionais);
 
-
               res.render("admin/editprodutos", {
                 categorias: categorias,
                 produto: produto,
@@ -400,57 +398,14 @@ router.get("/produtos/edit/:id", UserAuth, eAdmin, (req, res) => {
     });
 });
 
-// router.post("/produto/edit", upload.single("imgProduto"), UserAuth, eAdmin, (req, res) => {
-//   Produto.findOne({ _id: req.body.id })
-//     .then((produto) => {
-//       const novosAdicionais = [];
-
-//       const adicionais = Array.isArray(req.body.adicionais) ? req.body.adicionais : [req.body.adicionais];
-
-//       for (let i = 0; i < adicionais.length; i++) {
-//         novosAdicionais.push({
-//           adicionais: adicionais[i],
-//           precoAdicional: req.body.precoAdicional[i],
-//           produtoReferido: req.body.titulo,
-//           categoriaAdicional: req.body.categoriaAdicional[i],
-//         });
-//       }
-
-//       const preco = req.body.preco;
-
-//       produto.titulo = req.body.titulo;
-//       // produto.slug = req.body.slug;
-//       produto.descricao = req.body.descricao;
-//       produto.categoria = req.body.categoria;
-//       produto.preco = preco;
-//       produto.nomeLoja = req.user.nomeLoja;
-//       produto.imgProduto = req.generatedFileName;
-//       produto.adicionais = novosAdicionais;
-
-//       produto
-//         .save()
-//         .then(() => {
-//           res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
-//         })
-//         .catch((err) => {
-//           req.flash("error_msg", "Erro interno");
-//           res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
-//         });
-//     })
-//     .catch((err) => {
-//       req.flash("error_msg", "Houve um erro ao salvar a edição");
-//       res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
-//     });
-// });
-
 router.post("/produto/edit", upload.single("imgProduto"), UserAuth, eAdmin, (req, res) => {
   Produto.findOne({ _id: req.body.id })
     .then((produto) => {
       const novosAdicionais = [];
-      const adicionaisCategorias = Object.keys(req.body).filter(key => key.startsWith('adicionais-'));
+      const adicionaisCategorias = Object.keys(req.body).filter((key) => key.startsWith("adicionais-"));
 
-      adicionaisCategorias.forEach(categoria => {
-        const categoriaNome = categoria.replace('adicionais-', '');
+      adicionaisCategorias.forEach((categoria) => {
+        const categoriaNome = categoria.replace("adicionais-", "");
         const adicionais = Array.isArray(req.body[categoria]) ? req.body[categoria] : [req.body[categoria]];
 
         adicionais.forEach((adicional, index) => {
@@ -458,9 +413,9 @@ router.post("/produto/edit", upload.single("imgProduto"), UserAuth, eAdmin, (req
             adicionais: adicional,
             precoAdicional: req.body.precoAdicional[index],
             produtoReferido: req.body.titulo,
-            categoriaAdicional: req.body.categoriaAdicional[index],
+            categoriaAdicional: req.body[`categoriaAdicional-${categoriaNome}-${index}`], // Modificado aqui
             minAdicionais: req.body[`minAdicionais-${categoriaNome}`],
-            maxAdicionais: req.body[`maxAdicionais-${categoriaNome}`]
+            maxAdicionais: req.body[`maxAdicionais-${categoriaNome}`],
           });
         });
       });
@@ -472,7 +427,22 @@ router.post("/produto/edit", upload.single("imgProduto"), UserAuth, eAdmin, (req
       produto.categoria = req.body.categoria;
       produto.preco = preco;
       produto.nomeLoja = req.user.nomeLoja;
-      produto.imgProduto = req.file ? req.file.filename : null;
+
+      // Verifica se há uma nova imagem enviada
+      if (req.file) {
+        // Remove a imagem anterior, se existir
+        if (produto.imgProduto) {
+          const imagePath = path.join(__dirname, "..", "public", "uploads", produto.imgProduto);
+
+          fs.unlink(imagePath, (err) => {
+            if (err) {
+              console.error("Erro ao excluir a foto anterior:", err);
+            }
+          });
+        }
+        produto.imgProduto = req.generatedFileName;
+      }
+
       produto.adicionais = novosAdicionais;
 
       produto
@@ -491,14 +461,41 @@ router.post("/produto/edit", upload.single("imgProduto"), UserAuth, eAdmin, (req
     });
 });
 
-router.get("/produtos/deletar/:id", UserAuth, eAdmin, (req, res) => {
-  Produto.deleteOne({ _id: req.params.id })
-    .then(() => {
-      res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
+router.post("/produtos/deletar", UserAuth, eAdmin, (req, res) => {
+  Produto.findOne({ _id: req.body.id })
+    .then((produto) => {
+      // Verifica se o produto foi encontrado
+      if (!produto) {
+        req.flash("error_msg", "Produto não encontrado!");
+        return res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
+      }
+
+      // Remove a imagem associada, se existir
+      if (produto.imgProduto) {
+        const imagePath = path.join(__dirname, '..', 'public', 'uploads', produto.imgProduto);
+        fs.unlink(imagePath, (err) => {
+          if (err) {
+            console.error("Erro ao excluir a foto:", err);
+          }
+        });
+      }
+
+      // Exclui o produto do banco de dados
+      Produto.deleteOne({ _id: req.body.id })
+        .then(() => {
+          res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
+          console.log("Produto excluído com sucesso.");
+        })
+        .catch((err) => {
+          req.flash("error_msg", "Houve um erro ao deletar o produto!");
+          res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
+          console.error("Erro ao excluir o produto:", err);
+        });
     })
     .catch((err) => {
-      req.flash("error_msg", "Houve um erro ao deletar a produto!");
+      req.flash("error_msg", "Houve um erro ao encontrar o produto!");
       res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
+      console.error("Erro ao encontrar o produto:", err);
     });
 });
 

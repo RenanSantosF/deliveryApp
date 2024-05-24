@@ -21,7 +21,7 @@ export function modalPedido(dataPedido, pedidos) {
 
   const codigoData = document.createElement("div");
   codigoData.classList.add("codigoData");
-  addElement(codigoData, "p", `PEDIDO # ${pedido._id}`);
+  addElement(codigoData, "p", `PEDIDO # ${pedido.numeroPedido}`);
   addElement(codigoData, "p", `${pedido.data}`);
   modalDetalhes.appendChild(codigoData);
   addElement(modalDetalhes, "p", `${pedido.nome}`, "texto2");

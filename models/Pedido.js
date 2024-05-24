@@ -30,6 +30,7 @@ const CartItemSchema = new Schema({
 // Schema para os pedidos
 const Pedido = new Schema({
   nomeLoja: String,
+  numeroPedido: Number,
   bairro: String,
   cidade: String,
   entrega: Boolean,
@@ -40,6 +41,7 @@ const Pedido = new Schema({
   data: String,
   rua: String,
   taxa: Number,
+  valorTroco: Number,
   subtotal: Number,
   telefone: String,
   uf: String,

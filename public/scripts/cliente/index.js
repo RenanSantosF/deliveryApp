@@ -13,12 +13,14 @@ const cartCounter = document.getElementById("cart-count");
 const addressWarn = document.getElementById("address-warn");
 const containerEntrega = document.getElementById("containerEntrega");
 const nomeLoja = document.getElementById("nomeLoja");
-
+const containerModalTroco = document.getElementById("modalTroco");
+const FinalizaTroco = document.getElementById("FinalizaTroco");
 const enderecoInputs = document.querySelectorAll("#containerEntrega input");
 const valorSubtotal = document.getElementById("valorSubtotal");
 
 const totalPedidoValor = document.getElementById("totalPedidoValor");
 const valorEntrega = document.getElementById("valorEntrega");
+const inputTroco = document.getElementById("inputValorTroco");
 
 // pegando dados endereço
 const cep = document.getElementById("cep");
@@ -308,8 +310,10 @@ function capturaProdutoParaModal(ev) {
       if (item.dataset.produtoreferido == name) {
         adicionarProduto(item.dataset.categoria, {
           nomeAdicional: item.textContent,
-          valorAdicional: item.dataset.value,
+          valorAdicional: item.dataset.value.replace(/\,/g, "."),
           quantidade: 0,
+          minCategoria: parseFloat(item.dataset.mincategoria),
+          maxCategoria: parseFloat(item.dataset.maxcategoria),
         });
 
         function adicionarProduto(categoria, produto) {
@@ -375,14 +379,16 @@ function capturaProdutoParaModal(ev) {
 
           if (objeto.quantidade > 0) {
             objeto.quantidade--;
-            btnAdicionar.style.background = "var(--cor-btnAdicional)";
-            btnAdicionar.style.color = "#fff";
-            btnAdicionar.style.border = "1px solid #e7e7e7";
-
             quantidadeSpan.textContent = objeto.quantidade;
             atualizarQuantidade(objeto, categoria, objeto.quantidade);
             atualizarValorTotal();
             subtraiValorAdicional(objeto);
+
+            const listaCategoria = produtoModal.listaAdicionais[categoria];
+            const somaQuantidades = listaCategoria.reduce((total, item) => total + item.quantidade, 0);
+            if (somaQuantidades < objeto.maxCategoria) {
+              desabilitarBotoesAdicionar(categoria, false);
+            }
           }
         });
 
@@ -394,23 +400,28 @@ function capturaProdutoParaModal(ev) {
         btnAdicionar.textContent = "+";
         btnAdicionar.type = "button";
         btnAdicionar.addEventListener("click", () => {
+          const listaCategoria = produtoModal.listaAdicionais[categoria];
+          const somaQuantidades = listaCategoria.reduce((total, item) => total + item.quantidade, 0);
+
           if (objeto.quantidade < 1) {
             quantidadeSpan.style.display = "flex";
             btnRemover.style.display = "flex";
           }
-          if (objeto.quantidade < 10) {
+
+          if (somaQuantidades < objeto.maxCategoria) {
             objeto.quantidade++;
             quantidadeSpan.textContent = objeto.quantidade;
             atualizarQuantidade(objeto, categoria, objeto.quantidade);
             atualizarValorTotal();
             aumentaValorAdicional(objeto);
-          }
-          if (objeto.quantidade === 10) {
-            btnAdicionar.style.background = "transparent";
-            btnAdicionar.style.color = "transparent";
-            btnAdicionar.style.border = "1px solid transparent";
+
+            if (somaQuantidades + 1 === objeto.maxCategoria) {
+              desabilitarBotoesAdicionar(categoria, true);
+            }
           }
         });
+
+        objeto.elementoBtnAdicionar = btnAdicionar; // Associa o botão ao objeto para uso posterior
 
         divConteudo.append(textSpan, valorSpan);
         divAlteraQuantidade.append(btnRemover, quantidadeSpan, btnAdicionar);
@@ -422,7 +433,7 @@ function capturaProdutoParaModal(ev) {
     }
 
     function atualizarQuantidade(objeto, categoria, novaQuantidade) {
-      produtoModal.listaAdicionais[categoria].find((item) => item === objeto).quantidade = novaQuantidade;
+      produtoModal.listaAdicionais[categoria].find((item) => item.nomeAdicional === objeto.nomeAdicional).quantidade = novaQuantidade;
     }
 
     function aumentaValorAdicional(objeto) {
@@ -470,6 +481,25 @@ function capturaProdutoParaModal(ev) {
       }
 
       console.log(produtoModal);
+    }
+
+    // Função para desabilitar ou habilitar os botões de adicionar de uma categoria
+    function desabilitarBotoesAdicionar(categoria, desabilitar) {
+      const listaCategoria = produtoModal.listaAdicionais[categoria];
+      listaCategoria.forEach((item) => {
+        const btnAdicionar = item.elementoBtnAdicionar;
+        if (desabilitar) {
+          btnAdicionar.style.background = "transparent";
+          btnAdicionar.style.color = "transparent";
+          btnAdicionar.style.border = "1px solid transparent";
+          btnAdicionar.disabled = true;
+        } else {
+          btnAdicionar.style.background = "var(--cor-btnAdicional)";
+          btnAdicionar.style.color = "#fff";
+          btnAdicionar.style.border = "1px solid #e7e7e7";
+          btnAdicionar.disabled = false;
+        }
+      });
     }
 
     exibeDadosProduto();
@@ -544,10 +574,58 @@ subtraiItem.addEventListener("click", () => {
 });
 
 document.getElementById("adicionarProduto").addEventListener("click", () => {
+  const sucesso = verificaQuantidadeMinima();
+  if (!sucesso) {
+    return;
+  }
+
   addToCartCorreto();
   fechaModalProduto();
   carrinhoVazio();
 });
+
+function verificaQuantidadeMinima() {
+  // Realize sua lógica para adicionar o produto aqui...
+
+  // Objeto para armazenar a quantidade total mínima necessária por categoria
+  const totalNecessarioPorCategoria = {};
+
+  // Iterar sobre todos os adicionais para calcular a quantidade total mínima necessária por categoria
+  for (const categoria in listaAdicionais) {
+    const adicionaisCategoria = listaAdicionais[categoria];
+    // Vamos considerar apenas o primeiro adicional da categoria para determinar a quantidade mínima necessária
+    const primeiroAdicional = adicionaisCategoria[0];
+    totalNecessarioPorCategoria[categoria] = primeiroAdicional.minCategoria;
+  }
+
+  // Verificar se a quantidade de cada adicional é maior ou igual à quantidade total mínima necessária por categoria
+  for (const categoria in listaAdicionais) {
+    const adicionaisCategoria = listaAdicionais[categoria];
+    let quantidadeTotalCategoria = 0;
+    for (const adicional of adicionaisCategoria) {
+      quantidadeTotalCategoria += adicional.quantidade;
+    }
+    if (quantidadeTotalCategoria < totalNecessarioPorCategoria[categoria]) {
+      Toastify({
+        text: `Escolha ao menos ${totalNecessarioPorCategoria[categoria]} item na categoria "${categoria}"`,
+        duration: 3000,
+        close: true,
+        gravity: "top",
+        position: "center",
+        stopOnFocus: true,
+        style: {
+          background: "linear-gradient(90deg, rgba(255,95,109,1) 0%, rgba(196,91,38,1) 100%)",
+          borderRadius: "10px",
+        },
+      }).showToast();
+
+      return false;
+    }
+  }
+
+  // Se todas as verificações passaram, retorne true para indicar que a operação foi bem-sucedida
+  return true;
+}
 
 function addToCartCorreto() {
   const existingItem = cart.find((item) => {
@@ -867,6 +945,7 @@ confirmaEndereco.addEventListener("click", () => {
     .join("\n\n");
 
   const total = subtotal + taxa;
+  const phone = cartModal.dataset.contact;
 
   const resumoFinal = `
 
@@ -945,56 +1024,96 @@ confirmaEndereco.addEventListener("click", () => {
   const dataAtual = new Date();
   const dataFormatada = `${dataAtual.getDate().toString().padStart(2, "0")}/${(dataAtual.getMonth() + 1).toString().padStart(2, "0")}/${dataAtual.getFullYear()}`;
   const horaFormatada = `${dataAtual.getHours().toString().padStart(2, "0")}:${dataAtual.getMinutes().toString().padStart(2, "0")}`;
+  const telefoneFormatado = inputTelefone.value.replace(/\D/g, "");
 
-  console.log(`Data atual: ${dataFormatada} ${horaFormatada}`);
+  console.log(selectedRadio.id);
+  if (selectedRadio.id === "Dinheiro") {
+    let erros = [];
 
-  const telefoneFormatado = inputTelefone.value.replace(/\D/g, ''); 
-  const pedido = {
-    nomeLoja: nomeLoja.textContent,
-    nome: inputNome.value,
-    telefone: telefoneFormatado,
-    taxa: taxa,
-    subtotal: subtotal,
-    valorTotal: totalPedido.toFixed(2),
-    pagamento: selectedRadio.id,
-    entrega: formaEntrega == "Entrega" ? true : false,
-    numero: endereco.numero,
-    referencia: endereco.pontoReferencia,
-    rua: endereco.rua,
-    bairro: meuSelect.options[meuSelect.selectedIndex].text,
-    cidade: endereco.Cidade,
-    uf: endereco.UF,
-    cart: cart,
-    data: `${dataFormatada} ${horaFormatada}`,
-  };
+    containerModalTroco.classList.add("activeModalTroco");
 
-  const phone = cartModal.dataset.contact;
+    FinalizaTroco.addEventListener("click", () => {
+      const valorTroco = parseFloat(inputTroco.value.replace(/,/g, "."));
 
-  const pedidoFormatted = `
-  *Nome: ${inputNome.value}*
-    *Número de Telefone: ${inputTelefone.value}*
-    *Valor Total do Pedido: ${totalPedido.toLocaleString("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    })}*
-    *Forma de Pagamento: ${selectedRadio.id}*
-    *Entrega ou Retirada? ${formaEntrega}*
-  `;
+      if (inputRadioTrocoSim.checked) {
+        verificaVazio(inputTroco, erros);
 
-  let isEntrega = formaEntrega == "Retirada" ? `${pedidoFormatted}` : `${enderecoFormatted}\n\n${pedidoFormatted}`;
+        if (parseFloat(valorTroco) <= total) {
+          erros.push({ erro: "erro" });
+          Toastify({
+            text: "O valor do pagamento precisa ser maior que o valor do pedido",
+            duration: 3000,
+            close: true,
+            gravity: "top",
+            position: "center",
+            stopOnFocus: true,
+            style: {
+              background: "linear-gradient(90deg, rgba(255,112,35,1) 0%, rgba(231,131,16,1) 100%)",
+              background: "rgb(255,112,35)",
+              borderRadius: "10px",
+            },
+          }).showToast();
+        }
+      }
 
-  const message = encodeURIComponent(`${loja}\n\n${mensagemFinal}\n\n${isEntrega}`);
+      if (erros.length === 0) {
+        finalizaPedido(valorTroco);
 
-  enviaPedido(pedido);
-  console.log(pedido);
+        containerModalTroco.classList.remove("activeModalTroco");
+      }
+      erros = [];
+    });
+  } else {
+    console.log(valorTroco);
+    finalizaPedido();
+  }
 
-  console.log(`${loja}\n\n${mensagemFinal}\n\n${isEntrega}`);
+  function finalizaPedido(troco) {
+    const pedido = {
+      nomeLoja: nomeLoja.textContent,
+      nome: inputNome.value,
+      telefone: telefoneFormatado,
+      taxa: taxa,
+      valorTroco: troco ? troco : false,
+      subtotal: subtotal,
+      valorTotal: totalPedido.toFixed(2),
+      pagamento: selectedRadio.id,
+      entrega: formaEntrega == "Entrega" ? true : false,
+      numero: endereco.numero,
+      referencia: endereco.pontoReferencia,
+      rua: endereco.rua,
+      bairro: meuSelect.options[meuSelect.selectedIndex].text,
+      cidade: endereco.Cidade,
+      uf: endereco.UF,
+      cart: cart,
+      data: `${dataFormatada} ${horaFormatada}`,
+    };
+    let valorTroco = troco ? `troco para R$ ${troco}` : "Não Precisa de troco";
+    let precisaTroco = selectedRadio.id === "Dinheiro" || selectedRadio.id === "dinheiro" ? valorTroco : "";
+    const pedidoFormatted = `
+    *Nome: ${inputNome.value}*
+      *Número de Telefone: ${inputTelefone.value}*
+      *Valor Total do Pedido: ${totalPedido.toLocaleString("pt-BR", {
+        style: "currency",
+        currency: "BRL",
+      })}*
+      *Forma de Pagamento: ${selectedRadio.id}*
+      ${precisaTroco}
+      *Entrega ou Retirada? ${formaEntrega}*
+    `;
 
-  return;
-  window.open(`https://wa.me/${phone}?text=${message} Endereço: Rua:${endereco.rua}, Nº:${endereco.numero}, Referência:${endereco.pontoReferencia}, Bairro: ${endereco.Bairro}, Cidade: ${endereco.Cidade}, UF: ${endereco.UF}`, "_blank");
+    let isEntrega = formaEntrega == "Retirada" ? `${pedidoFormatted}` : `${enderecoFormatted}\n\n${pedidoFormatted}`;
 
-  cart = [];
-  updateCartModal();
+    const message = encodeURIComponent(`${loja}\n\n${mensagemFinal}\n\n${isEntrega}`);
+
+    console.log(`${loja}\n\n${mensagemFinal}\n\n${isEntrega}`);
+    console.log(pedido);
+
+    enviaPedido(pedido);
+    window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
+    cart = [];
+    updateCartModal();
+  }
 });
 
 inputTelefone.addEventListener("input", (e) => {
@@ -1019,4 +1138,75 @@ inputNome.addEventListener("change", () => retornaBordaOriginal(inputNome));
 const pedidoConcluido = document.getElementById("pedidoConcluido");
 pedidoConcluido.addEventListener("click", () => {
   pedidoConcluido.classList.remove("pedidoConcluidoActive");
+  setTimeout(() => {
+    window.location.reload();
+  }, 2000)
+  
 });
+
+const inputRadioTrocoSim = document.getElementById("inputRadioTrocoSim");
+const inputRadioTrocoNao = document.getElementById("inputRadioTrocoNao");
+const valorTroco = document.getElementById("valorTroco");
+const sectionFinaliza = document.querySelector(".sectionFinaliza");
+
+inputRadioTrocoSim.addEventListener("change", modalTroco);
+inputRadioTrocoNao.addEventListener("change", modalTroco);
+
+selecionaCheck();
+modalTroco();
+function selecionaCheck() {
+  inputRadioTrocoSim.checked = true;
+}
+function modalTroco() {
+  if (inputRadioTrocoSim.checked) {
+    valorTroco.classList.add("display-flex");
+    sectionFinaliza.classList.add("display-flex");
+  } else {
+    valorTroco.classList.remove("display-flex");
+    sectionFinaliza.classList.add("display-flex");
+    inputTroco.value = "";
+  }
+
+  if (inputRadioTrocoNao.checked) {
+    valorTroco.classList.remove("display-flex");
+  }
+}
+
+inputTroco.addEventListener("input", () => {
+  formatarValor(inputTroco);
+  retornaBordaOriginal(inputTroco);
+});
+inputTroco.addEventListener("blur", () => {
+  formatarValorBlur(inputTroco);
+});
+
+function formatarValor(input) {
+  input.value = input.value.replace(/[^\d,]/g, "");
+
+  input.value = input.value.replace(/^0+/g, "");
+
+  input.value = input.value.replace(/(,.*?),/g, "$1");
+
+  let partes = input.value.split(",");
+  if (partes.length > 1) {
+    partes[1] = partes[1].slice(0, 2);
+    input.value = partes.join(",");
+  }
+}
+
+function formatarValorBlur(input) {
+  let partes = input.value.split(",");
+  if (partes.length === 1) {
+    // Adiciona a vírgula e completa com duas casas decimais com zeros, se necessário
+    input.value = input.value.replace(/(\d+)(?:,(\d*))?/, function (match, p1, p2) {
+      if (p2 === undefined) p2 = ""; // Se não houver parte decimal, define como vazio
+      while (p2.length < 2) p2 += "0"; // Completa com zeros até ter duas casas decimais
+      return p1 + "," + p2;
+    });
+  } else {
+    // Completa com zeros caso haja apenas uma casa decimal
+    if (partes[1].length === 1) {
+      input.value += "0";
+    }
+  }
+}

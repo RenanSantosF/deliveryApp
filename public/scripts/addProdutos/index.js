@@ -20,7 +20,6 @@ function exibirImagem() {
 
 document.getElementById("file").addEventListener("change", () => {
   exibirImagem();
-  console.log("foi");
 });
 
 const input = document.getElementById("inputValue");
@@ -75,7 +74,6 @@ export function retornaBordaOriginal(input) {
   if (input.value !== "") {
     input.style.border = "1px solid #dddfe2";
   }
-  console.log(input);
 }
 
 function formatarValor(input) {
@@ -108,3 +106,45 @@ function formatarValorBlur(input) {
     }
   }
 }
+
+
+document.querySelectorAll('.containerMinMax').forEach(function(container) {
+  var minInput = container.querySelector('.minInput');
+  var maxInput = container.querySelector('.maxInput');
+
+  minInput.addEventListener('input', function() {
+    if (parseInt(minInput.value) < 0) {
+      minInput.value = 0;
+    } else if (parseInt(minInput.value) > parseInt(maxInput.value)) {
+      minInput.value = maxInput.value;
+    }
+  });
+
+  maxInput.addEventListener('input', function() {
+    if (parseInt(maxInput.value) < parseInt(minInput.value)) {
+      maxInput.value = minInput.value;
+    }
+  });
+
+  container.querySelector('.decrementaMinimo').addEventListener('click', function() {
+    if (parseInt(minInput.value) > 0) {
+      minInput.value = parseInt(minInput.value) - 1;
+    }
+  });
+
+  container.querySelector('.incrementaMinimo').addEventListener('click', function() {
+    if (parseInt(minInput.value) < parseInt(maxInput.value)) {
+      minInput.value = parseInt(minInput.value) + 1;
+    }
+  });
+
+  container.querySelector('.decrementaMaximo').addEventListener('click', function() {
+    if (parseInt(maxInput.value) > parseInt(minInput.value)) {
+      maxInput.value = parseInt(maxInput.value) - 1;
+    }
+  });
+
+  container.querySelector('.incrementaMaximo').addEventListener('click', function() {
+    maxInput.value = parseInt(maxInput.value) + 1;
+  });
+});

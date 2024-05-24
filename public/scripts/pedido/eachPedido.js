@@ -4,7 +4,7 @@ export function criarDivPedido(pedido) {
     <div class="card pedido" data-id="${pedido.data}">
       <div>
         <div class="headerPedido titulo">
-          <p>${pedido._id}</p>
+          <p>PEDIDO # ${pedido.numeroPedido}</p>
           <p class="data">${pedido.data}</p>
         </div>
         <div class="section">

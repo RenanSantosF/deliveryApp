@@ -1,3 +1,5 @@
+
+
 export function enviaPedido(pedido) {
   fetch("/pedidos", {
     method: "POST",
@@ -8,7 +10,6 @@ export function enviaPedido(pedido) {
   })
     .then((response) => response.json())
     .then((data) => {
-      console.log(data);
       if (data.message === "enviado!") {
         const pedidoConcluido = document.getElementById("pedidoConcluido");
         pedidoConcluido.classList.add("pedidoConcluidoActive");

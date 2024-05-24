@@ -45,31 +45,6 @@
           <span class="labelCategoriaAdicionais">{{@key}}</span>
           <!-- Exibe o nome da categoria -->
 
-          {{#each this}}
-            <!-- Itera sobre os adicionais dentro da categoria -->
-            <label class="labelAdicionais" for="{{_id}}">
-              <label class="container">
-                <input value="{{nome}}" name="adicionais" type="checkbox" />
-                <div class="checkmark"></div>
-              </label>
-
-              <input type="text" name="precoAdicional" value="{{taxa}}" style="display: none;" />
-              <input type="text" name="categoriaAdicional" value="{{categoria}}" style="display: none;" />
-              <span>{{nome}}</span>
-            </label>
-          {{/each}}
-
-        {{else}}
-          <option value="0">Nenhum adicional encontrado, cadastre algum.</option>
-        {{/each}}
-
-        <button id="btnEnviar" type="submit">Criar produto</button> --}}
-
-
-        {{#each adicionais}}
-          <span class="labelCategoriaAdicionais">{{@key}}</span>
-          <!-- Exibe o nome da categoria -->
-
           <div>
             <!-- Inputs para definir quantidade mínima e máxima de adicionais selecionáveis -->
             <label for="minAdicionais-{{@key}}">
@@ -96,6 +71,56 @@
             </label>
           {{/each}}
 
+        {{else}}
+          <option value="0">Nenhum adicional encontrado, cadastre algum.</option>
+        {{/each}} --}}
+
+
+        {{#each adicionais}}
+          
+          <span class="labelCategoriaAdicionais">{{@key}}</span>
+
+          <div class="containerMinMax">
+            <label for="minAdicionais-{{@key}}">
+              
+              <div class="containerQuantidadeCategoria">
+                <span>Quantidade mínima</span>
+                <div>
+                  <button type="button" class="btnSomaSubtrai decrementaMinimo">-</button>
+                  <span></span>
+                  <input class="inputQuantidadeCategoria minInput" type="number" value="0" id="minAdicionais-{{@key}}" name="minAdicionais-{{@key}}" min="0" />
+                  <button type="button" class="btnSomaSubtrai incrementaMinimo">+</button>
+                </div>
+              </div>
+            </label>
+            <label for="maxAdicionais-{{@key}}">
+              
+              <div class="containerQuantidadeCategoria">
+                <span>Quantidade máxima</span>
+                <div>
+                  <button type="button" class="btnSomaSubtrai decrementaMaximo">-</button>
+                  <input class="inputQuantidadeCategoria maxInput" type="number" value="10" id="maxAdicionais-{{@key}}" name="maxAdicionais-{{@key}}" min="0" />
+                  <button type="button" class="btnSomaSubtrai incrementaMaximo">+</button>
+                </div>
+
+              </div>
+
+            </label>
+          </div>
+
+          {{#each this}}
+            <label class="labelAdicionais" for="{{_id}}">
+              <label class="container">
+                <input value="{{nome}}" name="adicionais-{{@../key}}" type="checkbox" />
+                <div class="checkmark"></div>
+              </label>
+
+              <input type="text" name="precoAdicional" value="{{taxa}}" style="display: none;" />
+              <input type="text" name="categoriaAdicional-{{@../key}}-{{@index}}" value="{{categoria}}" style="display: none;" />
+              <span>{{nome}}</span>
+            </label>
+          {{/each}}
+        <div class="separador"></div>
         {{else}}
           <option value="0">Nenhum adicional encontrado, cadastre algum.</option>
         {{/each}}

@@ -31,8 +31,6 @@
         <input class="input" type="hidden" value="{{produto._id}}" name="id" />
         <label class="label" for="titulo">Título<span class="required">*</span> </label>
         <input class="input" type="text" id="titulo" name="titulo" value="{{produto.titulo}}" />
-        <label class="label" for="slug">Slug</label>
-        <input class="input" type="text" name="slug" value="{{produto.slug}}" />
         <label class="label" for="descricao">Descrição</label>
         <input class="input" type="text" name="descricao" value="{{produto.descricao}}" />
         <label class="label" for="preco">Preço<span class="required">*</span></label>
@@ -48,47 +46,40 @@
         </select>
 
         <label class="label" for="adicionais">Adicionais: </label>
-        {{!-- {{#each adicionais}}
+
+        {{#each adicionais}}
+          
           <span class="labelCategoriaAdicionais">{{@key}}</span>
-          <!-- Exibe o nome da categoria -->
 
-          {{#each this}}
-            <!-- Itera sobre os adicionais dentro da categoria -->
-            <label class="labelAdicionais" for="{{_id}}">
-              <label class="container">
-                <input value="{{nome}}" name="adicionais" type="checkbox" />
-                <div class="checkmark"></div>
-              </label>
-
-              <input type="text" name="precoAdicional" value="{{taxa}}" style="display: none;" />
-              <input type="text" name="categoriaAdicional" value="{{categoria}}" style="display: none;" />
-              <span>{{nome}}</span>
-            </label>
-          {{/each}}
-
-        {{else}}
-          <option value="0">Nenhum adicional encontrado, cadastre algum.</option>
-        {{/each}} --}}
-
-
-                {{#each adicionais}}
-          <span class="labelCategoriaAdicionais">{{@key}}</span>
-          <!-- Exibe o nome da categoria -->
-
-          <div>
-            <!-- Inputs para definir quantidade mínima e máxima de adicionais selecionáveis -->
+          <div class="containerMinMax">
             <label for="minAdicionais-{{@key}}">
-              Mínimo:
-              <input type="number" id="minAdicionais-{{@key}}" name="minAdicionais-{{@key}}" min="0" />
+              
+              <div class="containerQuantidadeCategoria">
+                <span>Quantidade mínima</span>
+                <div>
+                  <button type="button" class="btnSomaSubtrai decrementaMinimo">-</button>
+                  <span></span>
+                  <input class="inputQuantidadeCategoria minInput" type="number" value="0" id="minAdicionais-{{@key}}" name="minAdicionais-{{@key}}" min="0" />
+                  <button type="button" class="btnSomaSubtrai incrementaMinimo">+</button>
+                </div>
+              </div>
             </label>
             <label for="maxAdicionais-{{@key}}">
-              Máximo:
-              <input type="number" id="maxAdicionais-{{@key}}" name="maxAdicionais-{{@key}}" min="0" />
+              
+              <div class="containerQuantidadeCategoria">
+                <span>Quantidade máxima</span>
+                <div>
+                  <button type="button" class="btnSomaSubtrai decrementaMaximo">-</button>
+                  <input class="inputQuantidadeCategoria maxInput" type="number" value="10" id="maxAdicionais-{{@key}}" name="maxAdicionais-{{@key}}" min="0" />
+                  <button type="button" class="btnSomaSubtrai incrementaMaximo">+</button>
+                </div>
+
+              </div>
+
             </label>
           </div>
 
           {{#each this}}
-            <!-- Itera sobre os adicionais dentro da categoria -->
             <label class="labelAdicionais" for="{{_id}}">
               <label class="container">
                 <input value="{{nome}}" name="adicionais-{{@../key}}" type="checkbox" />
@@ -96,11 +87,11 @@
               </label>
 
               <input type="text" name="precoAdicional" value="{{taxa}}" style="display: none;" />
-              <input type="text" name="categoriaAdicional" value="{{categoria}}" style="display: none;" />
+              <input type="text" name="categoriaAdicional-{{@../key}}-{{@index}}" value="{{categoria}}" style="display: none;" />
               <span>{{nome}}</span>
             </label>
           {{/each}}
-
+        <div class="separador"></div>
         {{else}}
           <option value="0">Nenhum adicional encontrado, cadastre algum.</option>
         {{/each}}

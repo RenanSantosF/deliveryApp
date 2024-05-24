@@ -20,15 +20,38 @@
   <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap" rel="stylesheet">
   
   <meta charset="UTF-8">
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{title}}</title>
   <link rel="stylesheet" href="{{css}}">
   <link rel="stylesheet" href="/css/globals.css">
+  <!-- Incluindo a biblioteca Socket.io -->
+  <script src="/socket.io/socket.io.js"></script>
   <script defer type="module" src="{{script}}"></script>
   <script defer type="module" src="/scripts/index.js"></script>
 </head>
 <body>
+  <h1>Teste de Conexão com Socket.io</h1>
+  <script>
+    const socket = io("http://localhost:3000", {
+      transports: ["websocket"], // Forçar o uso de WebSocket
+    });
 
+    socket.on("connect", () => {
+      console.log("Conexão estabelecida com o servidor Socket.io!");
+      socket.emit("message", "Hello server from client!");
+    });
+
+    socket.on("disconnect", (reason) => {
+      console.log("Desconectado do servidor Socket.io:", reason);
+    });
+
+    socket.on("connect_error", (err) => {
+      console.error("Erro de conexão:", err);
+    });
+  </script>
+
+  
   <div class="">
     {{#if error}}
       <div class="alert alert-danger">{{this.error}}</div>

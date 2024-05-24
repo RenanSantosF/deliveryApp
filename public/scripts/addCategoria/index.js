@@ -25,5 +25,4 @@ export function retornaBordaOriginal(input) {
   if (input.value !== "") {
     input.style.border = "1px solid #dddfe2";
   }
-  console.log(input);
 }
