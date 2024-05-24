@@ -8,11 +8,7 @@
 {{! <h2>Crie sua conta Hoje</h2> }}
 <div class="card">
   <div class="card-body">
-    <form
-      action="/usuarios/registro"
-      method="post"
-      enctype="multipart/form-data"
-    >
+    <form action="/usuarios/registro" method="post" enctype="multipart/form-data">
       <label for="nome">Nome: </label>
       <input type="text" name="nome" class="form-control" required />
       <label for="email">Email: </label>
@@ -26,21 +22,9 @@
       <input type="text" name="nomeLoja" class="form-control" required />
 
       <h3>Imagem principal da loja: </h3>
-      <input
-        value="123"
-        type="file"
-        name="imgLogo"
-        class="form-control"
-        required
-      />
+      <input value="123" type="file" name="imgLogo" class="form-control" />
       <h3>imagem de fundo da loja: </h3>
-      <input
-        value="123"
-        type="file"
-        name="imgBg"
-        class="form-control"
-        required
-      />
+      <input value="123" type="file" name="imgBg" class="form-control" />
 
       <h3>Informações de contato: </h3>
       <label for="estado">Telefone: </label>

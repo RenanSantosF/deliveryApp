@@ -81,7 +81,7 @@ export function retornaBordaOriginal(input) {
 function formatarValor(input) {
   input.value = input.value.replace(/[^\d,]/g, "");
 
-  input.value = input.value.replace(/^0+/g, "");
+  input.value = input.value = input.value.replace(/^0+(?=\d)/, "");
 
   input.value = input.value.replace(/(,.*?),/g, "$1");
 
@@ -109,13 +109,11 @@ function formatarValorBlur(input) {
   }
 }
 
+document.querySelectorAll(".containerMinMax").forEach(function (container) {
+  var minInput = container.querySelector(".minInput");
+  var maxInput = container.querySelector(".maxInput");
 
-
-document.querySelectorAll('.containerMinMax').forEach(function(container) {
-  var minInput = container.querySelector('.minInput');
-  var maxInput = container.querySelector('.maxInput');
-
-  minInput.addEventListener('input', function() {
+  minInput.addEventListener("input", function () {
     if (parseInt(minInput.value) < 0) {
       minInput.value = 0;
     } else if (parseInt(minInput.value) > parseInt(maxInput.value)) {
@@ -123,31 +121,31 @@ document.querySelectorAll('.containerMinMax').forEach(function(container) {
     }
   });
 
-  maxInput.addEventListener('input', function() {
+  maxInput.addEventListener("input", function () {
     if (parseInt(maxInput.value) < parseInt(minInput.value)) {
       maxInput.value = minInput.value;
     }
   });
 
-  container.querySelector('.decrementaMinimo').addEventListener('click', function() {
+  container.querySelector(".decrementaMinimo").addEventListener("click", function () {
     if (parseInt(minInput.value) > 0) {
       minInput.value = parseInt(minInput.value) - 1;
     }
   });
 
-  container.querySelector('.incrementaMinimo').addEventListener('click', function() {
+  container.querySelector(".incrementaMinimo").addEventListener("click", function () {
     if (parseInt(minInput.value) < parseInt(maxInput.value)) {
       minInput.value = parseInt(minInput.value) + 1;
     }
   });
 
-  container.querySelector('.decrementaMaximo').addEventListener('click', function() {
+  container.querySelector(".decrementaMaximo").addEventListener("click", function () {
     if (parseInt(maxInput.value) > parseInt(minInput.value)) {
       maxInput.value = parseInt(maxInput.value) - 1;
     }
   });
 
-  container.querySelector('.incrementaMaximo').addEventListener('click', function() {
+  container.querySelector(".incrementaMaximo").addEventListener("click", function () {
     maxInput.value = parseInt(maxInput.value) + 1;
   });
 });

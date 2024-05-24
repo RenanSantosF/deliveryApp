@@ -55,6 +55,7 @@ router.post(
 
     if (erros.length > 0) {
       res.render("usuarios/registro", { erros: erros });
+      console.log(erros)
     } else {
       Usuario.findOne({ email: req.body.email })
         .lean()
@@ -63,11 +64,28 @@ router.post(
             req.flash("error_msg", "Já existe uma conta com este email no nosso sistema");
             res.redirect("/usuarios/registro");
           } else {
+
+            let loja = req.body.nomeLoja
+            function slugify(text) {
+              // Normaliza o texto para decompor caracteres especiais
+              text = text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+              // Remove caracteres não-ASCII
+              text = text.replace(/[^\w\s-]/g, '');
+              // Substitui espaços e múltiplos hífens por um único hífen
+              text = text.trim().replace(/\s+/g, '-').replace(/-+/g, '-');
+              // Converte para minúsculas
+              text = text.toLowerCase();
+              return text;
+          }
+
+          let nomeLojaCorrigido = slugify(loja)
+          
             const novoUsuario = new Usuario({
               nome: req.body.nome,
               email: req.body.email,
               senha: req.body.senha,
-              nomeLoja: req.body.nomeLoja,
+              NomeDaLoja: req.body.nomeLoja,
+              nomeLoja: nomeLojaCorrigido,
               imgLogo: req.files.imgLogo[0].filename,
               imgBg: req.files.imgBg[0].filename,
               telefone: req.body.telefone,
@@ -98,6 +116,7 @@ router.post(
                 if (erro) {
                   req.flash("error_msg", "Houve um erro durante o salvamento de usuário");
                   res.redirect("/");
+                  console.log(erro)
                 } else {
                   novoUsuario.senha = hash;
                   novoUsuario
@@ -108,6 +127,7 @@ router.post(
                     .catch((err) => {
                       req.flash("error_msg", "Houve um erro  ao criar o usuario, tente novamente!");
                       res.redirect("/usuarios/registro");
+                      console.log(err)
                     });
                 }
               });
@@ -117,6 +137,7 @@ router.post(
         .catch((err) => {
           req.flash("error_msg", "Houve um erro interno");
           res.redirect("/");
+          console.log(err)
         });
     }
   }

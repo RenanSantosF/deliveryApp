@@ -25,3 +25,5 @@ export function criarDivPedido(pedido) {
     </div>
   `;
 }
+
+

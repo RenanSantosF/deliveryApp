@@ -8,6 +8,8 @@ const existeUsuario = function (req, res, next) {
     .then((usuario) => {
       if (usuario) {
         return next();
+      } else if (req.params.nomeLoja === "socket.io") {
+        return next();
       } else {
         res.send("Arquivo não encontrado");
       }

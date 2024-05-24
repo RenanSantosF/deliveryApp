@@ -1140,8 +1140,7 @@ pedidoConcluido.addEventListener("click", () => {
   pedidoConcluido.classList.remove("pedidoConcluidoActive");
   setTimeout(() => {
     window.location.reload();
-  }, 2000)
-  
+  }, 2000);
 });
 
 const inputRadioTrocoSim = document.getElementById("inputRadioTrocoSim");
@@ -1183,7 +1182,7 @@ inputTroco.addEventListener("blur", () => {
 function formatarValor(input) {
   input.value = input.value.replace(/[^\d,]/g, "");
 
-  input.value = input.value.replace(/^0+/g, "");
+  input.value = input.value = input.value.replace(/^0+(?=\d)/, "");
 
   input.value = input.value.replace(/(,.*?),/g, "$1");
 

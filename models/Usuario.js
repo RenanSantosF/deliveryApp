@@ -24,10 +24,11 @@ const Usuario = new Schema({
   },
   imgLogo: {
     type: String,
-    require: true,
+    default: "imgPadrao.png"
   },
   imgBg: {
     type: String,
+    default: "imgPadrao.png"
   },
   telefone: {
     type: String,
@@ -114,6 +115,10 @@ const Usuario = new Schema({
     type: String,
     default: 0,
   },
+  dataCriacao: {
+    type: Date,
+    default: new Date()
+  }
 });
 
 mongoose.model("usuarios", Usuario);
