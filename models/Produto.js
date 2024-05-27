@@ -29,7 +29,7 @@ const Produto = new Schema({
   },
   imgProduto: {
     type: String,
-    default: "imgPadrao.png"
+    default: "/padrao/imgPadrao.png"
   },
   adicionais: [
     {

@@ -18,17 +18,21 @@ const Usuario = new Schema({
     type: String,
     require: true,
   },
+  nomeDaLoja: {
+    type: String,
+    require: true,
+  },
   nomeLoja: {
     type: String,
     require: true,
   },
   imgLogo: {
     type: String,
-    default: "imgPadrao.png"
+    default: "/padrao/imgPadrao.png"
   },
   imgBg: {
     type: String,
-    default: "imgPadrao.png"
+    default: "/padrao/imgPadrao.png"
   },
   telefone: {
     type: String,

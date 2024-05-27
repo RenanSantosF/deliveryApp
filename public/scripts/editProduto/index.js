@@ -1,3 +1,6 @@
+import showMenu from "../mostraMenu.js";
+showMenu("nav-toggle", "nav-menu");
+
 // Função para exibir a imagem selecionada
 function exibirImagem() {
   // Obtém o input do tipo file

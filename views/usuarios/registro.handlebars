@@ -8,18 +8,25 @@
 {{! <h2>Crie sua conta Hoje</h2> }}
 <div class="card">
   <div class="card-body">
-    <form action="/usuarios/registro" method="post" enctype="multipart/form-data">
+    <form id="registration-form" action="/usuarios/registro" method="post" enctype="multipart/form-data">
       <label for="nome">Nome: </label>
-      <input type="text" name="nome" class="form-control" required />
+      <input type="text" name="nome" class="form-control" />
       <label for="email">Email: </label>
-      <input type="email" name="email" class="form-control" required />
+      <input type="email" name="email" class="form-control" />
       <label for="senha">Senha: </label>
-      <input type="password" name="senha" class="form-control" required />
+      <input type="password" name="senha" class="form-control" />
       <label for="senha2">Repita sua senha: </label>
-      <input type="password" name="senha2" class="form-control" required />
+      <input type="password" name="senha2" class="form-control" />
 
       <h3>Nome da loja: </h3>
-      <input type="text" name="nomeLoja" class="form-control" required />
+      <input type="text" name="nomeDaLoja" class="form-control" />
+
+      <h3>Link do cardápio: </h3>
+      <div>
+        <span>localhost:3000/</span>
+        <input type="text" name="nomeLoja" id="nomeLoja" class="form-control" />
+        <span id="username-status"></span>
+      </div>
 
       <h3>Imagem principal da loja: </h3>
       <input value="123" type="file" name="imgLogo" class="form-control" />
@@ -28,21 +35,21 @@
 
       <h3>Informações de contato: </h3>
       <label for="estado">Telefone: </label>
-      <input type="text" name="telefone" class="form-control" required />
+      <input type="text" name="telefone" class="form-control" />
 
       <h3>Informações de endereço: </h3>
       <label for="estado">Estado: </label>
-      <input type="text" name="estado" class="form-control" required />
+      <input type="text" name="estado" class="form-control" />
       <label for="cidade">Cidade: </label>
-      <input type="text" name="cidade" class="form-control" required />
+      <input type="text" name="cidade" class="form-control" />
       <label for="bairro">Bairro: </label>
-      <input type="text" name="bairro" class="form-control" required />
+      <input type="text" name="bairro" class="form-control" />
       <label for="rua">Rua: </label>
-      <input type="text" name="rua" class="form-control" required />
+      <input type="text" name="rua" class="form-control" />
       <label for="numero">Nº: </label>
-      <input type="text" name="numero" class="form-control" required />
+      <input type="text" name="numero" class="form-control" />
       <label for="pontoRef">Ponto de referência: </label>
-      <input type="text" name="pontoReferencia" class="form-control" required />
+      <input type="text" name="pontoReferencia" class="form-control" />
 
       <h3>Horários de funcionamento: </h3>
 

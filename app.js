@@ -27,14 +27,11 @@ const Bairro = mongoose.model("bairros");
 require("./models/Pedido");
 const Pedido = mongoose.model("pedidos");
 
-const { createServer } = require('node:http');
+const { createServer } = require("node:http");
 
-const { Server } = require('socket.io');
+const { Server } = require("socket.io");
 const server = createServer(app);
 const io = new Server(server);
-
-
-
 
 // Configurações
 // Sessão
@@ -94,8 +91,6 @@ app.get("/", (req, res) => {
 
 app.post("/pedidos", async (req, res) => {
   try {
-
-
     const dadosPedido = req.body;
 
     const ultimoPedido = await Pedido.findOne({ nomeLoja: dadosPedido.nomeLoja }).sort({ numeroPedido: -1 });
@@ -110,7 +105,7 @@ app.post("/pedidos", async (req, res) => {
     dadosPedido.numeroPedido = novoNumeroPedido;
     const novoPedido = new Pedido(dadosPedido);
     await novoPedido.save();
-    io.emit("novoPedido", novoPedido)
+    io.emit("novoPedido", novoPedido);
 
     res.status(201).json({ message: "enviado!", numeroPedido: novoNumeroPedido });
   } catch (error) {
@@ -124,10 +119,15 @@ app.get("/404", (req, res) => {
   res.send("Erro 404!");
 });
 
-// Página para cada cliente de cada loja
+
+
+
+
+
 app.get("/:nomeLoja", existeUsuario, (req, res) => {
   let dadosUsuario = [];
   let statusLoja = [];
+  let horarios = [];
   let formasPagamento = [];
   let bairrosCadastrados = [];
   Usuario.find({ nomeLoja: req.params.nomeLoja })
@@ -146,7 +146,7 @@ app.get("/:nomeLoja", existeUsuario, (req, res) => {
       };
 
       statusLoja = verificarHorarioDeFuncionamento(horariosDeFuncionamento);
-
+      horarios = horariosDeFuncionamento;
       dadosUsuario.forEach((usuario) => {
         usuario.statusSituacao = statusLoja;
       });
@@ -189,6 +189,7 @@ app.get("/:nomeLoja", existeUsuario, (req, res) => {
               produtosPorCategoria[categoria.nome].push(produto);
             }
           });
+          console.log(statusLoja);
 
           res.render("index", {
             produtosPorCategoria: produtosPorCategoria,
@@ -201,6 +202,7 @@ app.get("/:nomeLoja", existeUsuario, (req, res) => {
             script: "/scripts/cliente/index.js",
           });
         })
+
         .catch((err) => {
           res.send("Erro interno");
           console.log(err);
@@ -324,7 +326,7 @@ function verificarHorarioDeFuncionamento(element) {
       if (horarioAtualEmMinutos >= aberturaEmMinutos || horarioAtualEmMinutos < fechamentoEmMinutos) {
         return [
           {
-            status: "aberta",
+            status: "Aberta",
             dia: diaSemana,
             abertura: horarioFuncionamento.abertura,
             fechamento: horarioFuncionamento.fechamento,
@@ -336,7 +338,7 @@ function verificarHorarioDeFuncionamento(element) {
       if (horarioAtualEmMinutos >= aberturaEmMinutos && horarioAtualEmMinutos <= fechamentoEmMinutos) {
         return [
           {
-            status: "aberta",
+            status: "Aberta",
             dia: diaSemana,
             abertura: horarioFuncionamento.abertura,
             fechamento: horarioFuncionamento.fechamento,
@@ -348,7 +350,7 @@ function verificarHorarioDeFuncionamento(element) {
 
   return [
     {
-      status: "fechada",
+      status: "Fechada",
       dia: diaSemana,
       abertura: diaSemana in element ? element[diaSemana].abertura : null,
       fechamento: diaSemana in element ? element[diaSemana].fechamento : null,
@@ -356,14 +358,13 @@ function verificarHorarioDeFuncionamento(element) {
   ];
 }
 
-io.on('connection', (socket) => {
-  console.log('a user connected');
-  
-  socket.on('disconnect', () => {
-    console.log('user disconnected');
+io.on("connection", (socket) => {
+  console.log("a user connected");
+
+  socket.on("disconnect", () => {
+    console.log("user disconnected");
   });
 });
-
 
 // Outros
 const PORT = process.env.PORT || 3000;

@@ -1,3 +1,6 @@
+import showMenu from "../mostraMenu.js";
+showMenu("nav-toggle", "nav-menu");
+
 document.addEventListener("DOMContentLoaded", function () {
   const openModalElements = document.querySelectorAll(".openModal");
 

@@ -13,6 +13,7 @@ export function enviaPedido(pedido) {
       if (data.message === "enviado!") {
         const pedidoConcluido = document.getElementById("pedidoConcluido");
         pedidoConcluido.classList.add("pedidoConcluidoActive");
+        document.getElementById("confirmaEndereco").style.pointerEvents = "none";
       }
     })
     .catch((error) => {

@@ -9,6 +9,11 @@
   font-family: "Poppins", sans-serif;
 }
 
+*body {
+  height: 100vh;
+  background-color: #f8f8f8;
+}
+
 ::-webkit-scrollbar {
   width: 10px; /* Largura da barra de rolagem */
   background-color: #f5f5f5; /* Cor de fundo da barra de rolagem */
@@ -37,91 +42,3 @@
   background-color: $cor-falha;
 }
 
-// Nav bar
-.header {
-  position: fixed;
-  z-index: 100000;
-  top: 0;
-  width: 100vw;
-  background: $cor-navBarHeader;
-  height: 70px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 50px;
-}
-.header .logo {
-  font-size: 20px;
-  text-transform: uppercase;
-}
-.header nav ul {
-  display: flex;
-}
-
-.header nav ul li a {
-  display: inline-block;
-  color: #000;
-  padding: 5px 0;
-  margin: 0 10px;
-  border: 3px solid transparent;
-  text-transform: uppercase;
-  transition: 0.2s;
-}
-.header nav ul li a:hover,
-.header nav ul li a.active {
-  color: #2ba8fb;
-}
-
-.hamburger {
-  cursor: pointer;
-  display: none;
-}
-.hamburger div {
-  width: 30px;
-  height: 3px;
-  margin: 5px 0;
-  background: #000;
-  transition: transform 0.3s, opacity 0.3s;
-}
-@media only screen and (max-width: 900px) {
-  .header {
-    padding: 0 30px;
-  }
-}
-@media only screen and (max-width: 100000px) {
-  .hamburger {
-    display: block;
-  }
-  .header nav {
-    position: fixed;
-    width: 60%;
-    left: -100%;
-    top: 70px;
-    height: 100%;
-    background: $cor-navBarContent;
-    padding: 30px;
-    transition: 0.3s;
-    border-left: 1px solid lightgrey;
-    border-bottom: 1px solid lightgrey;
-  }
-
-  .header #nav_check:checked ~ .hamburger div:nth-child(1) {
-    transform: rotate(-45deg) translate(-5px, 6px);
-  }
-  .header #nav_check:checked ~ .hamburger div:nth-child(2) {
-    opacity: 0;
-  }
-  .header #nav_check:checked ~ .hamburger div:nth-child(3) {
-    transform: rotate(45deg) translate(-5px, -6px);
-  }
-
-  .header #nav_check:checked ~ nav {
-    left: 0;
-  }
-  .header nav ul {
-    display: block;
-  }
-  .header nav ul li a {
-    margin: 5px 0;
-  }
-}

@@ -323,7 +323,7 @@ router.post("/produtos/nova", upload.single("imgProduto"), UserAuth, eAdmin, (re
       preco: req.body.preco,
       categoria: req.body.categoria,
       nomeLoja: req.user.nomeLoja,
-      imgProduto: req.file ? req.generatedFileName : null,
+      imgProduto: req.file ? req.generatedFileName : req.generatedFileName,
       adicionais: novosAdicionais,
     };
 
@@ -440,7 +440,7 @@ router.post("/produto/edit", upload.single("imgProduto"), UserAuth, eAdmin, (req
             }
           });
         }
-        produto.imgProduto = req.generatedFileName;
+        produto.imgProduto = req.generatedFileName ? req.generatedFileName : "/padrao/imgPadrao.png";
       }
 
       produto.adicionais = novosAdicionais;

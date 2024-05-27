@@ -1,48 +1,213 @@
+
+
 <header class="header">
-  <div class="logo">{{nomeLojaExibicao}}</div>
-  <input type="checkbox" id="nav_check" hidden />
-  <nav>
-    <ul>
-      <li>
-        <a href="/{{loja}}/admin/" class="active">Home</a>
-      </li>
-      <li>
-        <a href="/{{loja}}/admin/pedidos">Pedidos</a>
-      </li>
-      <li>
-        <a href="/{{loja}}/admin/categorias">Categorias</a>
-      </li>
-      <li>
-        <a href="/{{loja}}/admin/pagamentos">Formas de pagamento</a>
-      </li>
-      <li>
-        <a href="/{{loja}}/admin/produtos">Produtos</a>
-      </li>
-      <li>
-        <a href="/{{loja}}/admin/adicionais">Adicionais</a>
-      </li>
-      <li>
-        <a href="/{{loja}}/admin/bairros">Bairros</a>
-      </li>
-      {{#if user}}
-        <li>
+  <nav class="nav container">
+    <div class="nav__data">
+      <a class="nav__logo">
+        {{! <i class="ri-planet-line"></i> }}
+        {{nomeDaLoja}}
+      </a>
 
-          <a href="/usuarios/logout">Sair</a>
+      <div class="nav__toggle" id="nav-toggle">
+        <i class="ri-menu-line nav__burger"></i>
+        <i class="ri-close-line nav__close"></i>
+      </div>
+    </div>
+
+    <!--=============== NAV MENU ===============-->
+    <div class="nav__menu" id="nav-menu">
+      <ul class="nav__list">
+        {{!-- <li><a href="/{{loja}}/admin" class="nav__link">Início</a></li> --}}
+
+        <li><a href="/{{loja}}/admin/pedidos" class="nav__link">Meus pedidos</a></li>
+
+        <!--=============== DROPDOWN 1 ===============-->
+        <li class="dropdown__item">
+          <div class="nav__link">
+            Produtos
+            <i class="ri-arrow-down-s-line dropdown__arrow"></i>
+          </div>
+
+          <ul class="dropdown__menu">
+
+            <li>
+              <a href="/{{loja}}/admin/produtos" class="dropdown__link">
+                <i class="ri-list-check"></i>
+                Meus produtos
+              </a>
+            </li>
+
+            <li>
+              <a href="/{{loja}}/admin/produtos/add" class="dropdown__link">
+                <i class="ri-add-line"></i>
+                Criar
+              </a>
+            </li>
+
+            {{! <!--=============== DROPDOWN SUBMENU ===============-->
+            <li class="dropdown__subitem">
+              <div class="dropdown__link">
+                <i class="ri-bar-chart-line"></i>
+                Reports
+                <i class="ri-add-line dropdown__add"></i>
+              </div>
+
+              <ul class="dropdown__submenu">
+                <li>
+                  <a href="#" class="dropdown__sublink">
+                    <i class="ri-file-list-line"></i>
+                    Documents
+                  </a>
+                </li>
+
+                <li>
+                  <a href="#" class="dropdown__sublink">
+                    <i class="ri-cash-line"></i>
+                    Payments
+                  </a>
+                </li>
+
+                <li>
+                  <a href="#" class="dropdown__sublink">
+                    <i class="ri-refund-2-line"></i>
+                    Refunds
+                  </a>
+                </li>
+              </ul>
+            </li> }}
+          </ul>
         </li>
 
-      {{else}}
-        <li>
-          <a href="/usuarios/login" aria-disabled="true">Login</a>
+        <li class="dropdown__item">
+          <div class="nav__link">
+            Categorias
+            <i class="ri-arrow-down-s-line dropdown__arrow"></i>
+          </div>
+
+          <ul class="dropdown__menu">
+
+            <li>
+              <a href="/{{loja}}/admin/categorias" class="dropdown__link">
+                <i class="ri-list-check"></i>
+                Categorias cadastradas
+              </a>
+            </li>
+
+            <li>
+              <a href="/{{loja}}/admin/categorias/add" class="dropdown__link">
+                <i class="ri-add-line"></i>
+                Criar
+              </a>
+            </li>
+          </ul>
         </li>
-        <li>
-          <a href="/usuarios/registro" aria-disabled="true">Registro</a>
+
+        <li class="dropdown__item">
+          <div class="nav__link">
+            Formas de pagamento
+            <i class="ri-arrow-down-s-line dropdown__arrow"></i>
+          </div>
+
+          <ul class="dropdown__menu">
+
+            <li>
+              <a href="/{{loja}}/admin/pagamentos" class="dropdown__link">
+                <i class="ri-list-check"></i>
+                Formas de pagamentos cadastradas
+              </a>
+            </li>
+
+            <li>
+              <a href="/{{loja}}/admin/pagamentos/add" class="dropdown__link">
+                <i class="ri-add-line"></i>
+                Criar
+              </a>
+            </li>
+          </ul>
         </li>
-      {{/if}}
-    </ul>
+
+        <li class="dropdown__item">
+          <div class="nav__link">
+            Adicionais
+            <i class="ri-arrow-down-s-line dropdown__arrow"></i>
+          </div>
+
+          <ul class="dropdown__menu">
+
+            <li>
+              <a href="/{{loja}}/admin/adicionais" class="dropdown__link">
+                <i class="ri-list-check"></i>
+                Adicionais cadastrados
+              </a>
+            </li>
+
+            <li>
+              <a href="/{{loja}}/admin/categorias/add" class="dropdown__link">
+                <i class="ri-add-line"></i>
+                Criar
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        <li class="dropdown__item">
+          <div class="nav__link">
+            Bairros
+            <i class="ri-arrow-down-s-line dropdown__arrow"></i>
+          </div>
+
+          <ul class="dropdown__menu">
+
+            <li>
+              <a href="/{{loja}}/admin/bairros" class="dropdown__link">
+                <i class="ri-list-check"></i>
+                Bairros cadastrados
+              </a>
+            </li>
+
+            <li>
+              <a href="/{{loja}}/admin/bairros/add" class="dropdown__link">
+                <i class="ri-add-line"></i>
+                Criar
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        {{! 
+        <!--=============== DROPDOWN 2 ===============-->
+        <li class="dropdown__item">
+          <div class="nav__link">
+            Users
+            <i class="ri-arrow-down-s-line dropdown__arrow"></i>
+          </div>
+
+          <ul class="dropdown__menu">
+            <li>
+              <a href="#" class="dropdown__link">
+                <i class="ri-user-line"></i>
+                Profiles
+              </a>
+            </li>
+
+            <li>
+              <a href="#" class="dropdown__link">
+                <i class="ri-lock-line"></i>
+                Accounts
+              </a>
+            </li>
+
+            <li>
+              <a href="#" class="dropdown__link">
+                <i class="ri-message-3-line"></i>
+                Messages
+              </a>
+            </li>
+          </ul>
+        </li> }}
+
+        <li><a href="https://wa.me://27998836017" class="nav__link">Contate-nos</a></li>
+      </ul>
+    </div>
   </nav>
-  <label for="nav_check" class="hamburger">
-    <div></div>
-    <div></div>
-    <div></div>
-  </label>
 </header>

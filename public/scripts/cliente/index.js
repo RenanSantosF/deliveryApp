@@ -236,7 +236,7 @@ const spanItem = document.getElementById("date-span");
 
 // Verifica hora e manipula o card horário
 function checkRestaurantOpen() {
-  if (spanItem.dataset.status === "aberta") {
+  if (spanItem.dataset.status === "Aberta") {
     return true;
   } else {
     return false;
@@ -1026,8 +1026,7 @@ confirmaEndereco.addEventListener("click", () => {
   const horaFormatada = `${dataAtual.getHours().toString().padStart(2, "0")}:${dataAtual.getMinutes().toString().padStart(2, "0")}`;
   const telefoneFormatado = inputTelefone.value.replace(/\D/g, "");
 
-  console.log(selectedRadio.id);
-  if (selectedRadio.id === "Dinheiro") {
+  if (selectedRadio.id === "Dinheiro" ||  selectedRadio.id === "dinheiro") {
     let erros = [];
 
     containerModalTroco.classList.add("activeModalTroco");
@@ -1208,4 +1207,31 @@ function formatarValorBlur(input) {
       input.value += "0";
     }
   }
+}
+
+cep.addEventListener('input', function() {
+  const cep = this.value.replace(/\D/g, ''); // Remove caracteres não numéricos
+  if (cep.length === 8) {
+    consultarCEP(cep);
+  }
+});
+
+
+function consultarCEP(cep) {
+  
+  fetch(`https://viacep.com.br/ws/${cep}/json/`)
+    .then(response => response.json())
+    .then(data => {
+      if (data.erro) {
+        console.log(`Cep não encontrado!`)
+      } else {
+        rua.value = data.logradouro
+        cidade.value = data.localidade
+        uf.value = data.uf
+      }
+    })
+    .catch(error => {
+      console.log(`https://viacep.com.br/ws/${cep}/json/`)
+      console.error('Ocorreu um erro ao consultar o CEP:', error);
+    });
 }

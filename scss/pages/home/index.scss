@@ -11,7 +11,7 @@ header {
   height: 200px;
   background-size: cover;
   background-position: center;
-  margin-bottom: 20px;
+
 }
 
 header > div {
@@ -25,9 +25,10 @@ header > div {
 }
 
 header > div > img {
-  width: 150px;
-  height: 150px;
-  border-radius: 100%;
+  width: 30%;
+  height: auto;
+  max-width: 150px;
+  border-radius: 10px;
   position: absolute;
   bottom: -20px;
   z-index: 30;
@@ -43,16 +44,18 @@ header > div > img:hover {
 header > div > h1 {
   margin: 10px 0 10px 0;
   font-weight: bold;
-  color: white;
+  color: rgb(238, 238, 238);
+  font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif
 }
 
 header > div > span {
   color: white;
   font-size: 18px;
+  
 }
 
 header > div > .horarioFuncionamento {
-  padding: 4px 5px 4px 10px;
+  padding: 4px 5px 4px 4px;
   border-radius: 2.5px;
   position: absolute;
   right: 10px;
@@ -60,6 +63,7 @@ header > div > .horarioFuncionamento {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-direction: column;
 }
 
 header > div > .horarioFuncionamento span {
@@ -134,6 +138,7 @@ nav {
   white-space: nowrap;
   -webkit-overflow-scrolling: touch;
   z-index: 10;
+  padding: 20px 0 0 0 ;
 }
 
 nav::-webkit-scrollbar {

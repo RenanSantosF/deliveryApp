@@ -1,3 +1,6 @@
+import showMenu from "../mostraMenu.js";
+showMenu("nav-toggle", "nav-menu");
+
 const valor = document.getElementById("valor");
 const nome = document.getElementById("nome");
 const btnEnviar = document.getElementById("btnEnviar");

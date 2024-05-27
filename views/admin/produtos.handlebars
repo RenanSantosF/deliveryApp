@@ -18,18 +18,28 @@
   <div class="card">
 
     <div>
-      <div class="titulo">
-        <h2>{{titulo}}</h2>
+      <div class="containerContent">
+        <div class="imgProduto">
+          <img src="/uploads/{{imgProduto}}" alt="">
+        </div>
+
+        <div>
+          <div class="titulo">
+            <h2>{{titulo}}</h2>
+          </div>
+          <div class="nome">
+            <h2>{{this.categoria.nome}}</h2>
+          </div>
+          <div class="taxa">
+            <h2>R$ {{preco}}</h2>
+          </div>
+        </div>
+
+
+
       </div>
-      <div class="taxa">
-        <h2>R$ {{preco}}</h2>
-      </div>
-      <div class="nome">
-        <h2>{{descricao}}</h2>
-      </div>
-      <div class="nome">
-        <h2>Categoria: {{this.categoria.nome}}</h2>
-      </div>
+
+
     </div>
 
     <div class="openModal" id="openModal">

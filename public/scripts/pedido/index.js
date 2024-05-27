@@ -1,6 +1,9 @@
 import { apiPedidos } from "./pedidosApi.js";
 import { criarDivPedido } from "./eachPedido.js";
-import { modalPedido, modalPedido2 } from "./modalPedido.js";
+import { modalPedido } from "./modalPedido.js";
+import showMenu from "../mostraMenu.js";
+showMenu("nav-toggle", "nav-menu");
+
 const pedidosDiv = document.getElementById("pedidos");
 
 const socket = io();
@@ -17,19 +20,6 @@ let pedidosData = []
 
 socket.on("novoPedido", (novoPedido) => {
   SomNovoPedido();
-  // pedidosData.push(novoPedido);
-  // pedidosDiv.innerHTML += criarDivPedido(novoPedido);
-
-
-  // const btnModal = document.querySelectorAll(".btnModal");
-  // btnModal.forEach((btn) => {
-  //   btn.addEventListener("click", (e) => {
-  //     let id = e.target.dataset.id;
-  //     if (pedidosData.some(pedido => pedido._id === id)) {
-  //       modalPedido2(id, pedidosData);
-  //     }
-  //   });
-  // });
   pedidosDiv.innerHTML = ``
   obterPedidos()
 });

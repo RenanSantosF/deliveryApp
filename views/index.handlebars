@@ -2,11 +2,15 @@
   <header data-img="./uploads/{{imgBg}}" id="headerImgFundo">
     <div>
       <img src="./uploads/{{imgLogo}}" />
-      <h1 id="nomeLoja">{{nomeLoja}}</h1>
+      <h1 id="nomeDaLoja">{{nomeDaLoja}}</h1>
+      <h1 style="display: none;" id="nomeLoja">{{nomeLoja}}</h1>
       {{#each statusSituacao}}
         <div class="horarioFuncionamento" data-status="{{status}}" id="date-span">
           <span>{{status}}</span>
-          <img src="./img/botao-voltar-branco.png" />
+          {{#if abertura}}
+            <span>{{abertura}} às {{fechamento}}</span>
+          {{/if}}
+          {{! <img src="./img/botao-voltar-branco.png" /> }}
         </div>
       {{/each}}
     </div>
@@ -14,48 +18,48 @@
 {{/each}}
 
 <nav>
-
   {{#each produtosPorCategoria}}
-    <ul>
-      <li><a href="#{{@key}}">{{@key}}</a></li>
-    </ul>
+    {{#if this.length}}
+      <ul>
+        <li><a href="#{{@key}}">{{@key}}</a></li>
+      </ul>
+    {{/if}}
   {{/each}}
 </nav>
 
 <div id="menu" class="menu">
   <div id="menu">
     {{#each produtosPorCategoria}}
-      <div id="{{@key}}" class="containerSpanBebidas">
-        <h2>{{@key}}</h2>
-      </div>
-      <div class="categorias" id="menu">
-        {{#each this}}
-          <div class="containerProduto" data-name="{{this.titulo}}" data-price="{{this.preco}}" data-descricao="{{this.descricao}}" data-imgProduto="{{this.imgProduto}}">
-
-            {{! Exibe lista com todos os adicionais }}
-            <ul style="display: none;">
-              {{#each this.adicionais}}
-                <li class="adicionaisLista" data-value="{{this.precoAdicional}}" data-produtoReferido="{{this.produtoReferido}}" data-categoria="{{this.categoriaAdicional}}" data-minCategoria="{{this.minAdicionais}}" data-maxCategoria="{{this.maxAdicionais}}">{{this.adicionais}}</li>
-              {{else}}
-                <h1>Nenhum adicional</h1>
-              {{/each}}
-            </ul>
-
-            <img src="./uploads/{{this.imgProduto}}" />
-            <div class="containerDescricaoPreco">
-              <p class="spanTitleProduto">{{this.titulo}}</p>
-              <p class="spanDescricaoProduto">{{this.descricao}}</p>
-              <div class="preco">
-                <p id="ajustePreco">R$ {{this.preco}}</p>
+      {{#if this.length}}
+        <!-- Verifica se a categoria possui produtos -->
+        <div id="{{@key}}" class="containerSpanBebidas">
+          <h2>{{@key}}</h2>
+        </div>
+        <div class="categorias" id="menu">
+          {{#each this}}
+            <div class="containerProduto" data-name="{{this.titulo}}" data-price="{{this.preco}}" data-descricao="{{this.descricao}}" data-imgProduto="{{this.imgProduto}}">
+              {{! Exibe lista com todos os adicionais }}
+              <ul style="display: none;">
+                {{#each this.adicionais}}
+                  <li class="adicionaisLista" data-value="{{this.precoAdicional}}" data-produtoReferido="{{this.produtoReferido}}" data-categoria="{{this.categoriaAdicional}}" data-minCategoria="{{this.minAdicionais}}" data-maxCategoria="{{this.maxAdicionais}}">{{this.adicionais}}</li>
+                {{else}}
+                  <h1>Nenhum adicional</h1>
+                {{/each}}
+              </ul>
+              <img src="./uploads/{{this.imgProduto}}" />
+              <div class="containerDescricaoPreco">
+                <p class="spanTitleProduto">{{this.titulo}}</p>
+                <p class="spanDescricaoProduto">{{this.descricao}}</p>
+                <div class="preco">
+                  <p id="ajustePreco">R$ {{this.preco}}</p>
+                </div>
               </div>
             </div>
-
-          </div>
-        {{else}}
-          <h2>Nenhum produto encontrado</h2>
-        {{/each}}
-      </div>
-
+          {{else}}
+            <!-- Não faz nada caso a categoria esteja vazia -->
+          {{/each}}
+        </div>
+      {{/if}}
     {{else}}
       <h2>Nenhum produto encontrado</h2>
     {{/each}}

@@ -2,6 +2,8 @@
 
 @import "./inputCreate.scss";
 
+@import "../navBar.scss";
+
 body {
   background: #f8f9fc;
   font-family: "Quicksand", sans-serif;
@@ -15,19 +17,6 @@ body {
 
 .btnNova {
   width: 100%;
-}
-
-.header {
-  position: fixed;
-  z-index: 100000;
-  top: 0;
-  background: $cor-navBarHeader;
-  width: 100%;
-  height: 70px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 50px;
 }
 
 .body {
@@ -88,6 +77,9 @@ body {
   flex-direction: column;
 }
 
+.btn > span {
+  margin: 20px;
+}
 .btn {
   appearance: none;
   background-color: #24b4fb;
@@ -98,13 +90,12 @@ body {
   box-sizing: border-box;
   color: #ffffff;
   cursor: pointer;
-  display: inline-block;
   font-family: -apple-system, system-ui, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
   font-size: 14px;
   font-weight: 600;
   line-height: 20px;
   list-style: none;
-  padding: 6px 16px;
+  padding: 5px 8px;
   position: relative;
   transition: background-color 0.2s cubic-bezier(0.3, 0, 0.5, 1);
   user-select: none;
@@ -120,8 +111,9 @@ body {
 }
 
 .modal {
-  position: absolute;
+  position: fixed;
   opacity: 0;
+
   visibility: hidden;
   transition: opacity 0.5s ease, visibility 0.5s ease;
   /* Outras estilizações para o modal */
