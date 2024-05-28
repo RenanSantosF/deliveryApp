@@ -83,6 +83,8 @@ app.use(express.static(path.join(__dirname, "public")));
 //
 // Rotas
 
+console.log(db.mongoURI)
+
 app.use("/:nomeLoja/admin", autenticado, admin);
 app.use("/usuarios", usuarios);
 
