@@ -23,7 +23,7 @@
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app.js",
+    "start": "node app.js",
     "sass": "sass --watch scss:public/css",
     "dev": "concurrently \"sass --watch scss:public/css --style compressed --no-source-map\" \"nodemon app.js\""
   },
