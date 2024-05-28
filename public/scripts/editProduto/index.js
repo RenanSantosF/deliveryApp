@@ -52,7 +52,10 @@ btnEnviar.addEventListener("click", (e) => {
 
   verificaVazio(titulo, erros);
   verificaVazio(input, erros);
+  verificarCamposVazios(erros);
+  verificarCamposVazios(erros);
   verificaSelect(erros);
+  removerClasseEmptyAoDigitar();
   if (erros.length >= 1) {
     e.preventDefault();
     erros = [];
@@ -152,3 +155,40 @@ document.querySelectorAll(".containerMinMax").forEach(function (container) {
     maxInput.value = parseInt(maxInput.value) + 1;
   });
 });
+
+
+function verificarCamposVazios(erros) {
+  document.querySelectorAll(".containerMinMax").forEach(function (container) {
+    var minInput = container.querySelector(".minInput");
+    var maxInput = container.querySelector(".maxInput");
+
+    if (minInput.value.trim() === "") {
+      minInput.classList.add("empty");
+      erros.push("O campo mínimo está vazio.");
+    }
+
+    if (maxInput.value.trim() === "") {
+      maxInput.classList.add("empty");
+      erros.push("O campo máximo está vazio.");
+    }
+  });
+}
+
+function removerClasseEmptyAoDigitar() {
+  document.querySelectorAll(".containerMinMax").forEach(function (container) {
+    var minInput = container.querySelector(".minInput");
+    var maxInput = container.querySelector(".maxInput");
+
+    minInput.addEventListener("input", function () {
+      if (minInput.value.trim() !== "") {
+        minInput.classList.remove("empty");
+      }
+    });
+
+    maxInput.addEventListener("input", function () {
+      if (maxInput.value.trim() !== "") {
+        maxInput.classList.remove("empty");
+      }
+    });
+  });
+}

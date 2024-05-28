@@ -16,7 +16,6 @@ const Produto = new Schema({
   },
   descricao: {
     type: String,
-    required: true,
   },
   categoria: {
     type: Schema.Types.ObjectId,
@@ -37,8 +36,8 @@ const Produto = new Schema({
       precoAdicional: String,
       produtoReferido: String,
       categoriaAdicional: String,
-      minAdicionais: Number, // Adicionando campo para mínimo de adicionais
-      maxAdicionais: Number, // Adicionando campo para máximo de adicionais
+      minAdicionais: Number,
+      maxAdicionais: Number,
     },
   ],
 });

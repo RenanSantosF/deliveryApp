@@ -203,7 +203,6 @@ router.get("/produtos/add", UserAuth, eAdmin, (req, res) => {
             return adicionaisPorCategoria;
           }
 
-          // Chamar a função para reorganizar os adicionais por categoria
           const adicionaisPorCategoria = reorganizarPorCategoria(adicionais);
 
           res.render("admin/addProduto", {
@@ -224,59 +223,6 @@ router.get("/produtos/add", UserAuth, eAdmin, (req, res) => {
       res.redirect(`/${req.user.nomeLoja}/admin`);
     });
 });
-
-// router.post("/produtos/nova", upload.single("imgProduto"), UserAuth, eAdmin, (req, res, e) => {
-//   let erros = [];
-//   if (!req.body.titulo || typeof req.body.titulo == undefined || req.body.titulo == null) {
-//     erros.push({ texto: "Título inválido" });
-//   }
-
-//   if (!req.body.preco || typeof req.body.preco == undefined || req.body.preco == null) {
-//     erros.push({ texto: "Valor inválido" });
-//   }
-//   if (req.body.categoria == "0") {
-//     erros.push({ texto: "categoria inválida, registre uma categoria" });
-//   }
-//   if (erros.length > 0) {
-//     res.render("admin/addProduto", { erros: erros });
-//   } else {
-//     const novosAdicionais = [];
-
-//     const adicionais = Array.isArray(req.body.adicionais) ? req.body.adicionais : [req.body.adicionais];
-
-//     for (let i = 0; i < adicionais.length; i++) {
-//       if (adicionais[i]) {
-//         novosAdicionais.push({
-//           adicionais: adicionais[i],
-//           precoAdicional: req.body.precoAdicional[i],
-//           produtoReferido: req.body.titulo,
-//           categoriaAdicional: req.body.categoriaAdicional[i],
-//         });
-//       }
-//     }
-
-//     const novaproduto = {
-//       titulo: req.body.titulo,
-//       // slug: req.body.slug,
-//       descricao: req.body.descricao,
-//       preco: req.body.preco,
-//       categoria: req.body.categoria,
-//       nomeLoja: req.user.nomeLoja,
-//       imgProduto: req.generatedFileName,
-//       adicionais: novosAdicionais,
-
-//     };
-//     new Produto(novaproduto)
-//       .save()
-//       .then(() => {
-//         res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
-//       })
-//       .catch((err) => {
-//         req.flash("error_msg", "Houve um erro na criação da produto!");
-//         res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
-//       });
-//   }
-// });
 
 router.post("/produtos/nova", upload.single("imgProduto"), UserAuth, eAdmin, (req, res) => {
   let erros = [];
@@ -343,36 +289,37 @@ router.post("/produtos/nova", upload.single("imgProduto"), UserAuth, eAdmin, (re
 });
 
 router.get("/produtos/edit/:id", UserAuth, eAdmin, (req, res) => {
+  console.log("Acionou a rota")
   Produto.findOne({ _id: req.params.id })
     .lean()
     .then((produto) => {
+      console.log("O .then produtos deu certo")
       Adicional.find({ nomeLoja: req.user.nomeLoja })
         .lean()
         .then((adicionais) => {
+          console.log("O .then adicionais deu certo")
           Categoria.find({ nomeLoja: req.user.nomeLoja })
             .lean()
             .then((categorias) => {
+              console.log("O .then categorias deu certo")
               function reorganizarPorCategoria(adicionais) {
-                // Objeto para armazenar os adicionais por categoria
                 const adicionaisPorCategoria = {};
 
-                // Iterar sobre os adicionais
                 adicionais.forEach((adicional) => {
-                  // Verificar se a categoria já existe no objeto
                   if (!adicionaisPorCategoria.hasOwnProperty(adicional.categoria)) {
-                    // Se não existir, criar um novo array para essa categoria
                     adicionaisPorCategoria[adicional.categoria] = [];
                   }
-                  // Adicionar o adicional ao array correspondente à sua categoria
                   adicionaisPorCategoria[adicional.categoria].push(adicional);
                 });
 
                 return adicionaisPorCategoria;
               }
-
-              // Chamar a função para reorganizar os adicionais por categoria
               const adicionaisPorCategoria = reorganizarPorCategoria(adicionais);
 
+              console.log("parametro " + req.params.id)
+              console.log(categorias)
+              console.log(adicionaisPorCategoria)
+              console.log(produto)
               res.render("admin/editprodutos", {
                 categorias: categorias,
                 produto: produto,
@@ -383,16 +330,19 @@ router.get("/produtos/edit/:id", UserAuth, eAdmin, (req, res) => {
               });
             })
             .catch((err) => {
-              req.flash("error_msg", "Houve um erro ao listar as categorias");
+              console.log("Erro ao acessar a categoria")
+              req.flash("error_msg", "Houve um erro ao exibir o produto");
               res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
             });
         })
         .catch((err) => {
+          console.log("Erro ao acessar a adicionais")
           req.flash("error_msg", "Houve um erro ao listar as categorias");
           res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
         });
     })
     .catch((err) => {
+      console.log("Erro ao acessar o produto")
       req.flash("error_msg", "Houve um erro ao carregar o formulário de edição");
       res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
     });
