@@ -2,7 +2,7 @@
 export function apiPedidos() {
   const loja = document.getElementById("loja").textContent;
   // Retornando a promessa gerada pela função fetch
-  return fetch(`/${loja}/admin/pedidosAPI`)
+  return fetch(`/${loja}/admin/pedidosFinalizadosAPI`)
     .then((response) => {
       // Verificando se a requisição foi bem-sucedida
       if (!response.ok) {

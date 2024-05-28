@@ -366,9 +366,10 @@ function capturaProdutoParaModal(ev) {
         const quantidadeSpan = document.createElement("span");
         quantidadeSpan.textContent = objeto.quantidade;
         quantidadeSpan.style.display = "none";
+        quantidadeSpan.style.alignItems = "center";
 
         const btnRemover = document.createElement("button");
-        btnRemover.textContent = "-";
+        btnRemover.innerHTML = `<i class="ri-indeterminate-circle-fill"></i>`;
         btnRemover.type = "button";
         btnRemover.style.display = "none";
         btnRemover.addEventListener("click", () => {
@@ -397,7 +398,8 @@ function capturaProdutoParaModal(ev) {
         divConteudo.classList.add("listAdicional");
 
         const btnAdicionar = document.createElement("button");
-        btnAdicionar.textContent = "+";
+        btnAdicionar.innerHTML = `<i class="ri-add-circle-fill"></i>`;
+
         btnAdicionar.type = "button";
         btnAdicionar.addEventListener("click", () => {
           const listaCategoria = produtoModal.listaAdicionais[categoria];
@@ -489,14 +491,10 @@ function capturaProdutoParaModal(ev) {
       listaCategoria.forEach((item) => {
         const btnAdicionar = item.elementoBtnAdicionar;
         if (desabilitar) {
-          btnAdicionar.style.background = "transparent";
-          btnAdicionar.style.color = "transparent";
-          btnAdicionar.style.border = "1px solid transparent";
+          btnAdicionar.style.opacity = "0";
           btnAdicionar.disabled = true;
         } else {
-          btnAdicionar.style.background = "var(--cor-btnAdicional)";
-          btnAdicionar.style.color = "#fff";
-          btnAdicionar.style.border = "1px solid #e7e7e7";
+          btnAdicionar.style.opacity = "1";
           btnAdicionar.disabled = false;
         }
       });
@@ -811,6 +809,9 @@ const radioGroup = document.querySelector(".radio-group");
 const openCloseFormaPagamento = document.getElementById("open-close-FormaPagamento");
 openCloseFormaPagamento.addEventListener("click", () => {
   radioGroup.classList.toggle("radio-groupActive");
+  const alteraImgFormaPagamento = document.getElementById("alteraImgFormaPagamento");
+  alteraImgFormaPagamento.classList.toggle("ri-arrow-down-wide-line");
+  alteraImgFormaPagamento.classList.toggle("ri-arrow-up-wide-line");
 });
 
 function formaDePagamentoSelecionada() {
@@ -1026,7 +1027,7 @@ confirmaEndereco.addEventListener("click", () => {
   const horaFormatada = `${dataAtual.getHours().toString().padStart(2, "0")}:${dataAtual.getMinutes().toString().padStart(2, "0")}`;
   const telefoneFormatado = inputTelefone.value.replace(/\D/g, "");
 
-  if (selectedRadio.id === "Dinheiro" ||  selectedRadio.id === "dinheiro") {
+  if (selectedRadio.id === "Dinheiro" || selectedRadio.id === "dinheiro") {
     let erros = [];
 
     containerModalTroco.classList.add("activeModalTroco");
@@ -1071,6 +1072,7 @@ confirmaEndereco.addEventListener("click", () => {
     const pedido = {
       nomeLoja: nomeLoja.textContent,
       nome: inputNome.value,
+      status: "Aceitar pedido",
       telefone: telefoneFormatado,
       taxa: taxa,
       valorTroco: troco ? troco : false,
@@ -1209,29 +1211,27 @@ function formatarValorBlur(input) {
   }
 }
 
-cep.addEventListener('input', function() {
-  const cep = this.value.replace(/\D/g, ''); // Remove caracteres não numéricos
+cep.addEventListener("input", function () {
+  const cep = this.value.replace(/\D/g, ""); // Remove caracteres não numéricos
   if (cep.length === 8) {
     consultarCEP(cep);
   }
 });
 
-
 function consultarCEP(cep) {
-  
   fetch(`https://viacep.com.br/ws/${cep}/json/`)
-    .then(response => response.json())
-    .then(data => {
+    .then((response) => response.json())
+    .then((data) => {
       if (data.erro) {
-        console.log(`Cep não encontrado!`)
+        console.log(`Cep não encontrado!`);
       } else {
-        rua.value = data.logradouro
-        cidade.value = data.localidade
-        uf.value = data.uf
+        rua.value = data.logradouro;
+        cidade.value = data.localidade;
+        uf.value = data.uf;
       }
     })
-    .catch(error => {
-      console.log(`https://viacep.com.br/ws/${cep}/json/`)
-      console.error('Ocorreu um erro ao consultar o CEP:', error);
+    .catch((error) => {
+      console.log(`https://viacep.com.br/ws/${cep}/json/`);
+      console.error("Ocorreu um erro ao consultar o CEP:", error);
     });
 }

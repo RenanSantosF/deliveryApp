@@ -2,6 +2,18 @@
 
 @import "../navBar.scss";
 
+html,
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* Impede o scroll horizontal */
+  width: 100%;
+}
+
+body {
+  width: 100%;
+}
+
 .body {
   display: flex;
   justify-content: center;
@@ -38,12 +50,12 @@ form {
   align-items: center;
   border-radius: 5px;
   padding: 10px 0 30px 0;
-
 }
 
 @media (min-width: 700px) {
   .card {
     width: 700px;
+    margin-top: 90px;
   }
 }
 

@@ -26,7 +26,7 @@ require("./models/Bairro");
 const Bairro = mongoose.model("bairros");
 require("./models/Pedido");
 const Pedido = mongoose.model("pedidos");
-
+const db = require("./config/db");
 const { createServer } = require("node:http");
 
 const { Server } = require("socket.io");
@@ -72,7 +72,7 @@ app.set("view engine", "handlebars");
 // Mongoose
 mongoose.Promise = global.Promise;
 try {
-  mongoose.connect("mongodb://localhost/Menu");
+  mongoose.connect(db.mongoURI);
   console.log("Conectado ao mongo");
 } catch {
   console.log("Erro ao conectar: " + err);
@@ -80,13 +80,19 @@ try {
 // Public
 app.use(express.static(path.join(__dirname, "public")));
 
-// Desviando para outros arquivos
-app.use("/:nomeLoja/admin", autenticado, admin);
-app.use("/usuarios", usuarios);
 //
 // Rotas
+
+app.use("/:nomeLoja/admin", autenticado, admin);
+app.use("/usuarios", usuarios);
+
 app.get("/", (req, res) => {
   res.send("principal");
+});
+
+// Página da loja, de exibir erro
+app.get("/404", (req, res) => {
+  res.send("Erro 404!");
 });
 
 app.post("/pedidos", async (req, res) => {
@@ -114,15 +120,96 @@ app.post("/pedidos", async (req, res) => {
   }
 });
 
-// Página da loja, de exibir erro
-app.get("/404", (req, res) => {
-  res.send("Erro 404!");
-});
+// app.get("/:nomeLoja", existeUsuario, (req, res) => {
+//   let dadosUsuario = [];
+//   let statusLoja = [];
+//   let horarios = [];
+//   let formasPagamento = [];
+//   let bairrosCadastrados = [];
+//   Usuario.find({ nomeLoja: req.params.nomeLoja })
+//     .lean()
+//     .then((usuario) => {
+//       dadosUsuario = usuario;
 
+//       const horariosDeFuncionamento = {
+//         seg: { abertura: usuario[0].segAb, fechamento: usuario[0].segFe },
+//         ter: { abertura: usuario[0].terAb, fechamento: usuario[0].terFe },
+//         qua: { abertura: usuario[0].quaAb, fechamento: usuario[0].quaFe },
+//         qui: { abertura: usuario[0].quiAb, fechamento: usuario[0].quiFe },
+//         sex: { abertura: usuario[0].sexAb, fechamento: usuario[0].sexFe },
+//         sab: { abertura: usuario[0].sabAb, fechamento: usuario[0].sabFe },
+//         dom: { abertura: usuario[0].domAb, fechamento: usuario[0].domFe },
+//       };
 
+//       statusLoja = verificarHorarioDeFuncionamento(horariosDeFuncionamento);
+//       horarios = horariosDeFuncionamento;
+//       dadosUsuario.forEach((usuario) => {
+//         usuario.statusSituacao = statusLoja;
+//       });
+//     })
+//     .catch((err) => {
+//       // res.send('erro ao exibir usuário')
+//     });
 
+//   Pagamento.find({ nomeLoja: req.params.nomeLoja })
+//     .lean()
+//     .then((pagamentos) => {
+//       formasPagamento = pagamentos;
+//     });
 
+//   Bairro.find({ nomeLoja: req.params.nomeLoja })
+//     .lean()
+//     .then((bairros) => {
+//       bairrosCadastrados = bairros;
+//     });
 
+//   Produto.find({ nomeLoja: req.params.nomeLoja })
+//     .lean()
+//     .populate("categoria")
+//     .sort({ data: "desc" })
+//     .then((produtos) => {
+//       Categoria.find({ nomeLoja: req.params.nomeLoja })
+//         .lean()
+//         .sort({ data: "desc" })
+//         .then((categorias) => {
+//           const produtosPorCategoria = {};
+
+//           categorias.forEach((categoria) => {
+//             produtosPorCategoria[categoria.nome] = [];
+//           });
+
+//           produtos.forEach((produto) => {
+//             const categoria = categorias.find((cat) => cat.nome === produto.categoria.nome);
+
+//             if (categoria) {
+//               produtosPorCategoria[categoria.nome].push(produto);
+//             }
+//           });
+//           console.log(statusLoja);
+
+//           res.render("index", {
+//             produtosPorCategoria: produtosPorCategoria,
+//             dadosUsuario: dadosUsuario,
+//             statusLoja: statusLoja,
+//             formasPagamento: formasPagamento,
+//             bairrosCadastrados: bairrosCadastrados,
+//             title: `${req.params.nomeLoja}`,
+//             css: "/css/pages/home/index.css",
+//             script: "/scripts/cliente/index.js",
+//           });
+//         })
+
+//         .catch((err) => {
+//           res.send("Erro interno");
+//           console.log(err);
+//         });
+//     })
+//     .catch((err) => {
+//       req.flash("error_msg", "Houve um erro interno");
+//       res.send("Erro interno");
+//       console.log(err);
+//     });
+// });
 
 app.get("/:nomeLoja", existeUsuario, (req, res) => {
   let dadosUsuario = [];
@@ -130,6 +217,7 @@ app.get("/:nomeLoja", existeUsuario, (req, res) => {
   let horarios = [];
   let formasPagamento = [];
   let bairrosCadastrados = [];
+
   Usuario.find({ nomeLoja: req.params.nomeLoja })
     .lean()
     .then((usuario) => {
@@ -150,128 +238,42 @@ app.get("/:nomeLoja", existeUsuario, (req, res) => {
       dadosUsuario.forEach((usuario) => {
         usuario.statusSituacao = statusLoja;
       });
+
+      return Promise.all([Pagamento.find({ nomeLoja: req.params.nomeLoja }).lean(), Bairro.find({ nomeLoja: req.params.nomeLoja }).lean(), Produto.find({ nomeLoja: req.params.nomeLoja }).lean().populate("categoria").sort({ data: "desc" }), Categoria.find({ nomeLoja: req.params.nomeLoja }).lean().sort({ data: "desc" })]);
     })
-    .catch((err) => {
-      // res.send('erro ao exibir usuário')
-    });
-
-  Pagamento.find({ nomeLoja: req.params.nomeLoja })
-    .lean()
-    .then((pagamentos) => {
+    .then(([pagamentos, bairros, produtos, categorias]) => {
       formasPagamento = pagamentos;
-    });
-
-  Bairro.find({ nomeLoja: req.params.nomeLoja })
-    .lean()
-    .then((bairros) => {
       bairrosCadastrados = bairros;
-    });
 
-  Produto.find({ nomeLoja: req.params.nomeLoja })
-    .lean()
-    .populate("categoria")
-    .sort({ data: "desc" })
-    .then((produtos) => {
-      Categoria.find({ nomeLoja: req.params.nomeLoja })
-        .lean()
-        .sort({ data: "desc" })
-        .then((categorias) => {
-          const produtosPorCategoria = {};
+      const produtosPorCategoria = {};
 
-          categorias.forEach((categoria) => {
-            produtosPorCategoria[categoria.nome] = [];
-          });
+      categorias.forEach((categoria) => {
+        produtosPorCategoria[categoria.nome] = [];
+      });
 
-          produtos.forEach((produto) => {
-            const categoria = categorias.find((cat) => cat.nome === produto.categoria.nome);
+      produtos.forEach((produto) => {
+        const categoria = categorias.find((cat) => cat.nome === produto.categoria.nome);
 
-            if (categoria) {
-              produtosPorCategoria[categoria.nome].push(produto);
-            }
-          });
-          console.log(statusLoja);
+        if (categoria) {
+          produtosPorCategoria[categoria.nome].push(produto);
+        }
+      });
 
-          res.render("index", {
-            produtosPorCategoria: produtosPorCategoria,
-            dadosUsuario: dadosUsuario,
-            statusLoja: statusLoja,
-            formasPagamento: formasPagamento,
-            bairrosCadastrados: bairrosCadastrados,
-            title: `${req.params.nomeLoja}`,
-            css: "/css/pages/home/index.css",
-            script: "/scripts/cliente/index.js",
-          });
-        })
-
-        .catch((err) => {
-          res.send("Erro interno");
-          console.log(err);
-        });
+      res.render("index", {
+        produtosPorCategoria: produtosPorCategoria,
+        dadosUsuario: dadosUsuario,
+        statusLoja: statusLoja,
+        formasPagamento: formasPagamento,
+        bairrosCadastrados: bairrosCadastrados,
+        title: `${req.params.nomeLoja}`,
+        css: "/css/pages/home/index.css",
+        script: "/scripts/cliente/index.js",
+      });
     })
     .catch((err) => {
       req.flash("error_msg", "Houve um erro interno");
       res.send("Erro interno");
       console.log(err);
-    });
-});
-
-// Exibir único produto
-app.get(`/:nomeLoja/produto/:slug`, existeUsuario, (req, res) => {
-  Produto.findOne({ slug: req.params.slug })
-    .lean()
-    .then((produto) => {
-      if (produto) {
-        res.render("produto/index", { produto, produto });
-      } else {
-        req.flash("error_msg", "Este produto não existe");
-        res.redirect(`/`);
-      }
-    })
-    .catch((err) => {
-      req.flash("error_msg", "Houve um erro interno");
-      res.redirect(`/`);
-    });
-});
-
-// Exibir todas as categorias
-app.get("/:nomeLoja/categorias", existeUsuario, (req, res) => {
-  Categoria.find({ nomeLoja: req.params.nomeLoja })
-    .lean()
-    .then((categorias) => {
-      res.render("categorias/index", { categorias: categorias });
-    })
-    .catch((err) => {
-      req.flash("error_msg", "Houve um erro ao listar as categorias");
-      res.redirect(`/`);
-    });
-});
-
-// Exibir única categoria
-app.get("/:nomeLoja/categorias/:slug", existeUsuario, (req, res) => {
-  Categoria.findOne({ slug: req.params.slug })
-    .lean()
-    .then((categoria) => {
-      if (categoria) {
-        Produto.find({ categoria: categoria._id })
-          .lean()
-          .then((produtos) => {
-            res.render("categorias/produtos", {
-              produtos: produtos,
-              categoria: categoria,
-            });
-          })
-          .catch((err) => {
-            req.flash("error_msg", "Houve um erro ao listar as produtos");
-            res.redirect(`/`);
-          });
-      } else {
-        req.flash("error_msg", "Esta categoria não existe");
-        res.redirect(`/`);
-      }
-    })
-    .catch((err) => {
-      req.flash("error_msg", "Houve um erro interno ao carregar a página desta categoria");
-      res.redirect(`/`);
     });
 });
 
@@ -358,11 +360,48 @@ function verificarHorarioDeFuncionamento(element) {
   ];
 }
 
+const atualizarStatusPedido = (pedido) => {
+  if (pedido.status === "Aceitar pedido") {
+    pedido.status = "Marcar como pronto";
+  } else if (pedido.status === "Marcar como pronto") {
+    pedido.status = "Despachar para entrega";
+  } else if (pedido.status === "Despachar para entrega") {
+    pedido.status = "Pedido concluído";
+  }
+};
+
 io.on("connection", (socket) => {
-  console.log("a user connected");
+  console.log("Um usuário se conectou");
+
+  socket.on("atualizaPedido", async (id) => {
+    try {
+      const pedido = await Pedido.findById(id);
+      if (pedido) {
+        atualizarStatusPedido(pedido);
+        await pedido.save();
+        io.emit("confirmacaoAtualizacao", {
+          success: true,
+          pedido: {
+            _id: pedido._id,
+            status: pedido.status,
+            nomeLoja: pedido.nomeLoja,
+          },
+        });
+
+        if (pedido.status === "Pedido concluído") {
+          io.emit("pedidoConcluido", pedido);
+        }
+      } else {
+        socket.emit("confirmacaoAtualizacao", { success: false, message: "Pedido não encontrado" });
+      }
+    } catch (error) {
+      console.error("Erro ao atualizar pedido:", error);
+      socket.emit("confirmacaoAtualizacao", { success: false, message: "Erro ao atualizar pedido" });
+    }
+  });
 
   socket.on("disconnect", () => {
-    console.log("user disconnected");
+    console.log("Um usuário se desconectou");
   });
 });
 

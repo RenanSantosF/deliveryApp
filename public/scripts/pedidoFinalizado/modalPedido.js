@@ -4,7 +4,7 @@ import atualizaModal from "./atualizaModal.js";
 const modalDetalhes = document.getElementById("modalContent");
 const modalContainer = document.getElementById("modalDetalhes");
 
-export function modalPedido(dataPedido, pedidos, socket, text) {
+export function modalPedido(dataPedido, pedidos) {
   // Encontra o pedido específico
   let pedido = pedidos.find((pedido) => pedido._id === dataPedido);
 
@@ -124,15 +124,15 @@ export function modalPedido(dataPedido, pedidos, socket, text) {
   addElement(footerDiv, "button", `${pedido.status}`, "btnAtualizaStatus", "", pedido._id, "btnModalAtualiza");
   modalDetalhes.appendChild(footerDiv);
 
-  const btnModalAtualiza = document.getElementById("btnModalAtualiza");
-  if (btnModalAtualiza) {
-    btnModalAtualiza.textContent = text
-    atualizaModal();
-    btnModalAtualiza.addEventListener("click", function () {
-      socket.emit("atualizaPedido", pedido._id);
-      atualizaModal();
-    });
-  }
+  // const btnModalAtualiza = document.getElementById("btnModalAtualiza");
+  // if (btnModalAtualiza) {
+  //   btnModalAtualiza.textContent = text
+  //   atualizaModal();
+  //   btnModalAtualiza.addEventListener("click", function () {
+  //     socket.emit("atualizaPedido", pedido._id);
+  //     atualizaModal();
+  //   });
+  // }
 }
 
 // Adicionando eventListener ao botão de fechar após a criação do botão

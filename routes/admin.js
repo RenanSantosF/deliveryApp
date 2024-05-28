@@ -900,4 +900,38 @@ router.get("/pedidosAPI", UserAuth, eAdmin, (req, res) => {
     });
 });
 
+
+//Bairros
+router.get("/pedidos-finalizados", UserAuth, eAdmin, (req, res) => {
+  Pedido.find({ nomeLoja: req.user.nomeLoja })
+    .sort({ date: "desc" })
+    .lean()
+    .then((pedidos) => {
+      res.render("admin/pedidosFinalizados", {
+        pedidos: pedidos,
+        nomeLoja: req.user.nomeLoja,
+        user: req.user,
+        css: "/css/pages/pedidoFinalizado/index.css",
+        script: "/scripts/pedidoFinalizado/index.js",
+      });
+    })
+    .catch((err) => {
+      req.flash("error_msg", "Houve um erro ao listar os pedidos");
+      res.redirect(`"/${req.user.nomeLoja}/admin`);
+    });
+});
+
+router.get("/pedidosFinalizadosAPI", UserAuth, eAdmin, (req, res) => {
+  Pedido.find({ nomeLoja: req.user.nomeLoja })
+    .sort({ date: "desc" })
+    .lean()
+    .then((pedidos) => {
+      res.send({ pedidos: pedidos });
+    })
+    .catch((err) => {
+      req.flash("error_msg", "Houve um erro ao listar os pedidos");
+      res.redirect(`"/${req.user.nomeLoja}/admin`);
+    });
+});
+
 module.exports = router;

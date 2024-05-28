@@ -46,7 +46,10 @@
                   <h1>Nenhum adicional</h1>
                 {{/each}}
               </ul>
-              <img src="./uploads/{{this.imgProduto}}" />
+
+              <img src="/uploads/{{this.imgProduto}}" />
+
+              
               <div class="containerDescricaoPreco">
                 <p class="spanTitleProduto">{{this.titulo}}</p>
                 <p class="spanDescricaoProduto">{{this.descricao}}</p>
@@ -79,7 +82,7 @@
 
 <div class="modalProduto" id="modalProduto">
   <div id="btnVoltar">
-    <img src="./img/botao-voltar.png" />
+    <i class="imgFechaModal ri-arrow-down-wide-line"></i>
   </div>
   <div class="contentModalProduto">
     <div id="imgProduto">
@@ -98,9 +101,13 @@
 
   <div class="footerProduto">
     <div id="quantidade">
-      <button class="btnSomaSubtrai" id="subtraiItem">-</button>
+      <button class="btnSomaSubtrai" id="subtraiItem">
+        <i class="ri-subtract-line"></i>
+      </button>
       <span id="quantidadeTotalProduto">1</span>
-      <button class="btnSomaSubtrai" id="somaItem">+</button>
+      <button class="btnSomaSubtrai" id="somaItem">
+        <i class="ri-add-fill"></i>
+        </button>
     </div>
     <button id="adicionarProduto">Adicionar
     </button>
@@ -112,7 +119,7 @@
     <div>
       <div class="headerModal">
         <div id="close-modal-btn">
-          <img src="./img/botao-voltar.png" />
+          <i class="imgFechaModal ri-arrow-down-wide-line"></i>
         </div>
         <h2>Meu carrinho</h2>
       </div>
@@ -175,7 +182,7 @@
 <div id="modalEndereco" class="modalEndereco">
   <div class="headerModal">
     <div id="close-modalEndereco-btn">
-      <img src="./img/botao-voltar.png" />
+      <i class="imgFechaModal ri-arrow-down-wide-line"></i>
     </div>
     <h2>Informações da entrega</h2>
   </div>
@@ -241,7 +248,7 @@
     <div id="formaPagamento" class="formaPagamento">
       <div id="open-close-FormaPagamento">
         <span>Forma de pagamento</span>
-        <img src="./img/botao-voltar.png" />
+        <i id="alteraImgFormaPagamento" class="imgFechaModal ri-arrow-down-wide-line"></i>
       </div>
 
       <div class="radio-group">
@@ -273,6 +280,6 @@
 <footer>
   <button id="cart-btn">
     (<span id="cart-count">0</span>) Ver meu carrinho
-    <img src="./img/buy.png" />
+    <i class="ri-shopping-cart-2-fill"></i>
   </button>
 </footer>

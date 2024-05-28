@@ -1,6 +1,6 @@
 export function criarDivPedido(pedido) {
   // Verificar se o status do pedido é "Pedido concluído"
-  if (pedido.status === "Pedido concluído") {
+  if (pedido.status !== "Pedido concluído") {
     return ''; // Retornar uma string vazia se o pedido estiver concluído
   }
 

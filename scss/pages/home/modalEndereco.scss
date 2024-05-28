@@ -15,11 +15,11 @@
 
 .contentModalEndereco {
   display: flex;
-  width: 100%;
   align-items: center;
   flex-direction: column;
   overflow-y: auto;
   height: calc(100% - 60px);
+  width: 100%;
 }
 
 @media (min-width: 900px) {
@@ -83,6 +83,21 @@
   font-size: 14px;
 }
 
+// .radio-inputs {
+//   /* Remova ou reduza a margem conforme necessário */
+//   /* margin: 20px; */
+//   position: relative;
+//   display: flex;
+//   flex-wrap: wrap;
+//   border-radius: 0.5rem;
+//   background-color: $cor-temaClaro;
+//   box-sizing: border-box;
+//   box-shadow: 0 0 0px 1px rgba(0, 0, 0, 0.06);
+//   /* Ajuste a largura conforme necessário */
+//   width: 100%;
+//   font-size: 14px;
+// }
+
 .radio-inputs .radio {
   flex: 1 1 auto;
   text-align: center;
@@ -141,7 +156,7 @@
   flex-direction: column;
   align-items: center;
   gap: 10px;
-  background-color: #f0f0f0;
+  background-color: $cor-backgroundEndereco;
 }
 
 .containerRetirada > p {
@@ -190,7 +205,8 @@
   height: 40px;
   padding: 12px;
   border-radius: 6px;
-  border: 1.5px solid lightgrey;
+  // border: 1.5px solid lightgrey;
+  border: 1px solid #eeeeee;
   outline: none;
   transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
   box-shadow: 0px 0px 20px -18px;
@@ -297,7 +313,7 @@
   padding: 0.5em;
   margin-bottom: 0.5em;
   background-color: #fff;
-  border: 1px solid #ccc;
+  border: 1px solid #eeeeee;
   border-radius: 4px;
   transition: background-color 0.2s, border-color 0.2s;
   color: $cor-texto-cinzaEscuro;

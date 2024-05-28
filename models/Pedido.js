@@ -31,6 +31,7 @@ const CartItemSchema = new Schema({
 const Pedido = new Schema({
   nomeLoja: String,
   numeroPedido: Number,
+  status: String,
   bairro: String,
   cidade: String,
   entrega: Boolean,

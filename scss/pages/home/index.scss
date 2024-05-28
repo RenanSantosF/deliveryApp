@@ -6,12 +6,12 @@
 
 @import "./pedidoConcluido.scss";
 
+
 header {
   width: 100%;
   height: 200px;
   background-size: cover;
   background-position: center;
-
 }
 
 header > div {
@@ -30,7 +30,7 @@ header > div > img {
   max-width: 150px;
   border-radius: 10px;
   position: absolute;
-  bottom: -20px;
+  bottom: -10px;
   z-index: 30;
   opacity: 0.9;
   box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.4);
@@ -45,13 +45,12 @@ header > div > h1 {
   margin: 10px 0 10px 0;
   font-weight: bold;
   color: rgb(238, 238, 238);
-  font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
 }
 
 header > div > span {
   color: white;
   font-size: 18px;
-  
 }
 
 header > div > .horarioFuncionamento {
@@ -71,6 +70,19 @@ header > div > .horarioFuncionamento span {
   font-size: 14px;
   font-weight: 600;
 }
+
+@media (max-width: 420px) {
+  header > div > .horarioFuncionamento {
+    width: 90px;
+  }
+  header > div > .horarioFuncionamento span {
+    color: white;
+    font-size: 11px;
+    font-weight: 500;
+  }
+}
+
+
 
 header > div > .horarioFuncionamento img {
   margin-top: 2px;
@@ -138,7 +150,7 @@ nav {
   white-space: nowrap;
   -webkit-overflow-scrolling: touch;
   z-index: 10;
-  padding: 20px 0 0 0 ;
+  padding: 20px 0 0 0;
 }
 
 nav::-webkit-scrollbar {
@@ -353,6 +365,21 @@ nav ul li a {
   padding: 5px;
 }
 
+#close-modal-btn > i {
+  font-size: 30px;
+  max-height: 20px;
+  align-items: center;
+  display: flex;
+}
+
+.imgFechaModal {
+  font-size: 30px;
+  max-height: 20px;
+  align-items: center;
+  display: flex;
+  color: #686868;
+}
+
 #checkout-btn {
   display: none;
   background-color: rgb(40, 150, 40);
@@ -526,7 +553,8 @@ footer > button {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 5px;
+  width: 45px;
+  height: 45px;
   position: absolute;
   left: 10px;
   top: 10px;
@@ -534,7 +562,7 @@ footer > button {
   z-index: 100;
 }
 
-#btnVoltar > img:hover {
+#btnVoltar > i:hover {
   animation: pulse 0.5s forwards;
   box-shadow: 0 0 0 15px rgba(0, 0, 0, 0.7);
 }
@@ -548,10 +576,9 @@ footer > button {
   }
 }
 
-#btnVoltar > img {
-  width: 30px;
-  height: 30px;
-  border-radius: 100px;
+#btnVoltar > i {
+  font-size: 35px;
+  border-radius: 100%;
 }
 
 .footerProduto {
@@ -677,15 +704,13 @@ footer > button {
 }
 
 .categoria > li > div > button {
-  width: 30px;
-  height: 30px;
-  border-radius: 100%;
   justify-content: center;
   align-items: center;
-  border: 1px solid #e7e7e7;
-  font-weight: bold;
-  background-color: $cor-btnAdicional;
-  color: #fff;
+  border: none;
+  background-color: transparent;
+}
+.categoria > li > div > button > i {
+  font-size: 30px;
 }
 
 #listAdicionais {

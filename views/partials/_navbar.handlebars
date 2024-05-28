@@ -1,5 +1,3 @@
-
-
 <header class="header">
   <nav class="nav container">
     <div class="nav__data">
@@ -17,9 +15,30 @@
     <!--=============== NAV MENU ===============-->
     <div class="nav__menu" id="nav-menu">
       <ul class="nav__list">
-        {{!-- <li><a href="/{{loja}}/admin" class="nav__link">Início</a></li> --}}
 
-        <li><a href="/{{loja}}/admin/pedidos" class="nav__link">Meus pedidos</a></li>
+        <li class="dropdown__item">
+          <div class="nav__link">
+            Pedidos
+            <i class="ri-arrow-down-s-line dropdown__arrow"></i>
+          </div>
+
+          <ul class="dropdown__menu">
+
+            <li>
+              <a href="/{{loja}}/admin/pedidos" class="dropdown__link">
+                <i class="ri-list-check"></i>
+                Pendentes
+              </a>
+            </li>
+
+            <li>
+              <a href="/{{loja}}/admin/pedidos-finalizados" class="dropdown__link">
+                <i class="ri-checkbox-circle-line"></i>
+                Finalizados
+              </a>
+            </li>
+          </ul>
+        </li>
 
         <!--=============== DROPDOWN 1 ===============-->
         <li class="dropdown__item">
@@ -206,6 +225,7 @@
           </ul>
         </li> }}
 
+        <li><a href="/usuarios/logout" class="nav__link">Sair</a></li>
         <li><a href="https://wa.me://27998836017" class="nav__link">Contate-nos</a></li>
       </ul>
     </div>

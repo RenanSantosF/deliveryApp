@@ -1,9 +1,9 @@
 /* Hide the default checkbox */
-.container input {
+.containerCheckBox input {
   display: none;
 }
 
-.container {
+.containerCheckBox {
   display: block;
   position: relative;
   cursor: pointer;
@@ -25,7 +25,7 @@
 }
 
 /* When the checkbox is checked, add a blue background */
-.container input:checked ~ .checkmark {
+.containerCheckBox input:checked ~ .checkmark {
   background-color: #2196f3;
 }
 
@@ -44,7 +44,7 @@
 }
 
 /* Show the checkmark when checked */
-.container input:checked ~ .checkmark:after {
+.containerCheckBox input:checked ~ .checkmark:after {
   left: 0.45em;
   top: 0.25em;
   width: 0.25em;
