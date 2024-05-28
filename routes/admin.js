@@ -320,7 +320,7 @@ router.get("/produtos/edit/:id", UserAuth, eAdmin, (req, res) => {
               console.log(categorias)
               console.log(adicionaisPorCategoria)
               console.log(produto)
-              res.render("admin/editprodutos", {
+              res.render("admin/editProdutos", {
                 categorias: categorias,
                 produto: produto,
                 adicionais: adicionaisPorCategoria,
