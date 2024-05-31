@@ -1,15 +1,24 @@
 // _cores.scss
 
+
+//temas
+
+//Azul
+// $cor-priceAdicional: #44a5f5;
+// $cor-temaClaro: #a4d6ff;
+// $cor-tema: #1f92f0;
+
+// Laranja
+$cor-priceAdicional: #ff930a;
+$cor-tema: #f08800;
+$cor-temaClaro: #ffbc40;
+
 $cor-categoria: #525252;
 $cor-textCategoria: #525252;
 $cor-title: #525252;
 $cor-descrition: #8995a5;
 $cor-price: #525252;
-// $cor-priceAdicional: #ff930a;
-$cor-priceAdicional: #44a5f5;
 $cor-adicionais: #525252;
-// $cor-fundoCategoria: #e9e9e9;
-// $cor-fundoCategoria: #fff4e4;
 $cor-fundoCategoria: #e9f5ff;
 $cor-btnAdicional: #203552;
 $cor-adicionalQuantidade: #8995a5;
@@ -24,11 +33,6 @@ $cor-falha: #db2100;
 
 $cor-open: #4edf7e;
 $cor-close: #db2100;
-
-// $cor-tema: #f08800;
-// $cor-temaClaro: #ffbc40;
-$cor-temaClaro: #a4d6ff; // azul
-$cor-tema: #1f92f0; // azul
 
 :root {
   --cor-open: #45bd6d;
