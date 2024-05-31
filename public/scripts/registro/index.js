@@ -6,7 +6,6 @@ let erros = [];
 document.getElementById("nomeLoja").addEventListener("input", (ev) => {
   slugify(ev);
   checkUsernameAvailability(erros);
-  console.log(erros);
 });
 
 document.addEventListener("DOMContentLoaded", function () {

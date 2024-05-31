@@ -12,11 +12,9 @@ const pedidosDiv = document.getElementById("pedidos");
 const socket = io();
 
 socket.on("connect", () => {
-  console.log("connected to server");
 });
 
 socket.on("disconnect", () => {
-  console.log("disconnected from server");
 });
 
 let pedidosData = [];
@@ -41,8 +39,6 @@ async function obterPedidos() {
     const pedidos = await apiPedidos();
     pedidosData = pedidos.pedidos;
 
-    console.log(pedidosData);
-
     pedidosData.forEach((pedido) => {
 
       pedidosDiv.innerHTML += criarDivPedido(pedido);
@@ -55,8 +51,6 @@ async function obterPedidos() {
             let textDoProximoBotao = nextBtn.textContent;
             let id = e.target.dataset.id;
             modalPedido(id, pedidosData, socket, textDoProximoBotao);
-          } else {
-            console.log("Não há próximo botão ou não é um botão");
           }
         });
       });
@@ -65,7 +59,6 @@ async function obterPedidos() {
       btnAtualizaStatus.forEach((btn) => {
         btn.addEventListener("click", (e) => {
           let id = e.target.dataset.id;
-          console.log(id);
           socket.emit("atualizaPedido", id);
         });
       });
@@ -98,8 +91,6 @@ socket.on("confirmacaoAtualizacao", (data) => {
 });
 
 function atualizaPedido(data) {
-  console.log(data.pedido.nomeLoja);
-  console.log(loja);
   if (data.pedido.nomeLoja === loja) {
     const resultado = document.getElementById(`${data.pedido._id}`);
     resultado.textContent = data.pedido.status;
@@ -118,6 +109,5 @@ function atualizaPedido(data) {
       btnModalAtualiza.textContent = data.pedido.status;
       atualizaModal();
     }
-    console.log(data);
   }
 }

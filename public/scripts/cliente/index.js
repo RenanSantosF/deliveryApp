@@ -437,7 +437,6 @@ function capturaProdutoParaModal(ev) {
           valor: parseFloat(objeto.valorAdicional),
         });
       }
-      console.log(produtoModal);
     }
 
     function subtraiValorAdicional(objeto) {
@@ -461,8 +460,6 @@ function capturaProdutoParaModal(ev) {
           }),
         });
       }
-
-      console.log(produtoModal);
     }
 
     function desabilitarBotoesAdicionar(categoria, desabilitar) {
@@ -623,10 +620,8 @@ function addToCartCorreto() {
 
   if (existingItem) {
     existingItem.quantityProduto += produtoModal.quantityProduto;
-    console.log(cart);
   } else {
     cart.push(produtoModal);
-    console.log(cart);
   }
 
   updateCartModal();
@@ -717,7 +712,6 @@ function resetaValorTotal() {
     style: "currency",
     currency: "BRL",
   });
-  console.log(total);
   totalPedidoValor.textContent = totalPedido.toLocaleString("pt-BR", {
     style: "currency",
     currency: "BRL",
@@ -814,10 +808,8 @@ confirmaEndereco.addEventListener("click", () => {
 
   function entrega() {
     if (spanEntrega.dataset.entrega === "true") {
-      console.log("é entrega");
       return "Entrega";
     } else {
-      console.log("vai buscar");
       return "Retirada";
     }
   }
@@ -958,8 +950,6 @@ confirmaEndereco.addEventListener("click", () => {
 
   const mensagemFinal = `${cartItems}\n\n${resumoFinal}`;
 
-  console.log(mensagemFinal);
-
   const endereco = {
     cep: cep.value,
     numero: numero.value,
@@ -1054,7 +1044,6 @@ confirmaEndereco.addEventListener("click", () => {
       erros = [];
     });
   } else {
-    console.log(valorTroco);
     finalizaPedido();
   }
 
@@ -1096,9 +1085,6 @@ confirmaEndereco.addEventListener("click", () => {
     let isEntrega = formaEntrega == "Retirada" ? `${pedidoFormatted}` : `${enderecoFormatted}\n\n${pedidoFormatted}`;
 
     const message = encodeURIComponent(`${loja}\n\n${mensagemFinal}\n\n${isEntrega}`);
-
-    console.log(`${loja}\n\n${mensagemFinal}\n\n${isEntrega}`);
-    console.log(pedido);
 
     enviaPedido(pedido);
     setTimeout(() => {
@@ -1218,7 +1204,6 @@ function consultarCEP(cep) {
     .then((response) => response.json())
     .then((data) => {
       if (data.erro) {
-        console.log(`Cep não encontrado!`);
       } else {
         rua.value = data.logradouro;
         cidade.value = data.localidade;
@@ -1226,7 +1211,6 @@ function consultarCEP(cep) {
       }
     })
     .catch((error) => {
-      console.log(`https://viacep.com.br/ws/${cep}/json/`);
       console.error("Ocorreu um erro ao consultar o CEP:", error);
     });
 }

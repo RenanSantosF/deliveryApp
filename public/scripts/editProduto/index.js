@@ -17,7 +17,6 @@ function exibirImagem() {
 
 document.getElementById("file").addEventListener("change", () => {
   exibirImagem();
-  console.log("foi");
 });
 
 const input = document.getElementById("inputValue");
@@ -75,7 +74,6 @@ export function retornaBordaOriginal(input) {
   if (input.value !== "") {
     input.style.border = "1px solid #dddfe2";
   }
-  console.log(input);
 }
 
 function formatarValor(input) {

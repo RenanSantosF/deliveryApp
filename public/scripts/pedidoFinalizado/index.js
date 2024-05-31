@@ -11,17 +11,14 @@ const pedidosDiv = document.getElementById("pedidos");
 const socket = io();
 
 socket.on("connect", () => {
-  console.log("connected to server");
 });
 
 socket.on("disconnect", () => {
-  console.log("disconnected from server");
 });
 
 let pedidosData = [];
 
 socket.on("pedidoConcluido", (novoPedido) => {
-  console.log(novoPedido)
   if (novoPedido.nomeLoja === loja) {
     pedidosDiv.innerHTML = ``;
     obterPedidos();
@@ -33,8 +30,6 @@ async function obterPedidos() {
   try {
     const pedidos = await apiPedidos();
     pedidosData = pedidos.pedidos;
-
-    console.log(pedidosData);
 
     pedidosData.forEach((pedido) => {
       pedidosDiv.innerHTML += criarDivPedido(pedido);

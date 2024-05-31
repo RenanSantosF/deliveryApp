@@ -10,7 +10,6 @@ nome.addEventListener("input", () => {
 
 btnEnviar.addEventListener("click", (e) => {
   let erros = [];
-  console.log("renan");
   verificaVazio(nome, erros);
   if (erros.length >= 1) {
     e.preventDefault();
@@ -29,5 +28,4 @@ export function retornaBordaOriginal(input) {
   if (input.value !== "") {
     input.style.border = "1px solid #dddfe2";
   }
-  console.log(input);
 }
