@@ -49,7 +49,6 @@
 
               <img src="/uploads/{{this.imgProduto}}" />
 
-              
               <div class="containerDescricaoPreco">
                 <p class="spanTitleProduto">{{this.titulo}}</p>
                 <p class="spanDescricaoProduto">{{this.descricao}}</p>
@@ -87,7 +86,7 @@
   <div class="contentModalProduto">
     <div id="imgProduto">
 
-      <img id="imgModalProduto" class="imgModalProduto"/>
+      <img id="imgModalProduto" class="imgModalProduto" />
     </div>
 
     <div class="informacaoProduto">
@@ -97,6 +96,10 @@
     </div>
 
     <div id="adicionalProduto"></div>
+
+    <div id="observacaoProduto">
+      <textarea id="observacao" name="observacao" rows="3" cols="50" placeholder="Digite suas observações, por exemplo: Retirar batatas"></textarea><br /><br />
+    </div>
   </div>
 
   <div class="footerProduto">
@@ -107,7 +110,7 @@
       <span id="quantidadeTotalProduto">1</span>
       <button class="btnSomaSubtrai" id="somaItem">
         <i class="ri-add-fill"></i>
-        </button>
+      </button>
     </div>
     <button id="adicionarProduto">Adicionar
     </button>

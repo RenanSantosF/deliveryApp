@@ -8,7 +8,6 @@ const passport = require("passport");
 const multer = require("multer");
 const path = require("path");
 
-// Configurando o recebimento de arquivo
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "public/uploads/");
@@ -152,7 +151,6 @@ router.post("/cadastrar", (req, res) => {
   res.redirect("/usuarios/registro");
 });
 
-// Consulta disponibilidade do nome de usuário no DB
 router.get('/check-username', (req, res) => {
   const username = req.query.username;
 

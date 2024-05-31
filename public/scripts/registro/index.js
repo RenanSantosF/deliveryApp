@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const form = document.getElementById("registration-form");
 
   form.addEventListener("submit", function (event) {
-    event.preventDefault(); // Prevent the form from submitting
+    event.preventDefault();
 
     const erros = [];
 
@@ -26,7 +26,6 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
-    // Additional checks for password confirmation
     const senha = form.querySelector('[name="senha"]').value;
     const senha2 = form.querySelector('[name="senha2"]').value;
 
@@ -38,7 +37,6 @@ document.addEventListener("DOMContentLoaded", function () {
       erros.push("A senha deve ter pelo menos 4 caracteres.");
     }
 
-    // Display errors or submit form
     if (erros.length > 0) {
       erros.forEach((erro) => {
         setTimeout(() => {

@@ -38,19 +38,19 @@ obterPedidos();
 
 async function obterPedidos() {
   try {
-    // Obtém os pedidos da API
     const pedidos = await apiPedidos();
     pedidosData = pedidos.pedidos;
 
     console.log(pedidosData);
 
     pedidosData.forEach((pedido) => {
+
       pedidosDiv.innerHTML += criarDivPedido(pedido);
       const btnModal = document.querySelectorAll(".btnModal");
 
       btnModal.forEach((btn) => {
         btn.addEventListener("click", (e) => {
-          let nextBtn = e.target.nextElementSibling; // Seleciona o próximo elemento irmão
+          let nextBtn = e.target.nextElementSibling;
           if (nextBtn && nextBtn.tagName === "BUTTON") {
             let textDoProximoBotao = nextBtn.textContent;
             let id = e.target.dataset.id;
@@ -77,7 +77,6 @@ async function obterPedidos() {
   }
 }
 
-// Escutar confirmação do servidor
 socket.on("confirmacaoAtualizacao", (data) => {
   if (data.success) {
     atualizaPedido(data);

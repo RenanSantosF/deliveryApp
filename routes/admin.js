@@ -19,7 +19,6 @@ const fs = require("fs");
 const multer = require("multer");
 const path = require("path");
 
-// Configurando o recebimento de arquivo
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "public/uploads/");
@@ -186,17 +185,12 @@ router.get("/produtos/add", UserAuth, eAdmin, (req, res) => {
         .lean()
         .then((categorias) => {
           function reorganizarPorCategoria(adicionais) {
-            // Objeto para armazenar os adicionais por categoria
             const adicionaisPorCategoria = {};
 
-            // Iterar sobre os adicionais
             adicionais.forEach((adicional) => {
-              // Verificar se a categoria já existe no objeto
               if (!adicionaisPorCategoria.hasOwnProperty(adicional.categoria)) {
-                // Se não existir, criar um novo array para essa categoria
                 adicionaisPorCategoria[adicional.categoria] = [];
               }
-              // Adicionar o adicional ao array correspondente à sua categoria
               adicionaisPorCategoria[adicional.categoria].push(adicional);
             });
 
@@ -256,7 +250,7 @@ router.post("/produtos/nova", upload.single("imgProduto"), UserAuth, eAdmin, (re
           adicionais: adicional,
           precoAdicional: req.body.precoAdicional[index],
           produtoReferido: req.body.titulo,
-          categoriaAdicional: req.body[`categoriaAdicional-${categoriaNome}-${index}`], // Modificado aqui
+          categoriaAdicional: req.body[`categoriaAdicional-${categoriaNome}-${index}`],
           minAdicionais: minAdicionais,
           maxAdicionais: maxAdicionais,
         });
@@ -363,7 +357,7 @@ router.post("/produto/edit", upload.single("imgProduto"), UserAuth, eAdmin, (req
             adicionais: adicional,
             precoAdicional: req.body.precoAdicional[index],
             produtoReferido: req.body.titulo,
-            categoriaAdicional: req.body[`categoriaAdicional-${categoriaNome}-${index}`], // Modificado aqui
+            categoriaAdicional: req.body[`categoriaAdicional-${categoriaNome}-${index}`],
             minAdicionais: req.body[`minAdicionais-${categoriaNome}`],
             maxAdicionais: req.body[`maxAdicionais-${categoriaNome}`],
           });
@@ -378,9 +372,7 @@ router.post("/produto/edit", upload.single("imgProduto"), UserAuth, eAdmin, (req
       produto.preco = preco;
       produto.nomeLoja = req.user.nomeLoja;
 
-      // Verifica se há uma nova imagem enviada
       if (req.file) {
-        // Remove a imagem anterior, se existir
         if (produto.imgProduto) {
           const imagePath = path.join(__dirname, "..", "public", "uploads", produto.imgProduto);
 
@@ -414,13 +406,11 @@ router.post("/produto/edit", upload.single("imgProduto"), UserAuth, eAdmin, (req
 router.post("/produtos/deletar", UserAuth, eAdmin, (req, res) => {
   Produto.findOne({ _id: req.body.id })
     .then((produto) => {
-      // Verifica se o produto foi encontrado
       if (!produto) {
         req.flash("error_msg", "Produto não encontrado!");
         return res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
       }
 
-      // Remove a imagem associada, se existir
       if (produto.imgProduto) {
         const imagePath = path.join(__dirname, '..', 'public', 'uploads', produto.imgProduto);
         fs.unlink(imagePath, (err) => {
@@ -430,7 +420,6 @@ router.post("/produtos/deletar", UserAuth, eAdmin, (req, res) => {
         });
       }
 
-      // Exclui o produto do banco de dados
       Produto.deleteOne({ _id: req.body.id })
         .then(() => {
           res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
@@ -449,7 +438,6 @@ router.post("/produtos/deletar", UserAuth, eAdmin, (req, res) => {
     });
 });
 
-//Adicionais
 router.get("/adicionais", UserAuth, eAdmin, (req, res) => {
   Adicional.find({ nomeLoja: req.user.nomeLoja })
     .sort({ date: "desc" })
@@ -586,7 +574,6 @@ router.post("/adicionais/deletar", UserAuth, eAdmin, (req, res) => {
     });
 });
 
-//Pagamentos
 router.get("/pagamentos", UserAuth, eAdmin, (req, res) => {
   Pagamento.find({ nomeLoja: req.user.nomeLoja })
     .sort({ date: "desc" })
@@ -701,7 +688,6 @@ router.post("/pagamentos/deletar", UserAuth, eAdmin, (req, res) => {
     });
 });
 
-//Bairros
 router.get("/bairros", UserAuth, eAdmin, (req, res) => {
   Bairro.find({ nomeLoja: req.user.nomeLoja })
     .sort({ date: "desc" })
@@ -817,7 +803,6 @@ router.post("/bairros/deletar", UserAuth, eAdmin, (req, res) => {
     });
 });
 
-//Bairros
 router.get("/pedidos", UserAuth, eAdmin, (req, res) => {
   Pedido.find({ nomeLoja: req.user.nomeLoja })
     .sort({ date: "desc" })
@@ -851,7 +836,6 @@ router.get("/pedidosAPI", UserAuth, eAdmin, (req, res) => {
 });
 
 
-//Bairros
 router.get("/pedidos-finalizados", UserAuth, eAdmin, (req, res) => {
   Pedido.find({ nomeLoja: req.user.nomeLoja })
     .sort({ date: "desc" })

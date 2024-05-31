@@ -1,18 +1,12 @@
 import showMenu from "../mostraMenu.js";
 showMenu("nav-toggle", "nav-menu");
 
-// Função para exibir a imagem selecionada
 function exibirImagem() {
-  // Obtém o input do tipo file
   const inputImagem = document.getElementById("file");
   if (inputImagem.files && inputImagem.files[0]) {
-    // Cria um objeto URL para representar o arquivo selecionado como um URL
     const url = URL.createObjectURL(inputImagem.files[0]);
-    // Obtém o elemento onde a imagem será exibida
     const imagemSelecionada = document.getElementById("imagemSelecionada");
-    // Define o atributo src da imagem como o URL do arquivo selecionado
     imagemSelecionada.src = url;
-    // Exibe a imagem
     imagemSelecionada.style.display = "block";
     const span = document.getElementById("span");
     const svg = document.getElementById("svg");
@@ -101,14 +95,12 @@ function formatarValor(input) {
 function formatarValorBlur(input) {
   let partes = input.value.split(",");
   if (partes.length === 1) {
-    // Adiciona a vírgula e completa com duas casas decimais com zeros, se necessário
     input.value = input.value.replace(/(\d+)(?:,(\d*))?/, function (match, p1, p2) {
-      if (p2 === undefined) p2 = ""; // Se não houver parte decimal, define como vazio
-      while (p2.length < 2) p2 += "0"; // Completa com zeros até ter duas casas decimais
+      if (p2 === undefined) p2 = "";
+      while (p2.length < 2) p2 += "0";
       return p1 + "," + p2;
     });
   } else {
-    // Completa com zeros caso haja apenas uma casa decimal
     if (partes[1].length === 1) {
       input.value += "0";
     }
@@ -155,7 +147,6 @@ document.querySelectorAll(".containerMinMax").forEach(function (container) {
     maxInput.value = parseInt(maxInput.value) + 1;
   });
 });
-
 
 function verificarCamposVazios(erros) {
   document.querySelectorAll(".containerMinMax").forEach(function (container) {

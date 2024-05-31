@@ -74,14 +74,12 @@ function formatarValor(input) {
 function formatarValorBlur(input) {
   let partes = input.value.split(",");
   if (partes.length === 1) {
-    // Adiciona a vírgula e completa com duas casas decimais com zeros, se necessário
     input.value = input.value.replace(/(\d+)(?:,(\d*))?/, function (match, p1, p2) {
-      if (p2 === undefined) p2 = ""; // Se não houver parte decimal, define como vazio
-      while (p2.length < 2) p2 += "0"; // Completa com zeros até ter duas casas decimais
+      if (p2 === undefined) p2 = "";
+      while (p2.length < 2) p2 += "0";
       return p1 + "," + p2;
     });
   } else {
-    // Completa com zeros caso haja apenas uma casa decimal
     if (partes[1].length === 1) {
       input.value += "0";
     }

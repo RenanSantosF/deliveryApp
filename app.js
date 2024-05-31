@@ -83,16 +83,15 @@ app.use(express.static(path.join(__dirname, "public")));
 //
 // Rotas
 
-console.log(db.mongoURI)
+console.log(db.mongoURI);
 
 app.use("/:nomeLoja/admin", autenticado, admin);
 app.use("/usuarios", usuarios);
 
 app.get("/", (req, res) => {
-  res.send("principal");
+  res.redirect("/usuarios/login");
 });
 
-// Página da loja, de exibir erro
 app.get("/404", (req, res) => {
   res.send("Erro 404!");
 });
@@ -121,97 +120,6 @@ app.post("/pedidos", async (req, res) => {
     res.status(500).json({ message: "Erro ao salvar pedido", error });
   }
 });
-
-// app.get("/:nomeLoja", existeUsuario, (req, res) => {
-//   let dadosUsuario = [];
-//   let statusLoja = [];
-//   let horarios = [];
-//   let formasPagamento = [];
-//   let bairrosCadastrados = [];
-//   Usuario.find({ nomeLoja: req.params.nomeLoja })
-//     .lean()
-//     .then((usuario) => {
-//       dadosUsuario = usuario;
-
-//       const horariosDeFuncionamento = {
-//         seg: { abertura: usuario[0].segAb, fechamento: usuario[0].segFe },
-//         ter: { abertura: usuario[0].terAb, fechamento: usuario[0].terFe },
-//         qua: { abertura: usuario[0].quaAb, fechamento: usuario[0].quaFe },
-//         qui: { abertura: usuario[0].quiAb, fechamento: usuario[0].quiFe },
-//         sex: { abertura: usuario[0].sexAb, fechamento: usuario[0].sexFe },
-//         sab: { abertura: usuario[0].sabAb, fechamento: usuario[0].sabFe },
-//         dom: { abertura: usuario[0].domAb, fechamento: usuario[0].domFe },
-//       };
-
-//       statusLoja = verificarHorarioDeFuncionamento(horariosDeFuncionamento);
-//       horarios = horariosDeFuncionamento;
-//       dadosUsuario.forEach((usuario) => {
-//         usuario.statusSituacao = statusLoja;
-//       });
-//     })
-//     .catch((err) => {
-//       // res.send('erro ao exibir usuário')
-//     });
-
-//   Pagamento.find({ nomeLoja: req.params.nomeLoja })
-//     .lean()
-//     .then((pagamentos) => {
-//       formasPagamento = pagamentos;
-//     });
-
-//   Bairro.find({ nomeLoja: req.params.nomeLoja })
-//     .lean()
-//     .then((bairros) => {
-//       bairrosCadastrados = bairros;
-//     });
-
-//   Produto.find({ nomeLoja: req.params.nomeLoja })
-//     .lean()
-//     .populate("categoria")
-//     .sort({ data: "desc" })
-//     .then((produtos) => {
-//       Categoria.find({ nomeLoja: req.params.nomeLoja })
-//         .lean()
-//         .sort({ data: "desc" })
-//         .then((categorias) => {
-//           const produtosPorCategoria = {};
-
-//           categorias.forEach((categoria) => {
-//             produtosPorCategoria[categoria.nome] = [];
-//           });
-
-//           produtos.forEach((produto) => {
-//             const categoria = categorias.find((cat) => cat.nome === produto.categoria.nome);
-
-//             if (categoria) {
-//               produtosPorCategoria[categoria.nome].push(produto);
-//             }
-//           });
-//           console.log(statusLoja);
-
-//           res.render("index", {
-//             produtosPorCategoria: produtosPorCategoria,
-//             dadosUsuario: dadosUsuario,
-//             statusLoja: statusLoja,
-//             formasPagamento: formasPagamento,
-//             bairrosCadastrados: bairrosCadastrados,
-//             title: `${req.params.nomeLoja}`,
-//             css: "/css/pages/home/index.css",
-//             script: "/scripts/cliente/index.js",
-//           });
-//         })
-
-//         .catch((err) => {
-//           res.send("Erro interno");
-//           console.log(err);
-//         });
-//     })
-//     .catch((err) => {
-//       req.flash("error_msg", "Houve um erro interno");
-//       res.send("Erro interno");
-//       console.log(err);
-//     });
-// });
 
 app.get("/:nomeLoja", existeUsuario, (req, res) => {
   let dadosUsuario = [];
@@ -280,32 +188,27 @@ app.get("/:nomeLoja", existeUsuario, (req, res) => {
 });
 
 function verificarHorarioDeFuncionamento(element) {
-  // Obter o horário atual
   const agora = new Date();
   const horaAtual = agora.getHours();
   const minutoAtual = agora.getMinutes();
   const horarioAtualEmMinutos = horaAtual * 60 + minutoAtual;
 
-  // Obter o dia atual da semana (0 = Domingo, 1 = Segunda, ..., 6 = Sábado)
   const diaAtual = agora.getDay();
   const diasSemana = ["dom", "seg", "ter", "qua", "qui", "sex", "sab"];
   const diaSemana = diasSemana[diaAtual];
-  const diaSemanaAnterior = diasSemana[(diaAtual + 6) % 7]; // Dia anterior
+  const diaSemanaAnterior = diasSemana[(diaAtual + 6) % 7];
 
-  // Função auxiliar para converter horário em minutos desde a meia-noite
   function converterParaMinutos(horario) {
     const [hora, minuto] = horario.split(":").map(Number);
     return hora * 60 + minuto;
   }
 
-  // Verificar se a loja está aberta no dia anterior
   if (diaSemanaAnterior in element) {
     const horarioAnterior = element[diaSemanaAnterior];
     const aberturaAnteriorEmMinutos = converterParaMinutos(horarioAnterior.abertura);
     const fechamentoAnteriorEmMinutos = converterParaMinutos(horarioAnterior.fechamento);
 
     if (fechamentoAnteriorEmMinutos < aberturaAnteriorEmMinutos) {
-      // Caso a loja feche após a meia-noite do dia anterior
       if (horarioAtualEmMinutos < fechamentoAnteriorEmMinutos) {
         return [
           {
@@ -319,14 +222,12 @@ function verificarHorarioDeFuncionamento(element) {
     }
   }
 
-  // Verificar se a loja está aberta no dia atual
   if (diaSemana in element) {
     const horarioFuncionamento = element[diaSemana];
     const aberturaEmMinutos = converterParaMinutos(horarioFuncionamento.abertura);
     const fechamentoEmMinutos = converterParaMinutos(horarioFuncionamento.fechamento);
 
     if (fechamentoEmMinutos < aberturaEmMinutos) {
-      // Caso a loja feche após a meia-noite
       if (horarioAtualEmMinutos >= aberturaEmMinutos || horarioAtualEmMinutos < fechamentoEmMinutos) {
         return [
           {
@@ -338,7 +239,6 @@ function verificarHorarioDeFuncionamento(element) {
         ];
       }
     } else {
-      // Caso a loja feche no mesmo dia
       if (horarioAtualEmMinutos >= aberturaEmMinutos && horarioAtualEmMinutos <= fechamentoEmMinutos) {
         return [
           {

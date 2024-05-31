@@ -1,4 +1,3 @@
-//
 export function formataNumeroTelefone(e) {
   let value = e.target.value.replace(/\D/g, "");
   if (value.length > 11) value = value.substring(0, 11);

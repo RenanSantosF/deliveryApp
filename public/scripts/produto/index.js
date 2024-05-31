@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const offsetTop = -10;
         const offsetLeft = -120;
         modal.style.top = `${rect.top + window.scrollY + offsetTop}px`;
-        modal.style.left = `${rect.right + window.scrollX + offsetLeft}px`; // Ajuste de deslocamento à direita
+        modal.style.left = `${rect.right + window.scrollX + offsetLeft}px`;
         modal.classList.toggle("active");
       }
     });
