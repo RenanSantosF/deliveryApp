@@ -37,6 +37,9 @@ export function modalPedido(dataPedido, pedidos, socket, text) {
   addElement(modalDetalhes, "p", "PRODUTOS", "separador");
   pedido.cart.forEach((item) => {
     addElement(modalDetalhes, "h3", `${item.quantityProduto}x - ${item.name}`);
+    if (item.observacao) {
+      addElement(modalDetalhes, "span", `Observação: ${item.observacao}`);
+    }
 
     modalContainer.classList.add("active");
 

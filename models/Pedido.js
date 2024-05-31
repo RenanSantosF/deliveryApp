@@ -1,29 +1,35 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const AdicionalSchema = new Schema({
   nomeAdicional: String,
   quantidade: Number,
-  valorAdicional: Number
+  valorAdicional: Number,
 });
 
-const CartItemSchema = new Schema({
-  descricao: String,
-  imgProduto: String,
-  listaAdicionais: {
-    type: Map,
-    of: [AdicionalSchema]
+const CartItemSchema = new Schema(
+  {
+    descricao: String,
+    imgProduto: String,
+    listaAdicionais: {
+      type: Map,
+      of: [AdicionalSchema],
+    },
+    name: String,
+    price: Number,
+    observacao: String,
+    quantidadeNomeAdicionais: [
+      {
+        nome: String,
+        quantidade: Number,
+        valor: Number,
+      },
+    ],
+    quantityProduto: Number,
+    valorTotalAdicional: Number,
   },
-  name: String,
-  price: Number,
-  quantidadeNomeAdicionais: [{
-    nome: String,
-    quantidade: Number,
-    valor: Number
-  }],
-  quantityProduto: Number,
-  valorTotalAdicional: Number
-}, { _id: false });
+  { _id: false }
+);
 
 const Pedido = new Schema({
   nomeLoja: String,
@@ -44,10 +50,8 @@ const Pedido = new Schema({
   telefone: String,
   uf: String,
   valorTotal: Number,
-  
-  cart: [CartItemSchema],
 
+  cart: [CartItemSchema],
 });
 
-mongoose.model('pedidos', Pedido);
-
+mongoose.model("pedidos", Pedido);
