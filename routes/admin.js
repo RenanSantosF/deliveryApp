@@ -382,7 +382,7 @@ router.post("/produto/edit", upload.single("imgProduto"), UserAuth, eAdmin, (req
             }
           });
         }
-        produto.imgProduto = req.generatedFileName ? req.generatedFileName : "/padrao/imgPadrao.png";
+        produto.imgProduto = req.generatedFileName ? req.generatedFileName : "padrao/imgPadrao.png";
       }
 
       produto.adicionais = novosAdicionais;

@@ -28,11 +28,11 @@ const Usuario = new Schema({
   },
   imgLogo: {
     type: String,
-    default: "/padrao/imgPadrao.png"
+    default: "padrao/imgPadrao.png"
   },
   imgBg: {
     type: String,
-    default: "/padrao/imgPadrao.png"
+    default: "padrao/imgPadrao.png"
   },
   telefone: {
     type: String,

@@ -73,7 +73,6 @@ router.post(
             }
 
             let nomeLojaCorrigido = slugify(loja);
-            
 
             const novoUsuario = new Usuario({
               nome: req.body.nome,
@@ -81,8 +80,8 @@ router.post(
               senha: req.body.senha,
               nomeDaLoja: req.body.nomeDaLoja,
               nomeLoja: nomeLojaCorrigido,
-              imgLogo: req.files.imgLogo ? req.files.imgLogo[0].filename : "/padrao/imgPadrao.png",
-              imgBg: req.files.imgBg ? req.files.imgBg[0].filename : "/padrao/imgPadrao.png",
+              imgLogo: req.files.imgLogo ? req.files.imgLogo[0].filename : "padrao/imgPadrao.png",
+              imgBg: req.files.imgBg ? req.files.imgBg[0].filename : "padrao/imgPadrao.png",
               telefone: req.body.telefone,
               numeroRua: req.body.numero,
               rua: req.body.rua,
@@ -106,7 +105,7 @@ router.post(
               domFe: req.body.domFe,
             });
 
-            console.log(novoUsuario)
+            console.log(novoUsuario);
 
             bcrypt.genSalt(10, (erro, salt) => {
               bcrypt.hash(novoUsuario.senha, salt, (erro, hash) => {
@@ -151,7 +150,7 @@ router.post("/cadastrar", (req, res) => {
   res.redirect("/usuarios/registro");
 });
 
-router.get('/check-username', (req, res) => {
+router.get("/check-username", (req, res) => {
   const username = req.query.username;
 
   Usuario.findOne({ nomeLoja: username })
@@ -192,7 +191,7 @@ router.post("/login", (req, res, next) => {
       if (err) {
         return next(err);
       }
-      const userRoute = `/${req.user.nomeLoja}/admin/produtos/add`;
+      const userRoute = `/${req.user.nomeLoja}/admin/produtos`;
       return res.redirect(userRoute);
     });
   })(req, res, next);
