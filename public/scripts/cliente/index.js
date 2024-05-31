@@ -346,10 +346,13 @@ function capturaProdutoParaModal(ev) {
         const listItem = document.createElement("li");
         textSpan.textContent = `${objeto.nomeAdicional}`;
 
-        valorSpan.textContent = `${Number(objeto.valorAdicional).toLocaleString("pt-BR", {
-          style: "currency",
-          currency: "BRL",
-        })}`;
+        if (objeto.valorAdicional !== "0.00") {
+          valorSpan.textContent = `${Number(objeto.valorAdicional).toLocaleString("pt-BR", {
+            style: "currency",
+            currency: "BRL",
+          })}`;
+        }
+
         valorSpan.classList.add("priceAdicional");
         const quantidadeSpan = document.createElement("span");
         quantidadeSpan.textContent = objeto.quantidade;
