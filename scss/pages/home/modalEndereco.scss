@@ -47,7 +47,6 @@
   padding: 5px;
 }
 
-// entrega / retirada
 .contatoEndereco {
   background-color: $cor-backgroundEndereco;
   margin-top: 70px;
@@ -66,7 +65,6 @@
 
 .contatoEndereco > input {
   width: 80%;
-  // margin-left: 20px;
 }
 
 .radio-inputs {
@@ -82,21 +80,6 @@
   width: 80%;
   font-size: 14px;
 }
-
-// .radio-inputs {
-//   /* Remova ou reduza a margem conforme necessário */
-//   /* margin: 20px; */
-//   position: relative;
-//   display: flex;
-//   flex-wrap: wrap;
-//   border-radius: 0.5rem;
-//   background-color: $cor-temaClaro;
-//   box-sizing: border-box;
-//   box-shadow: 0 0 0px 1px rgba(0, 0, 0, 0.06);
-//   /* Ajuste a largura conforme necessário */
-//   width: 100%;
-//   font-size: 14px;
-// }
 
 .radio-inputs .radio {
   flex: 1 1 auto;
@@ -126,7 +109,6 @@
   color: $cor-title;
 }
 
-// Input do endereço
 .containerEntrega {
   background-color: $cor-backgroundEndereco;
   margin-top: 20px;
@@ -205,7 +187,6 @@
   height: 40px;
   padding: 12px;
   border-radius: 6px;
-  // border: 1.5px solid lightgrey;
   border: 1px solid #eeeeee;
   outline: none;
   transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
@@ -268,7 +249,6 @@
   align-items: center;
 }
 
-// Radio input forma de pagamento {
 .formaPagamento {
   transition: 0.3s ease;
   background-color: $cor-backgroundEndereco;
@@ -369,7 +349,6 @@
   transform: translate(-50%, -50%);
 }
 
-// select bairros
 .selectBairro {
   height: 40px;
   -webkit-appearance: none;

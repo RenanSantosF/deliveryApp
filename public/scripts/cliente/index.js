@@ -819,7 +819,6 @@ confirmaEndereco.addEventListener("click", () => {
     verificaVazio(inputTelefone, erros);
     verificaVazio(rua, erros);
     verificaVazio(numero, erros);
-    verificaVazio(cep, erros);
     verificaVazio(cidade, erros);
     verificaVazio(uf, erros);
     verificaVazio(inputNome, erros);
@@ -961,8 +960,9 @@ confirmaEndereco.addEventListener("click", () => {
     contato: inputTelefone.value,
   };
 
+  const nomeDaLoja = document.getElementById("nomeDaLoja");
   const loja = `
-    *${nomeLoja.textContent}*
+    *${nomeDaLoja.textContent}*
   `;
 
   const enderecoFormatted = `
@@ -1186,7 +1186,9 @@ function formatarValorBlur(input) {
       return p1 + "," + p2;
     });
   } else {
-    if (partes[1].length === 1) {
+    if (partes[1].length === 0) {
+      input.value += "00";
+    } else if (partes[1].length === 1) {
       input.value += "0";
     }
   }

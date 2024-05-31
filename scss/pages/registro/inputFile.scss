@@ -1,0 +1,40 @@
+.grid-container {
+  padding: 20px 0;
+  display: grid;
+  width: 100%;
+  max-width: 20rem; /* Equivalente a 'max-w-xs' */
+  align-items: center;
+  gap: 0.375rem; /* Equivalente a 'gap-1.5' */
+}
+
+.labelInput {
+  font-size: 0.875rem; /* Equivalente a 'text-sm' */
+  color: #9ca3af; /* Equivalente a 'text-gray-400' */
+  font-weight: 500; /* Equivalente a 'font-medium' */
+  line-height: 1.25rem; /* Equivalente a 'leading-none' */
+}
+
+.labelInput.peer-disabled {
+  cursor: not-allowed; /* Equivalente a 'peer-disabled:cursor-not-allowed' */
+  opacity: 0.7; /* Equivalente a 'peer-disabled:opacity-70' */
+}
+
+.input-file {
+  display: flex;
+  height: 2.5rem; /* Equivalente a 'h-10' */
+  width: 100%; /* Equivalente a 'w-full' */
+  border-radius: 0.375rem; /* Equivalente a 'rounded-md' */
+  border: 1px solid #d1d5db; /* Equivalente a 'border-input' */
+  background-color: #ffffff; /* Equivalente a 'bg-white' */
+  padding: 0.5rem 0.75rem; /* Equivalente a 'px-3 py-2' */
+  font-size: 0.875rem; /* Equivalente a 'text-sm' */
+  color: #9ca3af; /* Equivalente a 'text-gray-400' */
+}
+
+.input-file::file-selector-button {
+  border: 0; /* Equivalente a 'file:border-0' */
+  background-color: transparent; /* Equivalente a 'file:bg-transparent' */
+  color: #4b5563; /* Equivalente a 'file:text-gray-600' */
+  font-size: 0.875rem; /* Equivalente a 'file:text-sm' */
+  font-weight: 500; /* Equivalente a 'file:font-medium' */
+}

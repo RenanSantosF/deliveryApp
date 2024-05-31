@@ -1,0 +1,11 @@
+.inputHora {
+  padding: 5px;
+  font-size: 16px;
+  border: 1.5px solid lightgrey;
+  border-radius: 4px;
+  background-color: #505050;
+  color: #e0e0e0;
+}
+.inputHora::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}

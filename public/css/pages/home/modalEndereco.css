@@ -1,9 +1,9 @@
 /* Error: Undefined variable.
  *    ,
- * 52 |   background-color: $cor-backgroundEndereco;
+ * 51 |   background-color: $cor-backgroundEndereco;
  *    |                     ^^^^^^^^^^^^^^^^^^^^^^^
  *    '
- *   scss\pages\home\modalEndereco.scss 52:21  root stylesheet */
+ *   scss\pages\home\modalEndereco.scss 51:21  root stylesheet */
 
 body::before {
   font-family: "Source Code Pro", "SF Mono", Monaco, Inconsolata, "Fira Mono",
@@ -13,5 +13,5 @@ body::before {
   padding: 1em;
   margin-bottom: 1em;
   border-bottom: 2px solid black;
-  content: "Error: Undefined variable.\a    \2577 \a 52 \2502    background-color: $cor-backgroundEndereco;\d\a    \2502                      ^^^^^^^^^^^^^^^^^^^^^^^\a    \2575 \a   scss\\pages\\home\\modalEndereco.scss 52:21  root stylesheet";
+  content: "Error: Undefined variable.\a    \2577 \a 51 \2502    background-color: $cor-backgroundEndereco;\d\a    \2502                      ^^^^^^^^^^^^^^^^^^^^^^^\a    \2575 \a   scss\\pages\\home\\modalEndereco.scss 51:21  root stylesheet";
 }

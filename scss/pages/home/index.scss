@@ -19,7 +19,7 @@ header > div {
   display: flex;
   align-items: center;
   flex-direction: column;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.7);
   position: relative;
 }
 
@@ -31,7 +31,6 @@ header > div > img {
   position: absolute;
   bottom: -10px;
   z-index: 30;
-  opacity: 0.9;
   box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.4);
   transition: transform 0.3s ease-in-out;
 }
@@ -140,7 +139,6 @@ nav {
   color: #303030;
   position: sticky;
   top: 0;
-  // border: 1px solid #e7e7e7;
   box-shadow: 0 4px 4px -5px rgba(0, 0, 0, 0.5);
   overflow-x: auto;
   overflow-y: hidden;
@@ -177,6 +175,11 @@ nav ul li a {
   border-bottom: 2px solid $cor-tema;
 }
 
+.imgProdutoContainer {
+  width: 90px;
+  height: 90px;
+}
+
 .containerProduto {
   display: flex;
   gap: 8px;
@@ -190,9 +193,9 @@ nav ul li a {
   transform: translateY(-5px); /* Desloca 10px para cima */
 }
 
-.containerProduto > img {
-  width: 90px;
-  height: 90px;
+.containerProduto > div > img {
+  width: 100%;
+  max-height: 100%;
   border-radius: 10px;
   transition: transform 0.3s ease;
 }
@@ -655,7 +658,6 @@ footer > button {
   font-weight: 550;
   color: $cor-textCategoria;
   font-size: 18px;
-  // border-radius: 5px;
   margin: 15px 0 5px 0;
 }
 

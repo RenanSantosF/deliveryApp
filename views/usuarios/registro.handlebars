@@ -8,94 +8,195 @@
 {{! <h2>Crie sua conta Hoje</h2> }}
 <div class="card">
   <div class="card-body">
+
     <form id="registration-form" action="/usuarios/registro" method="post" enctype="multipart/form-data">
-      <label for="nome">Nome: </label>
-      <input type="text" name="nome" class="form-control" />
-      <label for="email">Email: </label>
-      <input type="email" name="email" class="form-control" />
-      <label for="senha">Senha: </label>
-      <input type="password" name="senha" class="form-control" />
-      <label for="senha2">Repita sua senha: </label>
-      <input type="password" name="senha2" class="form-control" />
+      <h2>Registre sua conta</h2>
+      <label class="label" for="nome">Nome<span class="required">*</span> </label>
+      <input class="input" type="text" name="nome" />
+      <label class="label" for="email">Email<span class="required">*</span> </label>
+      <input class="input" type="email" name="email" />
+      <div class="containerSenha">
+        <div>
+          <label class="label" for="senha">Senha<span class="required">*</span> </label>
+          <input class="input" type="password" name="senha" />
 
-      <h3>Nome da loja: </h3>
-      <input type="text" name="nomeDaLoja" class="form-control" />
+        </div>
+        <div>
+          <label class="label" for="senha2">Repita sua senha<span class="required">*</span> </label>
+          <input class="input" type="password" name="senha2" />
+        </div>
 
-      <h3>Link do cardápio: </h3>
-      <div>
-        <span>localhost:3000/</span>
-        <input type="text" name="nomeLoja" id="nomeLoja" class="form-control" />
-        <span id="username-status"></span>
       </div>
 
-      <h3>Imagem principal da loja: </h3>
-      <input value="123" type="file" name="imgLogo" class="form-control" />
-      <h3>imagem de fundo da loja: </h3>
-      <input value="123" type="file" name="imgBg" class="form-control" />
+      <div class="containerLoja">
+        <h3>Informações do estabelecimento </h3>
+        <div class="contentLoja">
+          <label class="label" for="estado">Nome da Loja<span class="required">*</span> </label>
+          <input class="input" type="text" name="nomeDaLoja" />
 
-      <h3>Informações de contato: </h3>
-      <label for="estado">Telefone: </label>
-      <input type="text" name="telefone" class="form-control" />
+          <div class="containerLink">
+            <label class="label" for="estado">Link do cardápio<span class="required">*</span> </label>
+            <div>
+              <span>localhost:3000/</span>
+              <input class="input" type="text" name="nomeLoja" id="nomeLoja" />
+              <span id="username-status"></span>
+            </div>
+          </div>
 
-      <h3>Informações de endereço: </h3>
-      <label for="estado">Estado: </label>
-      <input type="text" name="estado" class="form-control" />
-      <label for="cidade">Cidade: </label>
-      <input type="text" name="cidade" class="form-control" />
-      <label for="bairro">Bairro: </label>
-      <input type="text" name="bairro" class="form-control" />
-      <label for="rua">Rua: </label>
-      <input type="text" name="rua" class="form-control" />
-      <label for="numero">Nº: </label>
-      <input type="text" name="numero" class="form-control" />
-      <label for="pontoRef">Ponto de referência: </label>
-      <input type="text" name="pontoReferencia" class="form-control" />
+          <div class="grid-container">
+            <label for="picture" class="label">Imagem principal</label>
+            <input value="123" name="imgLogo" type="file" class="input-file" />
+          </div>
+          <div class="grid-container">
+            <label for="picture" class="label">imagem de fundo</label>
+            <input value="123" name="imgBg" type="file" class="input-file" />
+          </div>
+          {{! <input value="123" type="file" name="imgLogo"/> }}
+          {{! <h3>imagem de fundo da loja: </h3> }}
+          {{! <input value="123" type="file" name="imgBg" /> }}
 
-      <h3>Horários de funcionamento: </h3>
+          <label class="label" for="estado">Contato para recebimento de pedidos<span class="required">*</span> </label>
+          <input class="input" type="text" name="telefone" />
 
-      <h5>Segunda-feira: </h5>
-      <label for="segAb">Abre: </label>
-      <input type="time" name="segAb" class="form-control" />
-      <label for="segFe">Fecha: </label>
-      <input type="time" name="segFe" class="form-control" />
+          <h3>Informações de endereço </h3>
+          <label class="label" for="estado">Estado<span class="required">*</span> </label>
+          <input class="input" type="text" name="estado" />
+          <label class="label" for="cidade">Cidade<span class="required">*</span> </label>
+          <input class="input" type="text" name="cidade" />
+          <label class="label" for="bairro">Bairro<span class="required">*</span> </label>
+          <input class="input" type="text" name="bairro" />
+          <label class="label" for="rua">Rua<span class="required">*</span> </label>
+          <input class="input" type="text" name="rua" />
+          <label class="label" for="numero">Nº<span class="required">*</span> </label>
+          <input class="input" type="text" name="numero" />
+          <label class="label" for="pontoRef">Ponto de referência<span class="required">*</span> </label>
+          <input class="input" type="text" name="pontoReferencia" />
 
-      <h5>Terça-feira: </h5>
-      <label for="terAb">Abre: </label>
-      <input type="time" name="terAb" class="form-control" />
-      <label for="terFe">Fecha: </label>
-      <input type="time" name="terFe" class="form-control" />
+          <h3>Horários de funcionamento </h3>
+          <div class="containerFuncionamento">
+            <h5>Segunda-feira </h5>
+            <div>
+              <div>
+                <label class="label" for="segAb">Abre </label>
+                <input class="inputHora" type="time" name="segAb" />
+              </div>
 
-      <h5>Quarta-feira: </h5>
-      <label for="quaAb">Abre: </label>
-      <input type="time" name="quaAb" class="form-control" />
-      <label for="quaFe">Fecha: </label>
-      <input type="time" name="quaFe" class="form-control" />
+              <div>
+                <label class="label" for="segFe">Fecha </label>
+                <input class="inputHora" type="time" name="segFe" />
+              </div>
 
-      <h5>Quinta-feira: </h5>
-      <label for="quiAb">Abre: </label>
-      <input type="time" name="quiAb" class="form-control" />
-      <label for="quiFe">Fecha: </label>
-      <input type="time" name="quiFe" class="form-control" />
+            </div>
 
-      <h5>Sexta-feira: </h5>
-      <label for="sexAb">Abre: </label>
-      <input type="time" name="sexAb" class="form-control" />
-      <label for="sexFe">Fecha: </label>
-      <input type="time" name="sexFe" class="form-control" />
+          </div>
 
-      <h5>Sbábado-feira: </h5>
-      <label for="sabAb">Abre: </label>
-      <input type="time" name="sabAb" class="form-control" />
-      <label for="sabFe">Fecha: </label>
-      <input type="time" name="sabFe" class="form-control" />
+          <div class="containerFuncionamento">
+            <h5>Terça-feira </h5>
+            <div>
+              <div>
+                <label class="label" for="terAb">Abre </label>
+                <input class="inputHora" type="time" name="terAb" />
+              </div>
+              <div>
+                <label class="label" for="terFe">Fecha </label>
+                <input class="inputHora" type="time" name="terFe" />
+              </div>
 
-      <h5>Domingo: </h5>
-      <label for="domAb">Abre: </label>
-      <input type="time" name="domAb" class="form-control" />
-      <label for="domFe">Fecha: </label>
-      <input type="time" name="domFe" class="form-control" />
+            </div>
 
-      <button type="submit" class="btn btn-success mt-4">Criar conta</button>
+          </div>
+
+          <div class="containerFuncionamento">
+            <h5>Quarta-feira </h5>
+            <div>
+              <div>
+                <label class="label" for="quaAb">Abre </label>
+                <input class="inputHora" type="time" name="quaAb" />
+              </div>
+              <div>
+                <label class="label" for="quaFe">Fecha </label>
+                <input class="inputHora" type="time" name="quaFe" />
+              </div>
+
+            </div>
+
+          </div>
+
+          <div class="containerFuncionamento">
+            <h5>Quinta-feira </h5>
+            <div>
+              <div>
+                <label class="label" for="quiAb">Abre </label>
+                <input class="inputHora" type="time" name="quiAb" />
+              </div>
+
+              <div>
+                <label class="label" for="quiFe">Fecha </label>
+                <input class="inputHora" type="time" name="quiFe" />
+              </div>
+
+            </div>
+
+          </div>
+
+          <div class="containerFuncionamento">
+            <h5>Sexta-feira </h5>
+            <div>
+              <div>
+                <label class="label" for="sexAb">Abre </label>
+                <input class="inputHora" type="time" name="sexAb" />
+              </div>
+              <div>
+                <label class="label" for="sexFe">Fecha </label>
+                <input class="inputHora" type="time" name="sexFe" />
+              </div>
+
+            </div>
+
+          </div>
+
+          <div class="containerFuncionamento">
+            <h5>Sábado </h5>
+            <div>
+
+              <div>
+                <label class="label" for="sabAb">Abre </label>
+                <input class="inputHora" type="time" name="sabAb" />
+              </div>
+              <div>
+                <label class="label" for="sabFe">Fecha </label>
+                <input class="inputHora" type="time" name="sabFe" />
+              </div>
+
+            </div>
+
+          </div>
+
+          <div class="containerFuncionamento">
+            <h5>Domingo </h5>
+            <div>
+              <div>
+                <label class="label" for="domAb">Abre </label>
+                <input class="inputHora" type="time" name="domAb" />
+              </div>
+              <div>
+                <label class="label" for="domFe">Fecha </label>
+                <input class="inputHora" type="time" name="domFe" />
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+      <div class="submit">
+        <button type="submit">
+          <span>Criar conta</span>
+        </button>
+      </div>
+
     </form>
   </div>
 </div>

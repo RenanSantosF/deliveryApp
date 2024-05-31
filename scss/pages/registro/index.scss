@@ -1,0 +1,101 @@
+@import "../../colors/colors.scss";
+
+@import "./inputText.scss";
+
+@import "./inputHora.scss";
+
+@import "./inputSubmit.scss";
+
+@import "./inputFile.scss";
+
+body {
+  color: $cor-texto-cinzaEscuro;
+}
+
+.card-body {
+  padding: 20px 10px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  width: 90%;
+  font-size: 15px;
+  font-weight: 550;
+  color: $cor-texto-cinzaEscuro;
+}
+
+.required {
+  color: rgb(199, 0, 0);
+}
+
+.containerSenha {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  padding: 20px 0 0 0;
+  gap: 10px;
+}
+
+.containerSenha > div {
+  display: flex;
+  flex-direction: column;
+}
+
+.containerLink {
+  display: flex;
+  flex-direction: column;
+  padding: 20px 0 0 0;
+}
+
+.containerLink > div {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.containerLoja {
+  padding: 0 0;
+}
+.contentLoja {
+  display: flex;
+  flex-direction: column;
+  padding: 0 15px;
+}
+
+.containerFuncionamento {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 10px 10px;
+}
+
+h5 {
+  font-size: 16px;
+}
+
+h3 {
+  margin-top: 40px;
+}
+
+.containerFuncionamento > div {
+  padding: 0 0 0 20px;
+  display: flex;
+  width: 60%;
+  gap: 50px;
+}
+
+.containerFuncionamento > div > div {
+  display: flex;
+  flex-direction: column;
+}
+
+.submit {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}

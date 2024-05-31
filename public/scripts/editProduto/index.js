@@ -99,7 +99,9 @@ function formatarValorBlur(input) {
       return p1 + "," + p2;
     });
   } else {
-    if (partes[1].length === 1) {
+    if (partes[1].length === 0) {
+      input.value += "00";
+    } else if (partes[1].length === 1) {
       input.value += "0";
     }
   }
