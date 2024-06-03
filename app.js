@@ -189,6 +189,7 @@ app.get("/:nomeLoja", existeUsuario, (req, res) => {
 
 function verificarHorarioDeFuncionamento(element) {
   const agora = new Date();
+  console.log(agora)
   const horaAtual = agora.getHours();
   const minutoAtual = agora.getMinutes();
   const horarioAtualEmMinutos = horaAtual * 60 + minutoAtual;
@@ -229,6 +230,7 @@ function verificarHorarioDeFuncionamento(element) {
 
     if (fechamentoEmMinutos < aberturaEmMinutos) {
       if (horarioAtualEmMinutos >= aberturaEmMinutos || horarioAtualEmMinutos < fechamentoEmMinutos) {
+        console.log("retornou fechada no primeiro")
         return [
           {
             status: "Aberta",
@@ -239,7 +241,9 @@ function verificarHorarioDeFuncionamento(element) {
         ];
       }
     } else {
+      
       if (horarioAtualEmMinutos >= aberturaEmMinutos && horarioAtualEmMinutos <= fechamentoEmMinutos) {
+        console.log("retornou fechada no segundo")
         return [
           {
             status: "Aberta",
@@ -251,6 +255,8 @@ function verificarHorarioDeFuncionamento(element) {
       }
     }
   }
+
+  console.log("retornou fechada no último")
 
   return [
     {

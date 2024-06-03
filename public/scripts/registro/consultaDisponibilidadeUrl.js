@@ -12,11 +12,11 @@ function checkUsernameAvailability(arr) {
     .then((response) => response.json())
     .then((data) => {
       if (data.available) {
-        usernameStatus.textContent = "Username available";
+        usernameStatus.textContent = "Este link está disponível";
         usernameStatus.style.color = "green";
         arr = []
       } else {
-        usernameStatus.textContent = "Username not available";
+        usernameStatus.textContent = "Este link não está disponível";
         usernameStatus.style.color = "red";
         arr.push("URL do cardápio indisponível. Por favor, escolha outra!")
       }
