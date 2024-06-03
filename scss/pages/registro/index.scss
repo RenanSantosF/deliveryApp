@@ -14,11 +14,21 @@ body {
 
 .card-body {
   padding: 20px 10px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
 }
 
 form {
   display: flex;
   flex-direction: column;
+  width: 100%;
+}
+
+@media (min-width: 700px) {
+  form {
+    width: 700px;
+  }
 }
 
 .label {
@@ -98,4 +108,73 @@ h3 {
   width: 100%;
   justify-content: center;
   align-items: center;
+}
+
+.containerEndereco {
+  display: grid;
+  width: 100%;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-areas:
+    "rua rua numero"
+    "complemento complemento complemento"
+    "pontoReferencia pontoReferencia pontoReferencia"
+    "bairro bairro bairro"
+    "cidade cidade uf";
+  gap: 10px; /* Adicionar espaçamento entre os itens */
+}
+
+.rua {
+  grid-area: rua;
+}
+
+.numero {
+  grid-area: numero;
+}
+
+.complemento {
+  grid-area: complemento;
+}
+
+.pontoReferencia {
+  grid-area: pontoReferencia;
+}
+
+.bairro {
+  grid-area: bairro;
+}
+
+.cidade {
+  grid-area: cidade;
+}
+
+.uf {
+  grid-area: uf;
+}
+
+.label {
+  display: block;
+}
+
+.input {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+.containerEndereco > div {
+  display: flex;
+  flex-direction: column;
+}
+
+.link {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.link > span {
+  font-size: 13px;
+  position: absolute;
+  bottom: -20px;
+  left: 15px;
 }

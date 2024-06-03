@@ -35,11 +35,13 @@
           <input class="input" type="text" name="nomeDaLoja" />
 
           <div class="containerLink">
-            <label class="label" for="estado">Link do cardápio<span class="required">*</span> </label>
+            <label class="label" for="estado">Escolha o link do seu cardápio<span class="required">*</span> </label>
             <div>
-              <span>localhost:3000/</span>
-              <input class="input" type="text" name="nomeLoja" id="nomeLoja" />
-              <span id="username-status"></span>
+              <span>pedeaz.com.br/</span>
+              <div class="link">
+                <input class="input" type="text" name="nomeLoja" id="nomeLoja" />
+                <span id="username-status"></span>
+              </div>
             </div>
           </div>
 
@@ -51,26 +53,47 @@
             <label for="picture" class="label">imagem de fundo</label>
             <input value="123" name="imgBg" type="file" class="input-file" />
           </div>
-          {{! <input value="123" type="file" name="imgLogo"/> }}
-          {{! <h3>imagem de fundo da loja: </h3> }}
-          {{! <input value="123" type="file" name="imgBg" /> }}
 
           <label class="label" for="estado">Contato para recebimento de pedidos<span class="required">*</span> </label>
-          <input class="input" type="text" name="telefone" />
+          <input class="input" type="text" id="telefone" name="telefone" />
 
           <h3>Informações de endereço </h3>
-          <label class="label" for="estado">Estado<span class="required">*</span> </label>
-          <input class="input" type="text" name="estado" />
-          <label class="label" for="cidade">Cidade<span class="required">*</span> </label>
-          <input class="input" type="text" name="cidade" />
-          <label class="label" for="bairro">Bairro<span class="required">*</span> </label>
-          <input class="input" type="text" name="bairro" />
-          <label class="label" for="rua">Rua<span class="required">*</span> </label>
-          <input class="input" type="text" name="rua" />
-          <label class="label" for="numero">Nº<span class="required">*</span> </label>
-          <input class="input" type="text" name="numero" />
-          <label class="label" for="pontoRef">Ponto de referência<span class="required">*</span> </label>
-          <input class="input" type="text" name="pontoReferencia" />
+          <div class="containerEndereco">
+            <div class="rua">
+              <label class="label" for="rua">Rua<span class="required">*</span> </label>
+              <input class="input" type="text" name="rua" />
+            </div>
+
+            <div class="numero">
+              <label class="label" for="numero">Nº<span class="required">*</span> </label>
+              <input class="input" type="text" name="numero" />
+            </div>
+
+            <div class="complemento">
+              <label class="label" for="complemento">Complemento</label>
+              <input class="input" type="text" name="complemento" />
+            </div>
+
+            <div class="pontoReferencia">
+              <label class="label" for="pontoRef">Ponto de referência<span class="required">*</span> </label>
+              <input class="input" type="text" name="pontoReferencia" />
+            </div>
+
+            <div class="bairro">
+              <label class="label" for="bairro">Bairro<span class="required">*</span> </label>
+              <input class="input" type="text" name="bairro" />
+            </div>
+
+            <div class="cidade">
+              <label class="label" for="cidade">Cidade<span class="required">*</span> </label>
+              <input class="input" type="text" name="cidade" />
+            </div>
+
+            <div class="uf">
+              <label class="label" for="estado">UF<span class="required">*</span> </label>
+              <input class="input" type="text" name="estado" />
+            </div>
+          </div>
 
           <h3>Horários de funcionamento </h3>
           <div class="containerFuncionamento">

@@ -1,5 +1,6 @@
 import checkUsernameAvailability from "./consultaDisponibilidadeUrl.js";
 import slugify from "./transformaSlug.js";
+import { formataNumeroTelefone } from "./formata.js";
 
 let erros = [];
 
@@ -58,4 +59,9 @@ document.addEventListener("DOMContentLoaded", function () {
       form.submit();
     }
   });
+});
+
+const telefone = document.getElementById("telefone");
+telefone.addEventListener("input", (e) => {
+  formataNumeroTelefone(e);
 });

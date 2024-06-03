@@ -73,6 +73,11 @@ router.post(
             }
 
             let nomeLojaCorrigido = slugify(loja);
+            let telefone = req.body.telefone;
+            function extrairNumeros(telefone) {
+              return telefone.replace(/\D/g, "");
+            }
+            let telefoneFormatado = extrairNumeros(telefone);
 
             const novoUsuario = new Usuario({
               nome: req.body.nome,
@@ -82,7 +87,7 @@ router.post(
               nomeLoja: nomeLojaCorrigido,
               imgLogo: req.files.imgLogo ? req.files.imgLogo[0].filename : "padrao/imgPadrao.png",
               imgBg: req.files.imgBg ? req.files.imgBg[0].filename : "padrao/imgPadrao.png",
-              telefone: req.body.telefone,
+              telefone: telefoneFormatado,
               numeroRua: req.body.numero,
               rua: req.body.rua,
               bairro: req.body.bairro,
