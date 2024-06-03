@@ -605,6 +605,10 @@ function addToCartCorreto() {
       return false;
     }
 
+    if (item.observacao !== produtoModal.observacao) {
+      return false;
+    }
+
     if (item.quantidadeNomeAdicionais.length !== produtoModal.quantidadeNomeAdicionais.length) {
       return false;
     }
