@@ -270,6 +270,7 @@ function verificarHorarioDeFuncionamento(element) {
   ];
 }
 
+
 const atualizarStatusPedido = (pedido) => {
   if (pedido.status === "Aceitar pedido") {
     pedido.status = "Marcar como pronto";
