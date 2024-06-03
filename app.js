@@ -1,3 +1,5 @@
+process.env.TZ = 'America/Sao_Paulo';
+
 // Carregando módulos
 const express = require("express");
 const handlebars = require("express-handlebars");
@@ -82,6 +84,8 @@ app.use(express.static(path.join(__dirname, "public")));
 
 //
 // Rotas
+
+
 
 console.log(db.mongoURI);
 
