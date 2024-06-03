@@ -1,0 +1,11 @@
+[1mdiff --git a/.gitignore b/.gitignore[m
+[1mindex 794b864..fbdceb2 100644[m
+[1m--- a/.gitignore[m
+[1m+++ b/.gitignore[m
+[36m@@ -1,5 +1,6 @@[m
+ node_modules/[m
+ [m
+[32m+[m[32mpublic/uploads[m
+ # scss/[m
+ [m
+ [m
