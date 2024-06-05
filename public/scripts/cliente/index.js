@@ -36,15 +36,42 @@ const inputTelefone = document.getElementById("inputTelefone");
 
 let cart = [];
 
-document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+// document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+//   anchor.addEventListener("click", function (e) {
+//     e.preventDefault();
+//     document.querySelectorAll('a[href^="#"]').forEach((item) => {
+//       item.classList.remove("activeNav");
+//     });
+
+//     const nav = document.querySelector("nav");
+
+//     const linkPosition = this.getBoundingClientRect().left - nav.getBoundingClientRect().left;
+
+//     nav.scrollBy({
+//       left: linkPosition,
+//       behavior: "smooth",
+//     });
+
+//     const target = document.querySelector(this.getAttribute("href"));
+
+//     this.classList.add("activeNav");
+//     const offset = target.offsetTop + 15;
+
+//     window.scrollTo({
+//       top: offset,
+//       behavior: "smooth",
+//     });
+//   });
+// });
+
+document.querySelectorAll("nav a[data-id]").forEach((anchor) => {
   anchor.addEventListener("click", function (e) {
     e.preventDefault();
-    document.querySelectorAll('a[href^="#"]').forEach((item) => {
+    document.querySelectorAll("nav a[data-id]").forEach((item) => {
       item.classList.remove("activeNav");
     });
 
     const nav = document.querySelector("nav");
-
     const linkPosition = this.getBoundingClientRect().left - nav.getBoundingClientRect().left;
 
     nav.scrollBy({
@@ -52,15 +79,21 @@ document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
       behavior: "smooth",
     });
 
-    const target = document.querySelector(this.getAttribute("href"));
+    const targetId = this.getAttribute("data-id");
+    const target = document.querySelector(`div[data-id="${targetId}"]`);
 
-    this.classList.add("activeNav");
-    const offset = target.offsetTop + 15;
+    if (target) {
+      this.classList.add("activeNav");
+      const targetPosition = target.getBoundingClientRect().top + window.pageYOffset;
+      const offset = targetPosition - 25;
 
-    window.scrollTo({
-      top: offset,
-      behavior: "smooth",
-    });
+      window.scrollTo({
+        top: offset,
+        behavior: "smooth",
+      });
+    } else {
+      console.error("Elemento alvo não encontrado: " + targetId);
+    }
   });
 });
 

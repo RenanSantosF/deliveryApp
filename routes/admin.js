@@ -113,6 +113,40 @@ router.get("/categorias/edit/:id", UserAuth, eAdmin, (req, res) => {
     });
 });
 
+// router.post("/categorias/edit", UserAuth, eAdmin, (req, res) => {
+//   let erros = [];
+//   if (!req.body.nome || typeof req.body.nome == undefined || req.body.nome == null) {
+//     erros.push({ texto: "Nome inválido" });
+//   }
+//   if (req.body.nome.length < 2) {
+//     erros.push({ texto: "Nome da categoria precisa ser maior" });
+//   }
+//   if (erros.length > 0) {
+//     res.render("admin/editCategorias", { erros: erros });
+//     res.redirect(`/${req.user.nomeLoja}/admin/categorias/edit/${req.body.id}`);
+//   } else {
+//     Categoria.findOne({ _id: req.body.id })
+//       .then((categoria) => {
+//         (categoria.nome = req.body.nome), (categoria.slug = req.body.slug);
+
+//         console.log(categoria.slug = req.body.slug)
+//         categoria
+//           .save()
+//           .then(() => {
+//             res.redirect(`/${req.user.nomeLoja}/admin/categorias`);
+//           })
+//           .catch((err) => {
+//             req.flash("error_msg", "Houve um erro interno ao salvar a categoria!");
+//             res.redirect(`/${req.user.nomeLoja}/admin/categorias`);
+//           });
+//       })
+//       .catch((err) => {
+//         req.flash("error_msg", "Houve um erro ao editar a categoria");
+//         res.redirect(`/${req.user.nomeLoja}/admin/categorias`);
+//       });
+//   }
+// });
+
 router.post("/categorias/edit", UserAuth, eAdmin, (req, res) => {
   let erros = [];
   if (!req.body.nome || typeof req.body.nome == undefined || req.body.nome == null) {
@@ -127,11 +161,28 @@ router.post("/categorias/edit", UserAuth, eAdmin, (req, res) => {
   } else {
     Categoria.findOne({ _id: req.body.id })
       .then((categoria) => {
-        (categoria.nome = req.body.nome), (categoria.slug = req.body.slug);
+        categoria.nome = req.body.nome;
+        categoria.slug = req.body.slug;
         categoria
           .save()
           .then(() => {
-            res.redirect(`/${req.user.nomeLoja}/admin/categorias`);
+            // Atualiza todos os produtos que possuem essa categoria
+            Produto.updateMany({ categoria: req.body.id }, { $set: { categoria: req.body.id } })
+              .then(() => {
+                // Atualiza todos os adicionais que possuem essa categoria
+                Adicional.updateMany({ categoria: req.body.id }, { $set: { categoria: req.body.nome } })
+                  .then(() => {
+                    res.redirect(`/${req.user.nomeLoja}/admin/categorias`);
+                  })
+                  .catch((err) => {
+                    req.flash("error_msg", "Houve um erro ao atualizar os adicionais da categoria!");
+                    res.redirect(`/${req.user.nomeLoja}/admin/categorias`);
+                  });
+              })
+              .catch((err) => {
+                req.flash("error_msg", "Houve um erro ao atualizar os produtos da categoria!");
+                res.redirect(`/${req.user.nomeLoja}/admin/categorias`);
+              });
           })
           .catch((err) => {
             req.flash("error_msg", "Houve um erro interno ao salvar a categoria!");
@@ -157,7 +208,6 @@ router.post("/categorias/deletar", UserAuth, eAdmin, (req, res) => {
 });
 
 // Produtos
-
 router.get("/produtos", UserAuth, eAdmin, (req, res) => {
   Produto.find({ nomeLoja: req.user.nomeLoja })
     .populate("categoria")
@@ -283,19 +333,15 @@ router.post("/produtos/nova", upload.single("imgProduto"), UserAuth, eAdmin, (re
 });
 
 router.get("/produtos/edit/:id", UserAuth, eAdmin, (req, res) => {
-  console.log("Acionou a rota")
   Produto.findOne({ _id: req.params.id })
     .lean()
     .then((produto) => {
-      console.log("O .then produtos deu certo")
       Adicional.find({ nomeLoja: req.user.nomeLoja })
         .lean()
         .then((adicionais) => {
-          console.log("O .then adicionais deu certo")
           Categoria.find({ nomeLoja: req.user.nomeLoja })
             .lean()
             .then((categorias) => {
-              console.log("O .then categorias deu certo")
               function reorganizarPorCategoria(adicionais) {
                 const adicionaisPorCategoria = {};
 
@@ -310,10 +356,6 @@ router.get("/produtos/edit/:id", UserAuth, eAdmin, (req, res) => {
               }
               const adicionaisPorCategoria = reorganizarPorCategoria(adicionais);
 
-              console.log("parametro " + req.params.id)
-              console.log(categorias)
-              console.log(adicionaisPorCategoria)
-              console.log(produto)
               res.render("admin/editProdutos", {
                 categorias: categorias,
                 produto: produto,
@@ -324,19 +366,16 @@ router.get("/produtos/edit/:id", UserAuth, eAdmin, (req, res) => {
               });
             })
             .catch((err) => {
-              console.log("Erro ao acessar a categoria")
               req.flash("error_msg", "Houve um erro ao exibir o produto");
               res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
             });
         })
         .catch((err) => {
-          console.log("Erro ao acessar a adicionais")
           req.flash("error_msg", "Houve um erro ao listar as categorias");
           res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
         });
     })
     .catch((err) => {
-      console.log("Erro ao acessar o produto")
       req.flash("error_msg", "Houve um erro ao carregar o formulário de edição");
       res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
     });
@@ -387,6 +426,7 @@ router.post("/produto/edit", upload.single("imgProduto"), UserAuth, eAdmin, (req
 
       produto.adicionais = novosAdicionais;
 
+      console.log(produto);
       produto
         .save()
         .then(() => {
@@ -412,7 +452,7 @@ router.post("/produtos/deletar", UserAuth, eAdmin, (req, res) => {
       }
 
       if (produto.imgProduto) {
-        const imagePath = path.join(__dirname, '..', 'public', 'uploads', produto.imgProduto);
+        const imagePath = path.join(__dirname, "..", "public", "uploads", produto.imgProduto);
         fs.unlink(imagePath, (err) => {
           if (err) {
             console.error("Erro ao excluir a foto:", err);
@@ -509,7 +549,7 @@ router.get("/adicionais/edit/:id", UserAuth, eAdmin, (req, res) => {
       Categoria.find({ nomeLoja: req.user.nomeLoja })
         .lean()
         .then((categorias) => {
-          res.render("admin/editadicionais", {
+          res.render("admin/editAdicionais", {
             adicional: adicional,
             categorias: categorias,
             user: req.user,
@@ -528,6 +568,41 @@ router.get("/adicionais/edit/:id", UserAuth, eAdmin, (req, res) => {
     });
 });
 
+// router.post("/adicionais/edit", UserAuth, eAdmin, (req, res) => {
+//   let erros = [];
+//   if (!req.body.nome || typeof req.body.nome == undefined || req.body.nome == null) {
+//     erros.push({ texto: "Nome inválido" });
+//   }
+//   if (!req.body.taxa || typeof req.body.taxa == undefined || req.body.taxa == null) {
+//     erros.push({ texto: "Valor inválido" });
+//   }
+//   if (req.body.nome.length < 2) {
+//     erros.push({ texto: "Nome do adicional precisa ser maior" });
+//   }
+//   if (erros.length > 0) {
+//     res.render("editAdicionais", { erros: erros });
+//     res.redirect(`/${req.user.nomeLoja}/admin/adicionais/edit/${req.body.id}`);
+//   } else {
+//     Adicional.findOne({ _id: req.body.id })
+//       .then((adicional) => {
+//         (adicional.nome = req.body.nome), (adicional.taxa = req.body.taxa), (adicional.categoria = req.body.categoria);
+//         adicional
+//           .save()
+//           .then(() => {
+//             res.redirect(`/${req.user.nomeLoja}/admin/adicionais`);
+//           })
+//           .catch((err) => {
+//             req.flash("error_msg", "Houve um erro interno ao adicionar o adicional!");
+//             res.redirect(`/${req.user.nomeLoja}/admin/adicionais`);
+//           });
+//       })
+//       .catch((err) => {
+//         req.flash("error_msg", "Houve um erro ao editar o adicional");
+//         res.redirect(`/${req.user.nomeLoja}/admin/adicionais`);
+//       });
+//   }
+// });
+
 router.post("/adicionais/edit", UserAuth, eAdmin, (req, res) => {
   let erros = [];
   if (!req.body.nome || typeof req.body.nome == undefined || req.body.nome == null) {
@@ -540,28 +615,82 @@ router.post("/adicionais/edit", UserAuth, eAdmin, (req, res) => {
     erros.push({ texto: "Nome do adicional precisa ser maior" });
   }
   if (erros.length > 0) {
+    console.log("Validation errors:", erros);
     res.render("editAdicionais", { erros: erros });
     res.redirect(`/${req.user.nomeLoja}/admin/adicionais/edit/${req.body.id}`);
   } else {
     Adicional.findOne({ _id: req.body.id })
       .then((adicional) => {
-        (adicional.nome = req.body.nome), (adicional.taxa = req.body.taxa), (adicional.categoria = req.body.categoria);
-        adicional
-          .save()
+        if (!adicional) {
+          console.log("Adicional not found");
+          req.flash("error_msg", "Adicional não encontrado");
+          return res.redirect(`/${req.user.nomeLoja}/admin/adicionais`);
+        }
+
+        const nomeAntigo = adicional.nome;
+
+        adicional.nome = req.body.nome;
+        adicional.taxa = req.body.taxa;
+        adicional.categoria = req.body.categoria;
+
+        adicional.save()
           .then(() => {
-            res.redirect(`/${req.user.nomeLoja}/admin/adicionais`);
+            console.log("Adicional updated:", adicional);
+
+            // Atualiza todos os produtos que possuem o adicional com o nome antigo
+            Produto.find({ "adicionais.adicionais": nomeAntigo })
+              .then((produtos) => {
+                if (produtos.length === 0) {
+                  console.log("No products found with this adicional");
+                }
+
+                produtos.forEach((produto) => {
+                  let modified = false;
+
+                  produto.adicionais.forEach((adicionalItem) => {
+                    if (adicionalItem.adicionais === nomeAntigo) {
+                      console.log("Updating adicional in product:", produto._id);
+                      adicionalItem.adicionais = req.body.nome;
+                      adicionalItem.precoAdicional = req.body.taxa;
+                      adicionalItem.categoriaAdicional = req.body.categoria;
+                      modified = true;
+                    }
+                  });
+
+                  if (modified) {
+                    produto.save().then(() => {
+                      console.log("Product updated:", produto._id);
+                    }).catch((err) => {
+                      console.log("Error saving product:", err);
+                      req.flash("error_msg", "Houve um erro ao atualizar um produto com o adicional editado!");
+                    });
+                  }
+                });
+
+                res.redirect(`/${req.user.nomeLoja}/admin/adicionais`);
+              })
+              .catch((err) => {
+                console.log("Error finding products:", err);
+                req.flash("error_msg", "Houve um erro ao buscar os produtos com o adicional editado!");
+                res.redirect(`/${req.user.nomeLoja}/admin/adicionais`);
+              });
           })
           .catch((err) => {
+            console.log("Error saving adicional:", err);
             req.flash("error_msg", "Houve um erro interno ao adicionar o adicional!");
             res.redirect(`/${req.user.nomeLoja}/admin/adicionais`);
           });
       })
       .catch((err) => {
+        console.log("Error finding adicional:", err);
         req.flash("error_msg", "Houve um erro ao editar o adicional");
         res.redirect(`/${req.user.nomeLoja}/admin/adicionais`);
       });
   }
 });
+
+
+
 
 router.post("/adicionais/deletar", UserAuth, eAdmin, (req, res) => {
   Adicional.deleteOne({ _id: req.body.id })
@@ -834,7 +963,6 @@ router.get("/pedidosAPI", UserAuth, eAdmin, (req, res) => {
       res.redirect(`"/${req.user.nomeLoja}/admin`);
     });
 });
-
 
 router.get("/pedidos-finalizados", UserAuth, eAdmin, (req, res) => {
   Pedido.find({ nomeLoja: req.user.nomeLoja })
