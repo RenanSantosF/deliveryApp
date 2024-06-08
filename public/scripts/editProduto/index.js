@@ -184,39 +184,6 @@ function removerClasseEmptyAoDigitar() {
   });
 }
 
-// document.addEventListener("DOMContentLoaded", function () {
-//   const idProduto = document.getElementById('idProduto').value;
-//   const nomeLoja = document.getElementById("nomeLoja").value;
-//   fetch(`/${nomeLoja}/admin/api/produto/${idProduto}`)
-//     .then(response => response.json())
-//     .then(produto => {
-//       preencherCamposAdicionais(produto);
-//     })
-//     .catch(error => {
-//       console.error('Erro ao buscar o produto:', error);
-//     });
-
-//   function preencherCamposAdicionais(produto) {
-//     produto.adicionais.forEach(adicional => {
-//       const minInput = document.getElementById(`minAdicionais-${adicional.categoriaAdicional}`);
-//       const maxInput = document.getElementById(`maxAdicionais-${adicional.categoriaAdicional}`);
-//       const checkbox = document.querySelector(`input[type="checkbox"][value="${adicional.adicionais}"]`);
-
-//       if (minInput) {
-//         minInput.value = adicional.minAdicionais;
-//       }
-
-//       if (maxInput) {
-//         maxInput.value = adicional.maxAdicionais;
-//       }
-
-//       if (checkbox) {
-//         checkbox.checked = true;
-//       }
-//     });
-//   }
-// });
-
 document.addEventListener("DOMContentLoaded", function () {
   const idProduto = document.getElementById("idProduto").value;
   const nomeLoja = document.getElementById("nomeLoja").value;
@@ -226,6 +193,7 @@ document.addEventListener("DOMContentLoaded", function () {
     .then((produto) => {
       preencherCamposAdicionais(produto);
       preencherSelectCategoria(produto.categoria); // Passa a categoria do produto
+      habilitaBtnEditar()
     })
     .catch((error) => {
       console.error("Erro ao buscar o produto:", error);
@@ -263,3 +231,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 });
+
+function habilitaBtnEditar() {
+  btnEnviar.disabled = false;
+}

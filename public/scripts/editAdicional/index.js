@@ -96,6 +96,7 @@ document.addEventListener("DOMContentLoaded", function () {
     .then((response) => response.json())
     .then((produto) => {
       preencherSelectCategoria(produto.categoria); // Passa a categoria do produto
+      habilitaBtnEditar()
     })
     .catch((error) => {
       console.error("Erro ao buscar o produto:", error);
@@ -113,3 +114,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 });
+
+function habilitaBtnEditar() {
+  btnEnviar.disabled = false;
+}
