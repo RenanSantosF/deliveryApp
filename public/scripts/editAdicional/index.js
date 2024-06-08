@@ -91,7 +91,6 @@ function formatarValorBlur(input) {
 document.addEventListener("DOMContentLoaded", function () {
   const idAdicional = document.getElementById("idAdicional").value;
   const nomeLoja = document.getElementById("nomeLoja").value;
-  console.log(idAdicional)
   // Primeiro, buscamos o produto
   fetch(`/${nomeLoja}/admin/api/adicional/${idAdicional}`)
     .then((response) => response.json())

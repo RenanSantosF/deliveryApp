@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
       erros.push("A senha deve ter pelo menos 4 caracteres.");
     }
 
-    if (erros.length > 0 || erros.length > 0) {
+    if (erros.length > 0) {
       erros.forEach((erro) => {
         setTimeout(() => {
           Toastify({

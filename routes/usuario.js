@@ -144,7 +144,6 @@ router.get("/registro", (req, res) => {
 //   }
 // );
 
-
 router.post(
   "/registro",
   upload.fields([
@@ -175,187 +174,102 @@ router.post(
       console.log(erros);
     } else {
       Usuario.findOne({ email: req.body.email })
-  .lean()
-  .then((usuario) => {
-    if (usuario) {
-      req.flash("error_msg", "Já existe uma conta com este email no nosso sistema");
-      res.redirect("/usuarios/registro");
-    } else {
-      // Se não encontrar um usuário com o mesmo email, então procura por nomeLoja
-      Usuario.findOne({ nomeLoja: req.body.nomeLoja })
         .lean()
         .then((usuario) => {
           if (usuario) {
-            req.flash("error_msg", "Já existe uma conta com este nome de loja no nosso sistema");
+            req.flash("error_msg", "Já existe uma conta com este email no nosso sistema");
             res.redirect("/usuarios/registro");
           } else {
-            let loja = req.body.nomeLoja;
-            function slugify(text) {
-              text = text.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-              text = text.replace(/[^\w\s-]/g, "");
-              text = text.trim().replace(/\s+/g, "-").replace(/-+/g, "-");
-              text = text.toLowerCase();
-              return text;
-            }
-
-            let nomeLojaCorrigido = slugify(loja);
-            let telefone = req.body.telefone;
-            function extrairNumeros(telefone) {
-              return telefone.replace(/\D/g, "");
-            }
-            let telefoneFormatado = extrairNumeros(telefone);
-
-            const novoUsuario = new Usuario({
-              nome: req.body.nome,
-              email: req.body.email,
-              senha: req.body.senha,
-              nomeDaLoja: req.body.nomeDaLoja,
-              nomeLoja: nomeLojaCorrigido,
-              imgLogo: req.files.imgLogo ? req.files.imgLogo[0].filename : "padrao/imgPadrao.png",
-              imgBg: req.files.imgBg ? req.files.imgBg[0].filename : "padrao/imgPadrao.png",
-              telefone: telefoneFormatado,
-              numeroRua: req.body.numero,
-              rua: req.body.rua,
-              bairro: req.body.bairro,
-              cidade: req.body.cidade,
-              estado: req.body.estado,
-              pontoReferencia: req.body.pontoReferencia,
-              segAb: req.body.segAb,
-              segFe: req.body.segFe,
-              terAb: req.body.terAb,
-              terFe: req.body.terFe,
-              quaAb: req.body.quaAb,
-              quaFe: req.body.quaFe,
-              quiAb: req.body.quiAb,
-              quiFe: req.body.quiFe,
-              sexAb: req.body.sexAb,
-              sexFe: req.body.sexFe,
-              sabAb: req.body.sabAb,
-              sabFe: req.body.sabFe,
-              domAb: req.body.domAb,
-              domFe: req.body.domFe,
-            });
-
-            console.log(novoUsuario);
-
-            bcrypt.genSalt(10, (erro, salt) => {
-              bcrypt.hash(novoUsuario.senha, salt, (erro, hash) => {
-                if (erro) {
-                  req.flash("error_msg", "Houve um erro durante o salvamento de usuário");
-                  res.redirect("/");
-                  console.log(erro);
+            // Se não encontrar um usuário com o mesmo email, então procura por nomeLoja
+            Usuario.findOne({ nomeLoja: req.body.nomeLoja })
+              .lean()
+              .then((usuario) => {
+                if (usuario) {
+                  req.flash("error_msg", "Já existe uma conta com este nome de loja no nosso sistema");
+                  res.redirect("/usuarios/registro");
                 } else {
-                  novoUsuario.senha = hash;
-                  novoUsuario
-                    .save()
-                    .then(() => {
-                      res.redirect("/");
-                    })
-                    .catch((err) => {
-                      req.flash("error_msg", "Houve um erro ao criar o usuario, tente novamente!");
-                      res.redirect("/usuarios/registro");
-                      console.log(err);
+                  let loja = req.body.nomeLoja;
+                  function slugify(text) {
+                    text = text.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                    text = text.replace(/[^\w\s-]/g, "");
+                    text = text.trim().replace(/\s+/g, "-").replace(/-+/g, "-");
+                    text = text.toLowerCase();
+                    return text;
+                  }
+
+                  let nomeLojaCorrigido = slugify(loja);
+                  let telefone = req.body.telefone;
+                  function extrairNumeros(telefone) {
+                    return telefone.replace(/\D/g, "");
+                  }
+                  let telefoneFormatado = extrairNumeros(telefone);
+
+                  const novoUsuario = new Usuario({
+                    nome: req.body.nome,
+                    email: req.body.email,
+                    senha: req.body.senha,
+                    nomeDaLoja: req.body.nomeDaLoja,
+                    nomeLoja: nomeLojaCorrigido,
+                    imgLogo: req.files.imgLogo ? req.files.imgLogo[0].filename : "padrao/imgPadrao.png",
+                    imgBg: req.files.imgBg ? req.files.imgBg[0].filename : "padrao/imgPadrao.png",
+                    telefone: telefoneFormatado,
+                    numeroRua: req.body.numero,
+                    rua: req.body.rua,
+                    bairro: req.body.bairro,
+                    cidade: req.body.cidade,
+                    estado: req.body.estado,
+                    pontoReferencia: req.body.pontoReferencia,
+                    segAb: req.body.segAb,
+                    segFe: req.body.segFe,
+                    terAb: req.body.terAb,
+                    terFe: req.body.terFe,
+                    quaAb: req.body.quaAb,
+                    quaFe: req.body.quaFe,
+                    quiAb: req.body.quiAb,
+                    quiFe: req.body.quiFe,
+                    sexAb: req.body.sexAb,
+                    sexFe: req.body.sexFe,
+                    sabAb: req.body.sabAb,
+                    sabFe: req.body.sabFe,
+                    domAb: req.body.domAb,
+                    domFe: req.body.domFe,
+                  });
+
+                  console.log(novoUsuario);
+
+                  bcrypt.genSalt(10, (erro, salt) => {
+                    bcrypt.hash(novoUsuario.senha, salt, (erro, hash) => {
+                      if (erro) {
+                        req.flash("error_msg", "Houve um erro durante o salvamento de usuário");
+                        res.redirect("/");
+                        console.log(erro);
+                      } else {
+                        novoUsuario.senha = hash;
+                        novoUsuario
+                          .save()
+                          .then(() => {
+                            res.redirect("/");
+                          })
+                          .catch((err) => {
+                            req.flash("error_msg", "Houve um erro ao criar o usuario, tente novamente!");
+                            res.redirect("/usuarios/registro");
+                            console.log(err);
+                          });
+                      }
                     });
+                  });
                 }
+              })
+              .catch((err) => {
+                req.flash("error_msg", "Houve um erro interno ao verificar o nome da loja");
+                res.redirect("/usuarios/registro");
               });
-            });
           }
         })
         .catch((err) => {
-          req.flash("error_msg", "Houve um erro interno ao verificar o nome da loja");
+          req.flash("error_msg", "Houve um erro interno ao verificar o email");
           res.redirect("/usuarios/registro");
         });
-    }
-  })
-  .catch((err) => {
-    req.flash("error_msg", "Houve um erro interno ao verificar o email");
-    res.redirect("/usuarios/registro");
-  });
-
-      // Usuario.findOne({ email: req.body.email })
-      //   .lean()
-      //   .then((usuario) => {
-      //     if (usuario) {
-      //       req.flash("error_msg", "Já existe uma conta com este email no nosso sistema");
-      //       res.redirect("/usuarios/registro");
-      //     } else {
-            // let loja = req.body.nomeLoja;
-            // function slugify(text) {
-            //   text = text.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-            //   text = text.replace(/[^\w\s-]/g, "");
-            //   text = text.trim().replace(/\s+/g, "-").replace(/-+/g, "-");
-            //   text = text.toLowerCase();
-            //   return text;
-            // }
-
-            // let nomeLojaCorrigido = slugify(loja);
-            // let telefone = req.body.telefone;
-            // function extrairNumeros(telefone) {
-            //   return telefone.replace(/\D/g, "");
-            // }
-            // let telefoneFormatado = extrairNumeros(telefone);
-
-            // const novoUsuario = new Usuario({
-            //   nome: req.body.nome,
-            //   email: req.body.email,
-            //   senha: req.body.senha,
-            //   nomeDaLoja: req.body.nomeDaLoja,
-            //   nomeLoja: nomeLojaCorrigido,
-            //   imgLogo: req.files.imgLogo ? req.files.imgLogo[0].filename : "padrao/imgPadrao.png",
-            //   imgBg: req.files.imgBg ? req.files.imgBg[0].filename : "padrao/imgPadrao.png",
-            //   telefone: telefoneFormatado,
-            //   numeroRua: req.body.numero,
-            //   rua: req.body.rua,
-            //   bairro: req.body.bairro,
-            //   cidade: req.body.cidade,
-            //   estado: req.body.estado,
-            //   pontoReferencia: req.body.pontoReferencia,
-            //   segAb: req.body.segAb,
-            //   segFe: req.body.segFe,
-            //   terAb: req.body.terAb,
-            //   terFe: req.body.terFe,
-            //   quaAb: req.body.quaAb,
-            //   quaFe: req.body.quaFe,
-            //   quiAb: req.body.quiAb,
-            //   quiFe: req.body.quiFe,
-            //   sexAb: req.body.sexAb,
-            //   sexFe: req.body.sexFe,
-            //   sabAb: req.body.sabAb,
-            //   sabFe: req.body.sabFe,
-            //   domAb: req.body.domAb,
-            //   domFe: req.body.domFe,
-            // });
-
-            // console.log(novoUsuario);
-
-            // bcrypt.genSalt(10, (erro, salt) => {
-            //   bcrypt.hash(novoUsuario.senha, salt, (erro, hash) => {
-            //     if (erro) {
-            //       req.flash("error_msg", "Houve um erro durante o salvamento de usuário");
-            //       res.redirect("/");
-            //       console.log(erro);
-            //     } else {
-            //       novoUsuario.senha = hash;
-            //       novoUsuario
-            //         .save()
-            //         .then(() => {
-            //           res.redirect("/");
-            //         })
-            //         .catch((err) => {
-            //           req.flash("error_msg", "Houve um erro ao criar o usuario, tente novamente!");
-            //           res.redirect("/usuarios/registro");
-            //           console.log(err);
-            //         });
-            //     }
-            //   });
-            // });
-        //   }
-        // })
-        // .catch((err) => {
-        //   req.flash("error_msg", "Houve um erro interno");
-        //   res.redirect("/");
-        //   console.log(err);
-        // });
     }
   }
 );
