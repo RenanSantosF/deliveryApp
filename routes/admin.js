@@ -210,8 +210,8 @@ router.post("/categorias/deletar", UserAuth, eAdmin, async (req, res) => {
   try {
     // Verifica se há produtos ou adicionais associados à categoria a ser deletada
     const produtos = await Produto.find({ categoria: req.body.id });
-    const adicionais = await Adicional.find({ categoria: req.body.nome, nomeLoja: req.user.nomeLoja });
-
+    const nomeCategoria = await Categoria.find({ _id: req.body.id });
+    const adicionais = await Adicional.find({ categoria: nomeCategoria[0].nome, nomeLoja: req.user.nomeLoja });
     if (produtos.length > 0 || adicionais.length > 0) {
       req.flash("error_msg", "Existem produtos ou adicionais associados a esta categoria. Não é possível deletá-la.");
       res.redirect(`/${req.user.nomeLoja}/admin/categorias`);

@@ -67,12 +67,9 @@ h3 {
   display: flex;
   width: 60%;
   gap: 40px;
+  align-items: center;
+  justify-content: center;
 }
-
-// .containerFuncionamento > div > div {
-//   display: flex;
-//   flex-direction: column;
-// }
 
 .submit {
   display: flex;
