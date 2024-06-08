@@ -10,22 +10,11 @@
           {{#if abertura}}
             <span>{{abertura}} às {{fechamento}}</span>
           {{/if}}
-          {{! <img src="./img/botao-voltar-branco.png" /> }}
         </div>
       {{/each}}
     </div>
   </header>
 {{/each}}
-
-{{!-- <nav>
-  {{#each produtosPorCategoria}}
-    {{#if this.length}}
-      <ul>
-        <li><a href="#{{@key}}">{{@key}}</a></li>
-      </ul>
-    {{/if}}
-  {{/each}}
-</nav> --}}
 
 <nav>
   {{#each produtosPorCategoria}}
@@ -36,47 +25,6 @@
     {{/if}}
   {{/each}}
 </nav>
-
-{{!-- <div id="menu" class="menu">
-  <div id="menu">
-    {{#each produtosPorCategoria}}
-      {{#if this.length}}
-        <!-- Essa é a parte do ID -->
-        <div id="{{@key}}" class="containerSpanBebidas">
-          <h2>{{@key}}</h2>
-        </div>
-        <div class="categorias" id="menu">
-          {{#each this}}
-            <div class="containerProduto" data-name="{{this.titulo}}" data-price="{{this.preco}}" data-descricao="{{this.descricao}}" data-imgProduto="{{this.imgProduto}}">
-              <ul style="display: none;">
-                {{#each this.adicionais}}
-                  <li class="adicionaisLista" data-value="{{this.precoAdicional}}" data-produtoReferido="{{this.produtoReferido}}" data-categoria="{{this.categoriaAdicional}}" data-minCategoria="{{this.minAdicionais}}" data-maxCategoria="{{this.maxAdicionais}}">{{this.adicionais}}</li>
-                {{else}}
-                  <h1>Nenhum adicional</h1>
-                {{/each}}
-              </ul>
-
-              <div class="imgProdutoContainer">
-                <img src="/uploads/{{this.imgProduto}}" />
-              </div>
-
-              <div class="containerDescricaoPreco">
-                <p class="spanTitleProduto">{{this.titulo}}</p>
-                <p class="spanDescricaoProduto">{{this.descricao}}</p>
-                <div class="preco">
-                  <p id="ajustePreco">R$ {{this.preco}}</p>
-                </div>
-              </div>
-            </div>
-          {{else}}
-          {{/each}}
-        </div>
-      {{/if}}
-    {{else}}
-      <h2>Nenhum produto encontrado</h2>
-    {{/each}}
-  </div>
-</div> --}}
 
 <div id="menu" class="menu">
   <div id="menu">

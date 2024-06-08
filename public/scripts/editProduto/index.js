@@ -183,3 +183,83 @@ function removerClasseEmptyAoDigitar() {
     });
   });
 }
+
+// document.addEventListener("DOMContentLoaded", function () {
+//   const idProduto = document.getElementById('idProduto').value;
+//   const nomeLoja = document.getElementById("nomeLoja").value;
+//   fetch(`/${nomeLoja}/admin/api/produto/${idProduto}`)
+//     .then(response => response.json())
+//     .then(produto => {
+//       preencherCamposAdicionais(produto);
+//     })
+//     .catch(error => {
+//       console.error('Erro ao buscar o produto:', error);
+//     });
+
+//   function preencherCamposAdicionais(produto) {
+//     produto.adicionais.forEach(adicional => {
+//       const minInput = document.getElementById(`minAdicionais-${adicional.categoriaAdicional}`);
+//       const maxInput = document.getElementById(`maxAdicionais-${adicional.categoriaAdicional}`);
+//       const checkbox = document.querySelector(`input[type="checkbox"][value="${adicional.adicionais}"]`);
+
+//       if (minInput) {
+//         minInput.value = adicional.minAdicionais;
+//       }
+
+//       if (maxInput) {
+//         maxInput.value = adicional.maxAdicionais;
+//       }
+
+//       if (checkbox) {
+//         checkbox.checked = true;
+//       }
+//     });
+//   }
+// });
+
+document.addEventListener("DOMContentLoaded", function () {
+  const idProduto = document.getElementById("idProduto").value;
+  const nomeLoja = document.getElementById("nomeLoja").value;
+  // Primeiro, buscamos o produto
+  fetch(`/${nomeLoja}/admin/api/produto/${idProduto}`)
+    .then((response) => response.json())
+    .then((produto) => {
+      preencherCamposAdicionais(produto);
+      preencherSelectCategoria(produto.categoria); // Passa a categoria do produto
+    })
+    .catch((error) => {
+      console.error("Erro ao buscar o produto:", error);
+    });
+
+  function preencherCamposAdicionais(produto) {
+    produto.adicionais.forEach((adicional) => {
+      const minInput = document.getElementById(`minAdicionais-${adicional.categoriaAdicional}`);
+      const maxInput = document.getElementById(`maxAdicionais-${adicional.categoriaAdicional}`);
+      const checkbox = document.querySelector(`input[type="checkbox"][value="${adicional.adicionais}"][data-categoria="${adicional.categoriaAdicional}"]`);
+
+      if (minInput) {
+        minInput.value = adicional.minAdicionais;
+      }
+
+      if (maxInput) {
+        maxInput.value = adicional.maxAdicionais;
+      }
+
+      if (checkbox) {
+        checkbox.checked = true;
+      }
+    });
+  }
+
+  function preencherSelectCategoria(categoriaProduto) {
+    const selectCategoria = document.getElementById("select");
+    const options = selectCategoria.options;
+
+    for (let i = 0; i < options.length; i++) {
+      if (options[i].value === categoriaProduto) {
+        options[i].selected = true;
+        break;
+      }
+    }
+  }
+});

@@ -8,7 +8,8 @@
   <form action="/{{loja}}/admin/adicionais/edit" method="post">
     <div class="card">
       <h2 class="title">Editar adicional</h2>
-      <input class="input" type="hidden" name="id" value="{{adicional._id}}" />
+      <input type="hidden" id="nomeLoja" value="{{loja}}" />
+      <input type="hidden" id="idAdicional" name="id" value="{{adicional._id}}" />
       <label class="label" for="nome">Nome<span class="required">*</span> </label>
       <input class="input" type="text" id="nome" name="nome" value="{{adicional.nome}}" />
       <br />

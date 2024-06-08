@@ -27,8 +27,8 @@
           {{/if}}
 
         </label>
-
-        <input class="input" type="hidden" value="{{produto._id}}" name="id" />
+        <input class="input" type="hidden" id="nomeLoja" value="{{loja}}" />
+        <input class="input" type="hidden" id="idProduto" value="{{produto._id}}" name="id" />
         <label class="label" for="titulo">Título<span class="required">*</span> </label>
         <input class="input" type="text" id="titulo" name="titulo" value="{{produto.titulo}}" />
         <label class="label" for="descricao">Descrição</label>
@@ -36,6 +36,16 @@
         <label class="label" for="preco">Preço<span class="required">*</span></label>
         <input class="input" name="preco" id="inputValue" value="{{produto.preco}}" />
         <label class="label" for="categoria">Categoria<span class="required">*</span></label>
+
+        {{!-- <select id="select" class="select" name="categoria">
+          <option value="">Selecione a categoria</option>
+          {{#each categorias}}
+            <option value="{{_id}}">{{nome}}</option>
+          {{else}}
+            <option value="0">Nenhuma categoria registrada</option>
+          {{/each}}
+        </select> --}}
+
         <select id="select" class="select" name="categoria">
           <option value="">Selecione a categoria</option>
           {{#each categorias}}
@@ -77,7 +87,7 @@
   {{#each this}}
     <label class="labelAdicionais" for="{{_id}}">
       <label class="containerCheckBox">
-        <input value="{{nome}}" name="adicionais-{{@../key}}" type="checkbox" />
+        <input value="{{nome}}" name="adicionais-{{@../key}}" type="checkbox" class="checkboxAdicional" id="adicional-{{@../key}}-{{@index}}" data-categoria="{{categoria}}" />
         <div class="checkmark"></div>
       </label>
 
@@ -97,3 +107,7 @@
     </form>
   </div>
 </div>
+
+
+
+

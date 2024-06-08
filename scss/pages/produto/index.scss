@@ -94,7 +94,7 @@ body {
   appearance: none;
   background-color: #24b4fb;
   margin: 2px;
-  border: 1px solid rgba(27, 31, 35, 0.15);
+  border: none;
   border-radius: 10px;
   box-shadow: rgba(27, 31, 35, 0.04) 0 1px 0, rgba(255, 255, 255, 0.25) 0 1px 0 inset;
   box-sizing: border-box;
@@ -116,6 +116,42 @@ body {
   white-space: nowrap;
   word-wrap: break-word;
 }
+
+.btnDisponibilidade {
+  appearance: none;
+  background-color: #24b4fb;
+  margin: 2px;
+  border: none;
+  border-radius: 10px;
+  box-shadow: rgba(27, 31, 35, 0.04) 0 1px 0, rgba(255, 255, 255, 0.25) 0 1px 0 inset;
+  box-sizing: border-box;
+  color: #ffffff;
+  cursor: pointer;
+  display: inline-block;
+  font-family: -apple-system, system-ui, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  list-style: none;
+  padding: 6px 8px;
+  position: relative;
+  transition: background-color 0.2s cubic-bezier(0.3, 0, 0.5, 1);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: middle;
+  white-space: nowrap;
+  word-wrap: break-word;
+}
+
+.disponivel {
+  background-color: rgb(24, 156, 12);
+}
+
+.indisponivel {
+  background-color: rgb(138, 153, 0);
+}
+
 
 .delete {
   background-color: rgb(255, 99, 71);

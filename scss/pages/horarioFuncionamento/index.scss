@@ -1,0 +1,92 @@
+@import "../../colors/colors.scss";
+
+@import "./inputHora.scss";
+@import "./inputSubmit.scss";
+
+@import "../navBar.scss";
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+body {
+  color: $cor-texto-cinzaEscuro;
+  width: 100%;
+}
+
+.title {
+  color: $cor-texto-cinzaEscuro;
+  width: 100%;
+  font-size: 20px;
+  padding: 70px 0 0 20px;
+}
+
+.card > div {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  padding: 10px 0 0 0;
+}
+
+form {
+  width: 100%;
+}
+
+.label {
+  width: 90%;
+  font-size: 15px;
+  font-weight: 550;
+  color: $cor-texto-cinzaEscuro;
+}
+
+.required {
+  color: rgb(199, 0, 0);
+}
+
+.containerFuncionamento {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px 0 0 0;
+}
+
+h5 {
+  font-size: 16px;
+}
+
+h3 {
+  margin-top: 40px;
+}
+
+.containerFuncionamento > div {
+  display: flex;
+  width: 60%;
+  gap: 40px;
+}
+
+// .containerFuncionamento > div > div {
+//   display: flex;
+//   flex-direction: column;
+// }
+
+.submit {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.label {
+  display: block;
+}
+
+.input {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+}

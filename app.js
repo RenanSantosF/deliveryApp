@@ -68,6 +68,7 @@ app.use((req, res, next) => {
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 // Handlebars
+
 app.engine("handlebars", handlebars.engine({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
@@ -151,7 +152,7 @@ app.get("/:nomeLoja", existeUsuario, (req, res) => {
         usuario.statusSituacao = statusLoja;
       });
 
-      return Promise.all([Pagamento.find({ nomeLoja: req.params.nomeLoja }).lean(), Bairro.find({ nomeLoja: req.params.nomeLoja }).lean(), Produto.find({ nomeLoja: req.params.nomeLoja }).lean().populate("categoria").sort({ data: "desc" }), Categoria.find({ nomeLoja: req.params.nomeLoja }).lean().sort({ data: "desc" })]);
+      return Promise.all([Pagamento.find({ nomeLoja: req.params.nomeLoja }).lean(), Bairro.find({ nomeLoja: req.params.nomeLoja }).lean(), Produto.find({ nomeLoja: req.params.nomeLoja, disponivel: true }).lean().populate("categoria").sort({ data: "desc" }), Categoria.find({ nomeLoja: req.params.nomeLoja }).lean().sort({ data: "desc" })]);
     })
     .then(([pagamentos, bairros, produtos, categorias]) => {
       formasPagamento = pagamentos;
@@ -171,6 +172,7 @@ app.get("/:nomeLoja", existeUsuario, (req, res) => {
         }
       });
 
+      console.log(dadosUsuario)
       res.render("index", {
         produtosPorCategoria: produtosPorCategoria,
         dadosUsuario: dadosUsuario,

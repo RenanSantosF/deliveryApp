@@ -10,6 +10,10 @@ const Produto = new Schema({
     type: String,
     required: true,
   },
+  disponivel: {
+    type: Boolean,
+    default: true
+  },
   preco: {
     type: String,
     required: true,

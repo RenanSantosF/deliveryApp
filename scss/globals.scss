@@ -26,20 +26,50 @@
 }
 
 .alert {
+  position: fixed;
+  top: 70px; /* Ajuste conforme necessário */
+  left: 50%;
+  transform: translateX(-50%);
   justify-content: center;
   display: flex;
   align-items: center;
   height: 30px;
   color: #fff;
-  font-weight: 600px;
+  font-weight: bold; /* Alterado para 'bold' em vez de '600px' */
   font-size: 17px;
+  z-index: 99999999;
+  animation: fadeOut 5s forwards ease-out; /* Aplica a animação com duração de 3 segundos */
 }
+
+@keyframes fadeOut {
+  from {
+    opacity: 1; /* Começa com opacidade total */
+  }
+  to {
+    opacity: 0; /* Termina com opacidade zero */
+  }
+}
+
 .alert-success {
+  padding: 10px 10px;
+  border-radius: 10px;
+  text-align: justify;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-color: $cor-sucesso;
 }
 
 .alert-danger {
-  background-color: $cor-falha;
+  height: 100px;
+  width: 90%;
+  border-radius: 10px;
+  padding: 20px;
+  text-align: justify;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--cor-alerta);
 }
 
 .empty {
