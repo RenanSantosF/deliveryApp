@@ -16,6 +16,9 @@ require("../models/Pedido");
 const Pedido = mongoose.model("pedidos");
 const fs = require("fs");
 
+require("../models/Usuario");
+const Usuario = mongoose.model("usuarios");
+
 const multer = require("multer");
 const path = require("path");
 
@@ -76,23 +79,39 @@ router.post("/categorias/nova", UserAuth, eAdmin, (req, res) => {
   if (!req.body.nome || typeof req.body.nome == undefined || req.body.nome == null) {
     erros.push({ texto: "Nome inválido" });
   }
-  if (req.body.nome.length < 2) {
-    erros.push({ texto: "Nome da categoria precisa ser maior" });
-  }
   if (erros.length > 0) {
-    res.render("admin/addcategorias", { erros: erros });
+    res.redirect(`/${req.user.nomeLoja}/admin/categorias/add`);
   } else {
-    const novaCategoria = {
-      nome: req.body.nome,
-      slug: req.body.slug,
-      nomeLoja: req.user.nomeLoja,
-    };
-    try {
-      new Categoria(novaCategoria).save();
-      res.redirect(`/${req.user.nomeLoja}/admin/categorias`);
-    } catch (error) {
-      req.flash("error_msg", "Houve um erro ao salvar a categoria!");
-    }
+    // Verifique se a categoria já existe
+    Categoria.findOne({ nome: req.body.nome, nomeLoja: req.user.nomeLoja })
+      .lean()
+      .then((categoria) => {
+        if (categoria) {
+          req.flash("error_msg", "Já existe uma categoria com este nome no sistema");
+          res.redirect(`/${req.user.nomeLoja}/admin/categorias/add`);
+        } else {
+          // Se a categoria não existir, crie uma nova
+          const novaCategoria = {
+            nome: req.body.nome,
+            slug: req.body.slug,
+            nomeLoja: req.user.nomeLoja,
+          };
+          new Categoria(novaCategoria)
+            .save()
+            .then(() => {
+              req.flash("success_msg", "Categoria criada com sucesso!");
+              res.redirect(`/${req.user.nomeLoja}/admin/categorias`);
+            })
+            .catch((error) => {
+              req.flash("error_msg", "Houve um erro ao salvar a categoria!");
+              res.redirect(`/${req.user.nomeLoja}/admin/categorias/add`);
+            });
+        }
+      })
+      .catch((err) => {
+        req.flash("error_msg", "Houve um erro interno ao verificar a categoria");
+        res.redirect(`/${req.user.nomeLoja}/admin/categorias/add`);
+      });
   }
 });
 
@@ -113,66 +132,57 @@ router.get("/categorias/edit/:id", UserAuth, eAdmin, (req, res) => {
     });
 });
 
-// router.post("/categorias/edit", UserAuth, eAdmin, (req, res) => {
-//   let erros = [];
-//   if (!req.body.nome || typeof req.body.nome == undefined || req.body.nome == null) {
-//     erros.push({ texto: "Nome inválido" });
-//   }
-//   if (req.body.nome.length < 2) {
-//     erros.push({ texto: "Nome da categoria precisa ser maior" });
-//   }
-//   if (erros.length > 0) {
-//     res.render("admin/editCategorias", { erros: erros });
-//     res.redirect(`/${req.user.nomeLoja}/admin/categorias/edit/${req.body.id}`);
-//   } else {
-//     Categoria.findOne({ _id: req.body.id })
-//       .then((categoria) => {
-//         (categoria.nome = req.body.nome), (categoria.slug = req.body.slug);
-
-//         console.log(categoria.slug = req.body.slug)
-//         categoria
-//           .save()
-//           .then(() => {
-//             res.redirect(`/${req.user.nomeLoja}/admin/categorias`);
-//           })
-//           .catch((err) => {
-//             req.flash("error_msg", "Houve um erro interno ao salvar a categoria!");
-//             res.redirect(`/${req.user.nomeLoja}/admin/categorias`);
-//           });
-//       })
-//       .catch((err) => {
-//         req.flash("error_msg", "Houve um erro ao editar a categoria");
-//         res.redirect(`/${req.user.nomeLoja}/admin/categorias`);
-//       });
-//   }
-// });
-
 router.post("/categorias/edit", UserAuth, eAdmin, (req, res) => {
   let erros = [];
   if (!req.body.nome || typeof req.body.nome == undefined || req.body.nome == null) {
     erros.push({ texto: "Nome inválido" });
   }
-  if (req.body.nome.length < 2) {
-    erros.push({ texto: "Nome da categoria precisa ser maior" });
-  }
   if (erros.length > 0) {
-    res.render("admin/editCategorias", { erros: erros });
     res.redirect(`/${req.user.nomeLoja}/admin/categorias/edit/${req.body.id}`);
   } else {
     Categoria.findOne({ _id: req.body.id })
       .then((categoria) => {
+        // Armazene o nome antigo da categoria
+        const nomeAntigoCategoria = categoria.nome;
+
+        // Atualize os campos da categoria
         categoria.nome = req.body.nome;
         categoria.slug = req.body.slug;
+
+        // Salve a categoria atualizada
         categoria
           .save()
           .then(() => {
-            // Atualiza todos os produtos que possuem essa categoria
-            Produto.updateMany({ categoria: req.body.id }, { $set: { categoria: req.body.id } })
+            // Atualiza todos os produtos que possuem essa categoria e pertencem à loja específica
+            Produto.updateMany({ categoria: req.body.id, nomeLoja: req.user.nomeLoja }, { $set: { categoria: req.body.id } })
               .then(() => {
-                // Atualiza todos os adicionais que possuem essa categoria
-                Adicional.updateMany({ categoria: req.body.id }, { $set: { categoria: req.body.nome } })
+                // Atualiza todos os adicionais que possuem essa categoria e pertencem à loja específica
+                Adicional.updateMany({ categoria: nomeAntigoCategoria, nomeLoja: req.user.nomeLoja }, { $set: { categoria: req.body.nome } })
                   .then(() => {
-                    res.redirect(`/${req.user.nomeLoja}/admin/categorias`);
+                    // Atualiza os produtos com a nova categoria nos adicionais
+                    Produto.updateMany(
+                      {
+                        nomeLoja: req.user.nomeLoja,
+                        "adicionais.categoriaAdicional": nomeAntigoCategoria,
+                      },
+                      {
+                        $set: {
+                          "adicionais.$[elem].categoriaAdicional": req.body.nome,
+                        },
+                      },
+                      {
+                        arrayFilters: [{ "elem.categoriaAdicional": nomeAntigoCategoria }],
+                        multi: true,
+                      }
+                    )
+                      .then(() => {
+                        req.flash("success_msg", "Categoria e adicionais atualizados com sucesso!");
+                        res.redirect(`/${req.user.nomeLoja}/admin/categorias`);
+                      })
+                      .catch((err) => {
+                        req.flash("error_msg", "Houve um erro ao atualizar os adicionais dos produtos!");
+                        res.redirect(`/${req.user.nomeLoja}/admin/categorias`);
+                      });
                   })
                   .catch((err) => {
                     req.flash("error_msg", "Houve um erro ao atualizar os adicionais da categoria!");
@@ -196,15 +206,26 @@ router.post("/categorias/edit", UserAuth, eAdmin, (req, res) => {
   }
 });
 
-router.post("/categorias/deletar", UserAuth, eAdmin, (req, res) => {
-  Categoria.deleteOne({ _id: req.body.id })
-    .then(() => {
+router.post("/categorias/deletar", UserAuth, eAdmin, async (req, res) => {
+  try {
+    // Verifica se há produtos ou adicionais associados à categoria a ser deletada
+    const produtos = await Produto.find({ categoria: req.body.id });
+    const adicionais = await Adicional.find({ categoria: req.body.nome, nomeLoja: req.user.nomeLoja });
+
+    if (produtos.length > 0 || adicionais.length > 0) {
+      req.flash("error_msg", "Existem produtos ou adicionais associados a esta categoria. Não é possível deletá-la.");
       res.redirect(`/${req.user.nomeLoja}/admin/categorias`);
-    })
-    .catch((err) => {
-      req.flash("error_msg", "Houve um erro ao deletar a categoria");
+    } else {
+      // Se não houver produtos ou adicionais associados, deleta a categoria
+      await Categoria.deleteOne({ _id: req.body.id });
+      req.flash("success_msg", "Categoria deletada com sucesso!");
       res.redirect(`/${req.user.nomeLoja}/admin/categorias`);
-    });
+    }
+  } catch (err) {
+    console.error("Erro ao deletar categoria:", err);
+    req.flash("error_msg", "Houve um erro ao deletar a categoria.");
+    res.redirect(`/${req.user.nomeLoja}/admin/categorias`);
+  }
 });
 
 // Produtos
@@ -268,78 +289,14 @@ router.get("/produtos/add", UserAuth, eAdmin, (req, res) => {
     });
 });
 
-// router.post("/produtos/nova", upload.single("imgProduto"), UserAuth, eAdmin, (req, res) => {
-//   let erros = [];
-
-//   if (!req.body.titulo || typeof req.body.titulo == undefined || req.body.titulo == null) {
-//     erros.push({ texto: "Título inválido" });
-//   }
-
-//   if (!req.body.preco || typeof req.body.preco == undefined || req.body.preco == null) {
-//     erros.push({ texto: "Valor inválido" });
-//   }
-
-//   if (req.body.categoria == "0") {
-//     erros.push({ texto: "Categoria inválida, registre uma categoria" });
-//   }
-
-//   if (erros.length > 0) {
-//     res.render("admin/addProduto", { erros: erros });
-//   } else {
-//     const novosAdicionais = [];
-//     const adicionaisCategorias = Object.keys(req.body).filter((key) => key.startsWith("adicionais-"));
-
-//     adicionaisCategorias.forEach((categoria) => {
-//       const categoriaNome = categoria.replace("adicionais-", "");
-//       const adicionais = Array.isArray(req.body[categoria]) ? req.body[categoria] : [req.body[categoria]];
-//       const minAdicionais = req.body[`minAdicionais-${categoriaNome}`];
-//       const maxAdicionais = req.body[`maxAdicionais-${categoriaNome}`];
-
-//       adicionais.forEach((adicional, index) => {
-//         novosAdicionais.push({
-//           adicionais: adicional,
-//           precoAdicional: req.body.precoAdicional[index],
-//           produtoReferido: req.body.titulo,
-//           categoriaAdicional: req.body[`categoriaAdicional-${categoriaNome}-${index}`],
-//           minAdicionais: minAdicionais,
-//           maxAdicionais: maxAdicionais,
-//         });
-//       });
-//     });
-
-//     const novaproduto = {
-//       titulo: req.body.titulo,
-//       descricao: req.body.descricao,
-//       preco: req.body.preco,
-//       categoria: req.body.categoria,
-//       nomeLoja: req.user.nomeLoja,
-//       imgProduto: req.file ? req.generatedFileName : req.generatedFileName,
-//       adicionais: novosAdicionais,
-//     };
-
-//     console.log(novaproduto);
-
-//     new Produto(novaproduto)
-//       .save()
-//       .then(() => {
-//         res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
-//       })
-//       .catch((err) => {
-//         req.flash("error_msg", "Houve um erro na criação do produto!");
-//         res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
-//         console.log(err);
-//       });
-//   }
-// });
-
 router.post("/produtos/nova", upload.single("imgProduto"), UserAuth, eAdmin, (req, res) => {
   let erros = [];
 
-  if (!req.body.titulo || typeof req.body.titulo === 'undefined' || req.body.titulo === null) {
+  if (!req.body.titulo || typeof req.body.titulo === "undefined" || req.body.titulo === null) {
     erros.push({ texto: "Título inválido" });
   }
 
-  if (!req.body.preco || typeof req.body.preco === 'undefined' || req.body.preco === null) {
+  if (!req.body.preco || typeof req.body.preco === "undefined" || req.body.preco === null) {
     erros.push({ texto: "Valor inválido" });
   }
 
@@ -374,6 +331,7 @@ router.post("/produtos/nova", upload.single("imgProduto"), UserAuth, eAdmin, (re
 
     const novaproduto = {
       titulo: req.body.titulo,
+      disponivel: true,
       descricao: req.body.descricao,
       preco: req.body.preco,
       categoria: req.body.categoria,
@@ -421,6 +379,7 @@ router.get("/produtos/edit/:id", UserAuth, eAdmin, (req, res) => {
               }
               const adicionaisPorCategoria = reorganizarPorCategoria(adicionais);
 
+              console.log(produto);
               res.render("admin/editProdutos", {
                 categorias: categorias,
                 produto: produto,
@@ -445,69 +404,6 @@ router.get("/produtos/edit/:id", UserAuth, eAdmin, (req, res) => {
       res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
     });
 });
-
-// router.post("/produto/edit", upload.single("imgProduto"), UserAuth, eAdmin, (req, res) => {
-//   Produto.findOne({ _id: req.body.id })
-//     .then((produto) => {
-//       const novosAdicionais = [];
-//       const adicionaisCategorias = Object.keys(req.body).filter((key) => key.startsWith("adicionais-"));
-
-//       adicionaisCategorias.forEach((categoria) => {
-//         const categoriaNome = categoria.replace("adicionais-", "");
-//         const adicionais = Array.isArray(req.body[categoria]) ? req.body[categoria] : [req.body[categoria]];
-
-//         adicionais.forEach((adicional, index) => {
-//           novosAdicionais.push({
-//             adicionais: adicional,
-//             precoAdicional: req.body.precoAdicional[index],
-//             produtoReferido: req.body.titulo,
-//             categoriaAdicional: req.body[`categoriaAdicional-${categoriaNome}-${index}`],
-//             minAdicionais: req.body[`minAdicionais-${categoriaNome}`],
-//             maxAdicionais: req.body[`maxAdicionais-${categoriaNome}`],
-//           });
-//         });
-//       });
-
-//       const preco = req.body.preco;
-
-//       produto.titulo = req.body.titulo;
-//       produto.descricao = req.body.descricao;
-//       produto.categoria = req.body.categoria;
-//       produto.preco = preco;
-//       produto.nomeLoja = req.user.nomeLoja;
-
-//       if (req.file) {
-//         if (produto.imgProduto) {
-//           const imagePath = path.join(__dirname, "..", "public", "uploads", produto.imgProduto);
-
-//           fs.unlink(imagePath, (err) => {
-//             if (err) {
-//               console.error("Erro ao excluir a foto anterior:", err);
-//             }
-//           });
-//         }
-//         produto.imgProduto = req.generatedFileName ? req.generatedFileName : "padrao/imgPadrao.png";
-//       }
-
-//       produto.adicionais = novosAdicionais;
-
-//       console.log(produto);
-//       produto
-//         .save()
-//         .then(() => {
-//           res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
-//         })
-//         .catch((err) => {
-//           req.flash("error_msg", "Erro interno ao salvar a edição");
-//           res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
-//         });
-//     })
-//     .catch((err) => {
-//       req.flash("error_msg", "Houve um erro ao encontrar o produto para edição");
-//       res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
-//     });
-// });
-
 
 router.post("/produto/edit", upload.single("imgProduto"), UserAuth, eAdmin, (req, res) => {
   Produto.findOne({ _id: req.body.id })
@@ -574,7 +470,6 @@ router.post("/produto/edit", upload.single("imgProduto"), UserAuth, eAdmin, (req
     });
 });
 
-
 router.post("/produtos/deletar", UserAuth, eAdmin, (req, res) => {
   Produto.findOne({ _id: req.body.id })
     .then((produto) => {
@@ -607,6 +502,34 @@ router.post("/produtos/deletar", UserAuth, eAdmin, (req, res) => {
       req.flash("error_msg", "Houve um erro ao encontrar o produto!");
       res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
       console.error("Erro ao encontrar o produto:", err);
+    });
+});
+
+router.post("/produtos/disponibilidade", UserAuth, eAdmin, (req, res) => {
+  Produto.findOne({ _id: req.body.id })
+    .then((produto) => {
+      if (produto) {
+        // Verifica se o produto foi encontrado
+        produto.disponivel = !produto.disponivel; // Alterna a disponibilidade
+
+        produto
+          .save()
+          .then(() => {
+            req.flash("success_msg", "Disponibilidade do produto alterada com sucesso!");
+            res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
+          })
+          .catch((err) => {
+            req.flash("error_msg", "Houve um erro ao salvar a alteração no produto!");
+            res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
+          });
+      } else {
+        req.flash("error_msg", "Produto não encontrado!");
+        res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
+      }
+    })
+    .catch((err) => {
+      req.flash("error_msg", "Houve um erro ao alterar o status do produto!");
+      res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
     });
 });
 
@@ -653,24 +576,43 @@ router.post("/adicionais/nova", UserAuth, eAdmin, (req, res) => {
   if (!req.body.taxa || typeof req.body.taxa == undefined || req.body.taxa == null) {
     erros.push({ texto: "Valor da taxa é inválido" });
   }
-  if (req.body.nome.length < 2) {
-    erros.push({ texto: "Nome do adicionais precisa ser maior" });
+  if (!req.body.categoria || typeof req.body.categoria == undefined || req.body.categoria == null) {
+    erros.push({ texto: "Categoria é obrigatória" });
   }
   if (erros.length > 0) {
-    res.render("admin/addadicionais", { erros: erros });
+    res.redirect(`/${req.user.nomeLoja}/admin/adicionais/add`);
   } else {
-    const novoAdicional = {
-      nome: req.body.nome,
-      taxa: req.body.taxa,
-      nomeLoja: req.user.nomeLoja,
-      categoria: req.body.categoria,
-    };
-    try {
-      new Adicional(novoAdicional).save();
-      res.redirect(`/${req.user.nomeLoja}/admin/adicionais`);
-    } catch (error) {
-      req.flash("error_msg", "Houve um erro ao adicionar o adicional!");
-    }
+    // Verifique se o adicional já existe
+    Adicional.findOne({ nome: req.body.nome, categoria: req.body.categoria, nomeLoja: req.user.nomeLoja })
+      .lean()
+      .then((adicional) => {
+        if (adicional) {
+          req.flash("error_msg", "Já existe um adicional com este nome e categoria no sistema");
+          res.redirect(`/${req.user.nomeLoja}/admin/adicionais/add`);
+        } else {
+          // Se o adicional não existir, crie um novo
+          const novoAdicional = {
+            nome: req.body.nome,
+            taxa: req.body.taxa,
+            nomeLoja: req.user.nomeLoja,
+            categoria: req.body.categoria,
+          };
+          new Adicional(novoAdicional)
+            .save()
+            .then(() => {
+              req.flash("success_msg", "Adicional criado com sucesso!");
+              res.redirect(`/${req.user.nomeLoja}/admin/adicionais`);
+            })
+            .catch((error) => {
+              req.flash("error_msg", "Houve um erro ao adicionar o adicional!");
+              res.redirect(`/${req.user.nomeLoja}/admin/adicionais/add`);
+            });
+        }
+      })
+      .catch((err) => {
+        req.flash("error_msg", "Houve um erro interno ao verificar o adicional");
+        res.redirect(`/${req.user.nomeLoja}/admin/adicionais/add`);
+      });
   }
 });
 
@@ -702,99 +644,103 @@ router.get("/adicionais/edit/:id", UserAuth, eAdmin, (req, res) => {
 
 router.post("/adicionais/edit", UserAuth, eAdmin, (req, res) => {
   let erros = [];
-  if (!req.body.nome || typeof req.body.nome == undefined || req.body.nome == null) {
+  if (!req.body.nome || typeof req.body.nome === undefined) {
     erros.push({ texto: "Nome inválido" });
   }
-  if (!req.body.taxa || typeof req.body.taxa == undefined || req.body.taxa == null) {
+  if (!req.body.taxa || typeof req.body.taxa === undefined) {
     erros.push({ texto: "Valor inválido" });
   }
-  if (req.body.nome.length < 2) {
-    erros.push({ texto: "Nome do adicional precisa ser maior" });
-  }
   if (erros.length > 0) {
-    console.log("Validation errors:", erros);
-    res.render("editAdicionais", { erros: erros });
+    console.log("Erros de validação:", erros);
     res.redirect(`/${req.user.nomeLoja}/admin/adicionais/edit/${req.body.id}`);
   } else {
     Adicional.findOne({ _id: req.body.id })
       .then((adicional) => {
         if (!adicional) {
-          console.log("Adicional not found");
+          console.log("Adicional não encontrado");
           req.flash("error_msg", "Adicional não encontrado");
           return res.redirect(`/${req.user.nomeLoja}/admin/adicionais`);
         }
 
         const nomeAntigo = adicional.nome;
+        const categoriaAntiga = adicional.categoria;
 
         adicional.nome = req.body.nome;
         adicional.taxa = req.body.taxa;
         adicional.categoria = req.body.categoria;
 
-        adicional.save()
+        adicional
+          .save()
           .then(() => {
-            console.log("Adicional updated:", adicional);
+            console.log("Adicional atualizado:", adicional);
 
-            // Atualiza todos os produtos que possuem o adicional com o nome antigo
-            Produto.find({ "adicionais.adicionais": nomeAntigo })
-              .then((produtos) => {
-                if (produtos.length === 0) {
-                  console.log("No products found with this adicional");
-                }
-
-                produtos.forEach((produto) => {
-                  let modified = false;
-
-                  produto.adicionais.forEach((adicionalItem) => {
-                    if (adicionalItem.adicionais === nomeAntigo) {
-                      console.log("Updating adicional in product:", produto._id);
-                      adicionalItem.adicionais = req.body.nome;
-                      adicionalItem.precoAdicional = req.body.taxa;
-                      adicionalItem.categoriaAdicional = req.body.categoria;
-                      modified = true;
-                    }
-                  });
-
-                  if (modified) {
-                    produto.save().then(() => {
-                      console.log("Product updated:", produto._id);
-                    }).catch((err) => {
-                      console.log("Error saving product:", err);
-                      req.flash("error_msg", "Houve um erro ao atualizar um produto com o adicional editado!");
-                    });
-                  }
-                });
-
+            // Atualize os produtos com a nova categoria
+            Produto.updateMany(
+              {
+                "adicionais.adicionais": nomeAntigo,
+                nomeLoja: req.user.nomeLoja,
+                "adicionais.categoriaAdicional": categoriaAntiga,
+              },
+              {
+                $set: {
+                  "adicionais.$.adicionais": req.body.nome,
+                  "adicionais.$.precoAdicional": req.body.taxa,
+                  "adicionais.$.categoriaAdicional": req.body.categoria,
+                },
+              }
+            )
+              .then(() => {
+                // Produtos atualizados com sucesso
+                console.log("Produtos atualizados com sucesso");
                 res.redirect(`/${req.user.nomeLoja}/admin/adicionais`);
               })
               .catch((err) => {
-                console.log("Error finding products:", err);
-                req.flash("error_msg", "Houve um erro ao buscar os produtos com o adicional editado!");
+                // Erro ao encontrar a categoria
+                console.log("Erro ao atualizar os produtos", err);
+                req.flash("error_msg", "Houve um erro ao atualizar os produtos!");
                 res.redirect(`/${req.user.nomeLoja}/admin/adicionais`);
               });
           })
           .catch((err) => {
-            console.log("Error saving adicional:", err);
-            req.flash("error_msg", "Houve um erro interno ao adicionar o adicional!");
+            console.log("Erro ao salvar adicional:", err);
+            req.flash("error_msg", "Houve um erro interno ao salvar o adicional!");
             res.redirect(`/${req.user.nomeLoja}/admin/adicionais`);
           });
       })
       .catch((err) => {
-        console.log("Error finding adicional:", err);
-        req.flash("error_msg", "Houve um erro ao editar o adicional");
+        console.log("Erro ao encontrar adicional:", err);
+        req.flash("error_msg", "Houve um erro ao encontrar o adicional");
         res.redirect(`/${req.user.nomeLoja}/admin/adicionais`);
       });
   }
 });
 
 router.post("/adicionais/deletar", UserAuth, eAdmin, (req, res) => {
-  Adicional.deleteOne({ _id: req.body.id })
-    .then(() => {
-      res.redirect(`/${req.user.nomeLoja}/admin/adicionais`);
-    })
-    .catch((err) => {
-      req.flash("error_msg", "Houve um erro ao deletar o adicional");
-      res.redirect(`/${req.user.nomeLoja}/admin/adicionais`);
-    });
+  const adicionalId = req.body.id;
+  Adicional.findOne({ _id: adicionalId }).then((adicional) => {
+    Produto.findOne({ "adicionais.adicionais": adicional.nome, "adicionais.categoriaAdicional": adicional.categoria, nomeLoja: req.user.nomeLoja })
+      .then((produtoEncontrado) => {
+        if (produtoEncontrado) {
+          // Se o adicional estiver associado a pelo menos um produto, não pode ser excluído
+          req.flash("error_msg", "Não é possível excluir o adicional porque está associado a pelo menos um produto.");
+          return res.redirect(`/${req.user.nomeLoja}/admin/adicionais`);
+        }
+
+        // Se o adicional não estiver associado a nenhum produto, pode ser excluído
+        Adicional.deleteOne({ _id: adicionalId })
+          .then(() => {
+            res.redirect(`/${req.user.nomeLoja}/admin/adicionais`);
+          })
+          .catch((err) => {
+            req.flash("error_msg", "Houve um erro ao deletar o adicional");
+            res.redirect(`/${req.user.nomeLoja}/admin/adicionais`);
+          });
+      })
+      .catch((err) => {
+        req.flash("error_msg", "Houve um erro ao verificar se o adicional está associado a produtos");
+        res.redirect(`/${req.user.nomeLoja}/admin/adicionais`);
+      });
+  });
 });
 
 router.get("/pagamentos", UserAuth, eAdmin, (req, res) => {
@@ -832,11 +778,8 @@ router.post("/pagamentos/nova", UserAuth, eAdmin, (req, res) => {
   if (!req.body.nome || typeof req.body.nome == undefined || req.body.nome == null) {
     erros.push({ texto: "Nome da forma de pagamento precisa ser maior!" });
   }
-  if (req.body.nome.length < 2) {
-    erros.push({ texto: "Nome da forma de pagamento precisa ser maior!" });
-  }
   if (erros.length > 0) {
-    res.render("admin/addpagamentos", { erros: erros });
+    res.redirect(`/${req.user.nomeLoja}/admin/pagamentos/add`);
   } else {
     const novoPagamento = {
       nome: req.body.nome,
@@ -872,9 +815,6 @@ router.post("/pagamentos/edit", UserAuth, eAdmin, (req, res) => {
   let erros = [];
   if (!req.body.nome || typeof req.body.nome == undefined || req.body.nome == null) {
     erros.push({ texto: "Nome inválido!" });
-  }
-  if (req.body.nome.length < 2) {
-    erros.push({ texto: "Nome da forma de pagamento é inválido!" });
   }
   if (erros.length > 0) {
     res.render("editpagamentos", { erros: erros });
@@ -946,11 +886,8 @@ router.post("/bairros/nova", UserAuth, eAdmin, (req, res) => {
   if (!req.body.nome || typeof req.body.nome == undefined || req.body.nome == null) {
     erros.push({ texto: "Nome do bairro inválido!" });
   }
-  if (req.body.nome.length < 2) {
-    erros.push({ texto: "Nome do bairro precisa ser maior!" });
-  }
   if (erros.length > 0) {
-    res.render("admin/addbairros", { erros: erros });
+    res.redirect(`/${req.user.nomeLoja}/admin/bairros/add`);
   } else {
     const novoBairro = {
       nome: req.body.nome,
@@ -988,11 +925,7 @@ router.post("/bairros/edit", UserAuth, eAdmin, (req, res) => {
   if (!req.body.nome || typeof req.body.nome == undefined || req.body.nome == null) {
     erros.push({ texto: "Nome inválido!" });
   }
-  if (req.body.nome.length < 2) {
-    erros.push({ texto: "Nome do bairro é inválido!" });
-  }
   if (erros.length > 0) {
-    res.render("editbairros", { erros: erros });
     res.redirect(`/${req.user.nomeLoja}/admin/bairros/edit/${req.body.id}`);
   } else {
     Bairro.findOne({ _id: req.body.id })
@@ -1023,6 +956,59 @@ router.post("/bairros/deletar", UserAuth, eAdmin, (req, res) => {
     .catch((err) => {
       req.flash("error_msg", "Houve um erro ao deletar o bairro!");
       res.redirect(`/${req.user.nomeLoja}/admin/bairros`);
+    });
+});
+
+router.get("/horarios", UserAuth, eAdmin, (req, res) => {
+  Usuario.find({ nomeLoja: req.user.nomeLoja })
+    .lean()
+    .then((usuario) => {
+      console.log(usuario);
+      res.render("admin/horarioFuncionamento", {
+        usuario: usuario,
+        // user: req.user,
+        css: "/css/pages/horarioFuncionamento/index.css",
+        script: "/scripts/horarioFuncionamento/index.js",
+      });
+    })
+    .catch((err) => {
+      req.flash("error_msg", "Houve um erro ao listar os bairros cadastrados");
+      res.redirect(`/${req.user.nomeLoja}/admin`);
+    });
+});
+
+router.post("/horarios/edit", UserAuth, eAdmin, (req, res) => {
+  Usuario.findOneAndUpdate(
+    { nomeLoja: req.user.nomeLoja, _id: req.body.id }, // Identifique o usuário pelo nome da loja e ID
+    {
+      segAb: req.body.segAb,
+      segFe: req.body.segFe,
+      terAb: req.body.terAb,
+      terFe: req.body.terFe,
+      quaAb: req.body.quaAb,
+      quaFe: req.body.quaFe,
+      quiAb: req.body.quiAb,
+      quiFe: req.body.quiFe,
+      sexAb: req.body.sexAb,
+      sexFe: req.body.sexFe,
+      sabAb: req.body.sabAb,
+      sabFe: req.body.sabFe,
+      domAb: req.body.domAb,
+      domFe: req.body.domFe,
+    },
+    { new: true }
+  )
+    .then((usuario) => {
+      if (!usuario) {
+        req.flash("error_msg", "Usuário não encontrado");
+        return res.redirect(`/${req.user.nomeLoja}/admin/horarios`);
+      }
+      req.flash("success_msg", "Horários atualizados com sucesso!");
+      res.redirect(`/${req.user.nomeLoja}/admin/horarios`);
+    })
+    .catch((err) => {
+      req.flash("error_msg", "Houve um erro ao atualizar os horários");
+      res.redirect(`/${req.user.nomeLoja}/admin/horarios`);
     });
 });
 
@@ -1088,6 +1074,32 @@ router.get("/pedidosFinalizadosAPI", UserAuth, eAdmin, (req, res) => {
       req.flash("error_msg", "Houve um erro ao listar os pedidos");
       res.redirect(`"/${req.user.nomeLoja}/admin`);
     });
+});
+
+router.get("/api/produto/:id", async (req, res) => {
+  try {
+    const produto = await Produto.findById(req.params.id);
+    if (produto) {
+      res.json(produto);
+    } else {
+      res.status(404).send("Produto não encontrado");
+    }
+  } catch (error) {
+    res.status(500).send("Erro ao buscar o produto");
+  }
+});
+
+router.get("/api/adicional/:id", async (req, res) => {
+  try {
+    const adicional = await Adicional.findById(req.params.id);
+    if (adicional) {
+      res.json(adicional);
+    } else {
+      res.status(404).send("Produto não encontrado");
+    }
+  } catch (error) {
+    res.status(500).send("Erro ao buscar o produto");
+  }
 });
 
 module.exports = router;

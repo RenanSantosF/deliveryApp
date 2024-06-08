@@ -36,66 +36,156 @@ const inputTelefone = document.getElementById("inputTelefone");
 
 let cart = [];
 
-// document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-//   anchor.addEventListener("click", function (e) {
-//     e.preventDefault();
-//     document.querySelectorAll('a[href^="#"]').forEach((item) => {
-//       item.classList.remove("activeNav");
-//     });
 
-//     const nav = document.querySelector("nav");
+document.addEventListener("DOMContentLoaded", function () {
+  const navLinks = document.querySelectorAll("nav a[data-id]");
+  const sections = document.querySelectorAll("div[data-id]");
+  const nav = document.querySelector("nav");
+  const offsetTrigger = 80; // Offset de 80px antes de entrar na tela
+  const navRespiro = 25; // Offset para manter a NAV com um respiro do topo
+  const navHorizontalRespiro = 60; // Offset para manter o item da NAV com um respiro da lateral esquerda
 
-//     const linkPosition = this.getBoundingClientRect().left - nav.getBoundingClientRect().left;
+  // Função para atualizar a navegação
+  function updateNavOnScroll() {
+    let currentSection = null;
 
-//     nav.scrollBy({
-//       left: linkPosition,
-//       behavior: "smooth",
-//     });
-
-//     const target = document.querySelector(this.getAttribute("href"));
-
-//     this.classList.add("activeNav");
-//     const offset = target.offsetTop + 15;
-
-//     window.scrollTo({
-//       top: offset,
-//       behavior: "smooth",
-//     });
-//   });
-// });
-
-document.querySelectorAll("nav a[data-id]").forEach((anchor) => {
-  anchor.addEventListener("click", function (e) {
-    e.preventDefault();
-    document.querySelectorAll("nav a[data-id]").forEach((item) => {
-      item.classList.remove("activeNav");
+    sections.forEach((section) => {
+      const rect = section.getBoundingClientRect();
+      if (rect.top <= offsetTrigger && rect.bottom >= offsetTrigger) {
+        currentSection = section;
+      }
     });
 
-    const nav = document.querySelector("nav");
-    const linkPosition = this.getBoundingClientRect().left - nav.getBoundingClientRect().left;
+    if (currentSection) {
+      const targetId = currentSection.getAttribute("data-id");
+      navLinks.forEach((link) => {
+        link.classList.remove("activeNav");
+        if (link.getAttribute("data-id") === targetId) {
+          link.classList.add("activeNav");
 
-    nav.scrollBy({
-      left: linkPosition,
-      behavior: "smooth",
-    });
+          const linkPosition = link.getBoundingClientRect().left - nav.getBoundingClientRect().left;
 
-    const targetId = this.getAttribute("data-id");
-    const target = document.querySelector(`div[data-id="${targetId}"]`);
+          nav.scrollBy({
+            left: linkPosition - navHorizontalRespiro, // Adicionando o respiro horizontal
+            behavior: "smooth",
+          });
+        }
+      });
+    }
+  }
 
-    if (target) {
-      this.classList.add("activeNav");
-      const targetPosition = target.getBoundingClientRect().top + window.pageYOffset;
-      const offset = targetPosition - 25;
+  // Adicione o ouvinte de evento para clique na navegação
+  navLinks.forEach((anchor) => {
+    anchor.addEventListener("click", function (e) {
+      e.preventDefault();
+      navLinks.forEach((item) => {
+        item.classList.remove("activeNav");
+      });
 
-      window.scrollTo({
-        top: offset,
+      const linkPosition = this.getBoundingClientRect().left - nav.getBoundingClientRect().left;
+
+      nav.scrollBy({
+        left: linkPosition - navHorizontalRespiro, // Adicionando o respiro horizontal
         behavior: "smooth",
       });
-    } else {
-      console.error("Elemento alvo não encontrado: " + targetId);
-    }
+
+      const targetId = this.getAttribute("data-id");
+      const target = document.querySelector(`div[data-id="${targetId}"]`);
+
+      if (target) {
+        this.classList.add("activeNav");
+        const targetPosition = target.getBoundingClientRect().top + window.pageYOffset;
+        const offset = targetPosition - navRespiro; // Adicionando o respiro vertical
+
+        window.scrollTo({
+          top: offset,
+          behavior: "smooth",
+        });
+      } else {
+        console.error("Elemento alvo não encontrado: " + targetId);
+      }
+    });
   });
+
+  // Adicione o ouvinte de evento para rolagem da página
+  window.addEventListener("scroll", updateNavOnScroll);
 });
+
+
+
+
+// document.addEventListener("DOMContentLoaded", function () {
+//   const navLinks = document.querySelectorAll("nav a[data-id]");
+//   const sections = document.querySelectorAll("div[data-id]");
+//   const nav = document.querySelector("nav");
+//   const offsetTrigger = 20; // Offset de 80px antes de entrar na tela
+
+//   // Função para atualizar a navegação
+//   function updateNavOnScroll() {
+//     let currentSection = null;
+
+//     sections.forEach((section) => {
+//       const rect = section.getBoundingClientRect();
+//       if (rect.top <= offsetTrigger && rect.bottom >= offsetTrigger) {
+//         currentSection = section;
+//       }
+//     });
+
+//     if (currentSection) {
+//       const targetId = currentSection.getAttribute("data-id");
+//       navLinks.forEach((link) => {
+//         link.classList.remove("activeNav");
+//         if (link.getAttribute("data-id") === targetId) {
+//           link.classList.add("activeNav");
+
+//           const linkPosition = link.getBoundingClientRect().left - nav.getBoundingClientRect().left;
+
+//           nav.scrollBy({
+//             left: linkPosition,
+//             behavior: "smooth",
+//           });
+//         }
+//       });
+//     }
+//   }
+
+//   // Adicione o ouvinte de evento para clique na navegação
+//   navLinks.forEach((anchor) => {
+//     anchor.addEventListener("click", function (e) {
+//       e.preventDefault();
+//       navLinks.forEach((item) => {
+//         item.classList.remove("activeNav");
+//       });
+
+//       const linkPosition = this.getBoundingClientRect().left - nav.getBoundingClientRect().left;
+
+//       nav.scrollBy({
+//         left: linkPosition,
+//         behavior: "smooth",
+//       });
+
+//       const targetId = this.getAttribute("data-id");
+//       const target = document.querySelector(`div[data-id="${targetId}"]`);
+
+//       if (target) {
+//         this.classList.add("activeNav");
+//         const targetPosition = target.getBoundingClientRect().top + window.pageYOffset;
+//         const offset = targetPosition - 25;
+
+//         window.scrollTo({
+//           top: offset,
+//           behavior: "smooth",
+//         });
+//       } else {
+//         console.error("Elemento alvo não encontrado: " + targetId);
+//       }
+//     });
+//   });
+
+//   // Adicione o ouvinte de evento para rolagem da página
+//   window.addEventListener("scroll", updateNavOnScroll);
+// });
+
 
 cartBtn.addEventListener("click", () => {
   cartModal.classList.add("modalActive");

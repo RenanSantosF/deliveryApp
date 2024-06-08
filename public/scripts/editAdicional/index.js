@@ -85,3 +85,32 @@ function formatarValorBlur(input) {
     }
   }
 }
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+  const idAdicional = document.getElementById("idAdicional").value;
+  const nomeLoja = document.getElementById("nomeLoja").value;
+  console.log(idAdicional)
+  // Primeiro, buscamos o produto
+  fetch(`/${nomeLoja}/admin/api/adicional/${idAdicional}`)
+    .then((response) => response.json())
+    .then((produto) => {
+      preencherSelectCategoria(produto.categoria); // Passa a categoria do produto
+    })
+    .catch((error) => {
+      console.error("Erro ao buscar o produto:", error);
+    });
+
+  function preencherSelectCategoria(categoriaProduto) {
+    const selectCategoria = document.getElementById("select");
+    const options = selectCategoria.options;
+
+    for (let i = 0; i < options.length; i++) {
+      if (options[i].value === categoriaProduto) {
+        options[i].selected = true;
+        break;
+      }
+    }
+  }
+});

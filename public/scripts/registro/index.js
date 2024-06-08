@@ -15,8 +15,6 @@ document.addEventListener("DOMContentLoaded", function () {
   form.addEventListener("submit", function (event) {
     event.preventDefault();
 
-    const erros = [];
-
     const fieldNames = ["nome", "email", "senha", "senha2", "nomeDaLoja", "nomeLoja", "telefone", "estado", "cidade", "bairro", "rua", "numero", "pontoReferencia"];
 
     fieldNames.forEach((name) => {
@@ -37,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
       erros.push("A senha deve ter pelo menos 4 caracteres.");
     }
 
-    if (erros.length > 0) {
+    if (erros.length > 0 || erros.length > 0) {
       erros.forEach((erro) => {
         setTimeout(() => {
           Toastify({
@@ -55,6 +53,7 @@ document.addEventListener("DOMContentLoaded", function () {
           }).showToast();
         }, 30);
       });
+      erros = [];
     } else {
       form.submit();
     }

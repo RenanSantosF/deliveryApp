@@ -1,0 +1,134 @@
+{{>_navbar}}
+{{#each usuario}}
+<div class="body">
+  <h2 class="title">Horários de funcionamento</h2>
+<div class="card">
+  <div>
+    <form action="/{{nomeLoja}}/admin/horarios/edit" method="post">
+    <input type="hidden" value="{{_id}}" name="id">
+
+
+    <div class="containerFuncionamento">
+      <h5>Segunda-feira </h5>
+      <div>
+        <div>
+          <label class="label" for="segAb">Abre </label>
+          <input class="inputHora" type="time" name="segAb" value="{{segAb}}"/>
+        </div>
+
+        <div>
+          <label class="label" for="segFe">Fecha </label>
+          <input class="inputHora" type="time" name="segFe" value="{{segFe}}"/>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="containerFuncionamento">
+      <h5>Terça-feira </h5>
+      <div>
+        <div>
+          <label class="label" for="terAb">Abre </label>
+          <input class="inputHora" type="time" name="terAb" value="{{terAb}}"/>
+        </div>
+        <div>
+          <label class="label" for="terFe">Fecha </label>
+          <input class="inputHora" type="time" name="terFe" value="{{terFe}}"/>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="containerFuncionamento">
+      <h5>Quarta-feira </h5>
+      <div>
+        <div>
+          <label class="label" for="quaAb">Abre </label>
+          <input class="inputHora" type="time" name="quaAb" value="{{quaAb}}"/>
+        </div>
+        <div>
+          <label class="label" for="quaFe">Fecha </label>
+          <input class="inputHora" type="time" name="quaFe" value="{{quaFe}}"/>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="containerFuncionamento">
+      <h5>Quinta-feira </h5>
+      <div>
+        <div>
+          <label class="label" for="quiAb">Abre </label>
+          <input class="inputHora" type="time" name="quiAb" value="{{quiAb}}"/>
+        </div>
+
+        <div>
+          <label class="label" for="quiFe">Fecha </label>
+          <input class="inputHora" type="time" name="quiFe" value="{{quiFe}}"/>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="containerFuncionamento">
+      <h5>Sexta-feira </h5>
+      <div>
+        <div>
+          <label class="label" for="sexAb">Abre </label>
+          <input class="inputHora" type="time" name="sexAb" value="{{sexAb}}"/>
+        </div>
+        <div>
+          <label class="label" for="sexFe">Fecha </label>
+          <input class="inputHora" type="time" name="sexFe" value="{{sexFe}}"/>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="containerFuncionamento">
+      <h5>Sábado </h5>
+      <div>
+
+        <div>
+          <label class="label" for="sabAb">Abre </label>
+          <input class="inputHora" type="time" name="sabAb" value="{{sabAb}}"/>
+        </div>
+        <div>
+          <label class="label" for="sabFe">Fecha </label>
+          <input class="inputHora" type="time" name="sabFe" value="{{sabFe}}"/>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="containerFuncionamento">
+      <h5>Domingo </h5>
+      <div>
+        <div>
+          <label class="label" for="domAb">Abre </label>
+          <input class="inputHora" type="time" name="domAb" value="{{domAb}}"/>
+        </div>
+        <div>
+          <label class="label" for="domFe">Fecha </label>
+          <input class="inputHora" type="time" name="domFe" value="{{domFe}}"/>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="submit">
+      <button type="submit">
+        <span>Atualizar</span>
+      </button>
+    </div>
+    </form>
+  </div>
+</div>
+{{/each}}
