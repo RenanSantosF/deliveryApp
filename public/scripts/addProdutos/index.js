@@ -1,6 +1,8 @@
 import showMenu from "../mostraMenu.js";
 showMenu("nav-toggle", "nav-menu");
 
+
+
 function exibirImagem() {
   const inputImagem = document.getElementById("file");
   if (inputImagem.files && inputImagem.files[0]) {
@@ -183,3 +185,119 @@ function removerClasseEmptyAoDigitar() {
     });
   });
 }
+
+
+
+
+
+// document.getElementById('produtoForm').addEventListener('submit', async function (e) {
+//   const nomeLoja = document.getElementById("nomeLoja").value;
+//   e.preventDefault();
+
+
+//   const formData = new FormData(this);
+
+//   const imgProduto = document.getElementById('file').files[0];  // Obtém o arquivo de imagem
+
+//   formData.append('imgProduto', imgProduto);  // Adiciona o arquivo à formData
+
+//   const adicionais = [];
+//   const adicionaisCategorias = [...document.querySelectorAll('[name^="adicionais-"]')].reduce((acc, input) => {
+//     const category = input.name.split('-')[1];
+//     if (!acc[category]) {
+//       acc[category] = [];
+//     }
+//     if (input.checked) {
+//       acc[category].push({
+//         adicionais: input.value,
+//         precoAdicional: input.getAttribute('data-preco'),
+//         categoriaAdicional: input.getAttribute('data-categoria')
+//       });
+//     }
+//     return acc;
+//   }, {});
+
+//   Object.keys(adicionaisCategorias).forEach(category => {
+//     adicionaisCategorias[category].forEach((adicional, index) => {
+//       adicional.minAdicionais = formData.get(`minAdicionais-${category}`);
+//       adicional.maxAdicionais = formData.get(`maxAdicionais-${category}`);
+//       adicional.produtoReferido = formData.get('titulo');
+//     });
+//     adicionais.push(...adicionaisCategorias[category]);
+//   });
+
+//   const produto = {
+//     titulo: formData.get('titulo'),
+//     disponivel: true,
+//     descricao: formData.get('descricao'),
+//     preco: formData.get('preco'),
+//     categoria: formData.get('categoria'),
+//     nomeLoja: nomeLoja,
+//     adicionais: adicionais,
+//   };
+
+//   const response = await fetch(`/${nomeLoja}/admin/produtos/nova`, {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify(produto),
+//   });
+
+//   if (response.ok) {
+//     console.log(produto);
+//     // window.location.href = `/${nomeLoja}/admin/produtos`;
+//   } else {
+//     alert('Houve um erro na criação do produto!');
+//   }
+// });
+
+
+
+document.getElementById('produtoForm').addEventListener('submit', async function (e) {
+  e.preventDefault();
+
+  const nomeLoja = document.getElementById("nomeLoja").value;
+  const formData = new FormData(this);
+
+  const adicionais = [];
+  const adicionaisCategorias = [...document.querySelectorAll('[name^="adicionais-"]')].reduce((acc, input) => {
+    const category = input.name.split('-')[1];
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+    if (input.checked) {
+      acc[category].push({
+        adicionais: input.value,
+        precoAdicional: input.getAttribute('data-preco'),
+        categoriaAdicional: input.getAttribute('data-categoria')
+      });
+    }
+    return acc;
+  }, {});
+
+  Object.keys(adicionaisCategorias).forEach(category => {
+    adicionaisCategorias[category].forEach((adicional, index) => {
+      adicional.minAdicionais = formData.get(`minAdicionais-${category}`);
+      adicional.maxAdicionais = formData.get(`maxAdicionais-${category}`);
+      adicional.produtoReferido = formData.get('titulo');
+    });
+    adicionais.push(...adicionaisCategorias[category]);
+  });
+
+  // Adiciona adicionais como um JSON string no formData
+  formData.append('adicionais', JSON.stringify(adicionais));
+  formData.append('nomeLoja', nomeLoja);
+
+  const response = await fetch(this.action, {
+    method: 'POST',
+    body: formData,
+  });
+
+  if (response.ok) {
+    console.log('Produto criado com sucesso!');
+    // window.location.href = `/${nomeLoja}/admin/produtos`;
+  } else {
+    alert('Houve um erro na criação do produto!');
+  }
+});

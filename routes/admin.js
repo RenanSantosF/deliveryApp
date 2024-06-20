@@ -289,70 +289,120 @@ router.get("/produtos/add", UserAuth, eAdmin, (req, res) => {
     });
 });
 
-router.post("/produtos/nova", upload.single("imgProduto"), UserAuth, eAdmin, (req, res) => {
-  let erros = [];
+// router.post("/produtos/nova", upload.single("imgProduto"), UserAuth, eAdmin, (req, res) => {
+//   let erros = [];
 
-  if (!req.body.titulo || typeof req.body.titulo === "undefined" || req.body.titulo === null) {
-    erros.push({ texto: "Título inválido" });
+//   if (!req.body.titulo || typeof req.body.titulo === "undefined" || req.body.titulo === null) {
+//     erros.push({ texto: "Título inválido" });
+//   }
+
+//   if (!req.body.preco || typeof req.body.preco === "undefined" || req.body.preco === null) {
+//     erros.push({ texto: "Valor inválido" });
+//   }
+
+//   if (req.body.categoria === "0") {
+//     erros.push({ texto: "Categoria inválida, registre uma categoria" });
+//   }
+
+//   if (erros.length > 0) {
+//     res.render("admin/addProduto", { erros: erros });
+//   } else {
+//     const novosAdicionais = [];
+//     const adicionaisCategorias = Object.keys(req.body).filter((key) => key.startsWith("adicionais-"));
+
+//     adicionaisCategorias.forEach((categoria) => {
+//       const categoriaNome = categoria.replace("adicionais-", "");
+//       const adicionais = Array.isArray(req.body[categoria]) ? req.body[categoria] : [req.body[categoria]];
+//       const minAdicionais = req.body[`minAdicionais-${categoriaNome}`];
+//       const maxAdicionais = req.body[`maxAdicionais-${categoriaNome}`];
+
+//       adicionais.forEach((adicional, index) => {
+//         const precoAdicional = req.body[`precoAdicional-${categoriaNome}-${index}`];
+//         novosAdicionais.push({
+//           adicionais: adicional,
+//           precoAdicional: precoAdicional,
+//           produtoReferido: req.body.titulo,
+//           categoriaAdicional: req.body[`categoriaAdicional-${categoriaNome}-${index}`],
+//           minAdicionais: minAdicionais,
+//           maxAdicionais: maxAdicionais,
+//         });
+//       });
+//     });
+
+//     const novaproduto = {
+//       titulo: req.body.titulo,
+//       disponivel: true,
+//       descricao: req.body.descricao,
+//       preco: req.body.preco,
+//       categoria: req.body.categoria,
+//       nomeLoja: req.user.nomeLoja,
+//       imgProduto: req.file ? req.generatedFileName : req.generatedFileName,
+//       adicionais: novosAdicionais,
+//     };
+
+//     console.log(novaproduto);
+
+//     new Produto(novaproduto)
+//       .save()
+//       .then(() => {
+//         res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
+//       })
+//       .catch((err) => {
+//         req.flash("error_msg", "Houve um erro na criação do produto!");
+//         res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
+//         console.log(err);
+//       });
+//   }
+// });
+
+// router.post('/produtos/nova', upload.single("imgProduto"), UserAuth, eAdmin, (req, res) => {
+//   const novoProduto = new Produto(req.body);
+
+//   if (req.file) {
+//     novoProduto.imgProduto = req.file.filename;  // Salva o nome do arquivo no novo produto
+//   }
+
+//   novoProduto.save()
+//     .then(() => {
+//       res.status(201).send('Produto criado com sucesso!');
+//     })
+//     .catch((err) => {
+//       res.status(500).send('Houve um erro na criação do produto!');
+//       console.log(err);
+//     });
+// });
+
+router.post('/produtos/nova', upload.single("imgProduto"), UserAuth, eAdmin, (req, res) => {
+  const { titulo, descricao, preco, categoria, nomeLoja, adicionais } = req.body;
+  
+  let adicionaisParsed;
+  try {
+    adicionaisParsed = JSON.parse(adicionais); // Converter string JSON para objeto JavaScript
+  } catch (err) {
+    return res.status(400).send('Formato de adicionais inválido!');
   }
 
-  if (!req.body.preco || typeof req.body.preco === "undefined" || req.body.preco === null) {
-    erros.push({ texto: "Valor inválido" });
+  const novoProduto = new Produto({
+    titulo,
+    descricao,
+    preco,
+    categoria,
+    nomeLoja,
+    adicionais: adicionaisParsed
+  });
+
+  if (req.file) {
+    novoProduto.imgProduto = req.file.filename;  // Salva o nome do arquivo no novo produto
   }
 
-  if (req.body.categoria === "0") {
-    erros.push({ texto: "Categoria inválida, registre uma categoria" });
-  }
-
-  if (erros.length > 0) {
-    res.render("admin/addProduto", { erros: erros });
-  } else {
-    const novosAdicionais = [];
-    const adicionaisCategorias = Object.keys(req.body).filter((key) => key.startsWith("adicionais-"));
-
-    adicionaisCategorias.forEach((categoria) => {
-      const categoriaNome = categoria.replace("adicionais-", "");
-      const adicionais = Array.isArray(req.body[categoria]) ? req.body[categoria] : [req.body[categoria]];
-      const minAdicionais = req.body[`minAdicionais-${categoriaNome}`];
-      const maxAdicionais = req.body[`maxAdicionais-${categoriaNome}`];
-
-      adicionais.forEach((adicional, index) => {
-        const precoAdicional = req.body[`precoAdicional-${categoriaNome}-${index}`];
-        novosAdicionais.push({
-          adicionais: adicional,
-          precoAdicional: precoAdicional,
-          produtoReferido: req.body.titulo,
-          categoriaAdicional: req.body[`categoriaAdicional-${categoriaNome}-${index}`],
-          minAdicionais: minAdicionais,
-          maxAdicionais: maxAdicionais,
-        });
-      });
+  novoProduto.save()
+    .then(() => {
+      res.status(201).send('Produto criado com sucesso!');
+    })
+    .catch((err) => {
+      res.status(500).send('Houve um erro na criação do produto!');
+      console.log(err);
     });
-
-    const novaproduto = {
-      titulo: req.body.titulo,
-      disponivel: true,
-      descricao: req.body.descricao,
-      preco: req.body.preco,
-      categoria: req.body.categoria,
-      nomeLoja: req.user.nomeLoja,
-      imgProduto: req.file ? req.generatedFileName : req.generatedFileName,
-      adicionais: novosAdicionais,
-    };
-
-    console.log(novaproduto);
-
-    new Produto(novaproduto)
-      .save()
-      .then(() => {
-        res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
-      })
-      .catch((err) => {
-        req.flash("error_msg", "Houve um erro na criação do produto!");
-        res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
-        console.log(err);
-      });
-  }
 });
 
 router.get("/produtos/edit/:id", UserAuth, eAdmin, (req, res) => {
@@ -379,7 +429,6 @@ router.get("/produtos/edit/:id", UserAuth, eAdmin, (req, res) => {
               }
               const adicionaisPorCategoria = reorganizarPorCategoria(adicionais);
 
-              console.log(produto);
               res.render("admin/editProdutos", {
                 categorias: categorias,
                 produto: produto,
@@ -405,57 +454,101 @@ router.get("/produtos/edit/:id", UserAuth, eAdmin, (req, res) => {
     });
 });
 
+// router.post("/produto/edit", upload.single("imgProduto"), UserAuth, eAdmin, (req, res) => {
+//   Produto.findOne({ _id: req.body.id })
+//     .then((produto) => {
+//       const novosAdicionais = [];
+//       const adicionaisCategorias = Object.keys(req.body).filter((key) => key.startsWith("adicionais-"));
+
+//       adicionaisCategorias.forEach((categoria) => {
+//         const categoriaNome = categoria.replace("adicionais-", "");
+//         const adicionais = Array.isArray(req.body[categoria]) ? req.body[categoria] : [req.body[categoria]];
+//         const minAdicionais = req.body[`minAdicionais-${categoriaNome}`];
+//         const maxAdicionais = req.body[`maxAdicionais-${categoriaNome}`];
+
+//         adicionais.forEach((adicional, index) => {
+//           const precoAdicional = req.body[`precoAdicional-${categoriaNome}-${index}`];
+//           novosAdicionais.push({
+//             adicionais: adicional,
+//             precoAdicional: precoAdicional,
+//             produtoReferido: req.body.titulo,
+//             categoriaAdicional: req.body[`categoriaAdicional-${categoriaNome}-${index}`],
+//             minAdicionais: minAdicionais,
+//             maxAdicionais: maxAdicionais,
+//           });
+//         });
+//       });
+
+//       const preco = req.body.preco;
+
+//       produto.titulo = req.body.titulo;
+//       produto.descricao = req.body.descricao;
+//       produto.categoria = req.body.categoria;
+//       produto.preco = preco;
+//       produto.nomeLoja = req.user.nomeLoja;
+
+//       if (req.file) {
+//         if (produto.imgProduto) {
+//           const imagePath = path.join(__dirname, "..", "public", "uploads", produto.imgProduto);
+
+//           fs.unlink(imagePath, (err) => {
+//             if (err) {
+//               console.error("Erro ao excluir a foto anterior:", err);
+//             }
+//           });
+//         }
+//         produto.imgProduto = req.generatedFileName ? req.generatedFileName : "padrao/imgPadrao.png";
+//       }
+
+//       produto.adicionais = novosAdicionais;
+
+//       console.log(produto);
+//       produto
+//         .save()
+//         .then(() => {
+//           res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
+//         })
+//         .catch((err) => {
+//           req.flash("error_msg", "Erro interno ao salvar a edição");
+//           res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
+//         });
+//     })
+//     .catch((err) => {
+//       req.flash("error_msg", "Houve um erro ao encontrar o produto para edição");
+//       res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
+//     });
+// });
+
 router.post("/produto/edit", upload.single("imgProduto"), UserAuth, eAdmin, (req, res) => {
   Produto.findOne({ _id: req.body.id })
     .then((produto) => {
-      const novosAdicionais = [];
-      const adicionaisCategorias = Object.keys(req.body).filter((key) => key.startsWith("adicionais-"));
+      const { titulo, descricao, preco, categoria, adicionais } = req.body;
 
-      adicionaisCategorias.forEach((categoria) => {
-        const categoriaNome = categoria.replace("adicionais-", "");
-        const adicionais = Array.isArray(req.body[categoria]) ? req.body[categoria] : [req.body[categoria]];
-        const minAdicionais = req.body[`minAdicionais-${categoriaNome}`];
-        const maxAdicionais = req.body[`maxAdicionais-${categoriaNome}`];
-
-        adicionais.forEach((adicional, index) => {
-          const precoAdicional = req.body[`precoAdicional-${categoriaNome}-${index}`];
-          novosAdicionais.push({
-            adicionais: adicional,
-            precoAdicional: precoAdicional,
-            produtoReferido: req.body.titulo,
-            categoriaAdicional: req.body[`categoriaAdicional-${categoriaNome}-${index}`],
-            minAdicionais: minAdicionais,
-            maxAdicionais: maxAdicionais,
-          });
-        });
-      });
-
-      const preco = req.body.preco;
-
-      produto.titulo = req.body.titulo;
-      produto.descricao = req.body.descricao;
-      produto.categoria = req.body.categoria;
+      produto.titulo = titulo;
+      produto.descricao = descricao;
+      produto.categoria = categoria;
       produto.preco = preco;
       produto.nomeLoja = req.user.nomeLoja;
 
       if (req.file) {
         if (produto.imgProduto) {
           const imagePath = path.join(__dirname, "..", "public", "uploads", produto.imgProduto);
-
           fs.unlink(imagePath, (err) => {
             if (err) {
               console.error("Erro ao excluir a foto anterior:", err);
             }
           });
         }
-        produto.imgProduto = req.generatedFileName ? req.generatedFileName : "padrao/imgPadrao.png";
+        produto.imgProduto = req.file.filename;
       }
 
-      produto.adicionais = novosAdicionais;
+      try {
+        produto.adicionais = JSON.parse(adicionais);
+      } catch (err) {
+        return res.status(400).send('Formato de adicionais inválido!');
+      }
 
-      console.log(produto);
-      produto
-        .save()
+      produto.save()
         .then(() => {
           res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
         })
@@ -469,6 +562,8 @@ router.post("/produto/edit", upload.single("imgProduto"), UserAuth, eAdmin, (req
       res.redirect(`/${req.user.nomeLoja}/admin/produtos`);
     });
 });
+
+
 
 router.post("/produtos/deletar", UserAuth, eAdmin, (req, res) => {
   Produto.findOne({ _id: req.body.id })

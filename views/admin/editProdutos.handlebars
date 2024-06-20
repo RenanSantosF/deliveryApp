@@ -1,4 +1,4 @@
-{{>_navbar}}
+{{!-- {{>_navbar}}
 {{#each erros}}
   <div class="alert alert-danger">{{texto}}</div>
 {{else}}
@@ -36,15 +36,6 @@
         <label class="label" for="preco">Preço<span class="required">*</span></label>
         <input class="input" name="preco" id="inputValue" value="{{produto.preco}}" />
         <label class="label" for="categoria">Categoria<span class="required">*</span></label>
-
-        {{!-- <select id="select" class="select" name="categoria">
-          <option value="">Selecione a categoria</option>
-          {{#each categorias}}
-            <option value="{{_id}}">{{nome}}</option>
-          {{else}}
-            <option value="0">Nenhuma categoria registrada</option>
-          {{/each}}
-        </select> --}}
 
         <select id="select" class="select" name="categoria">
           <option value="">Selecione a categoria</option>
@@ -106,8 +97,101 @@
       </div>
     </form>
   </div>
+</div> --}}
+
+
+
+
+
+{{>_navbar}}
+{{#each erros}}
+  <div class="alert alert-danger">{{texto}}</div>
+{{else}}
+{{/each}}
+
+<div>
+  <div class="body">
+    <form id="produtoForm" enctype="multipart/form-data">
+      <div class="card">
+        <h2 class="title">Editar Produto</h2>
+
+        <label class="custum-file-upload" for="file">
+          <input type="file" id="file" name="imgProduto" accept="image/*" />
+          {{#if produto.imgProduto}}
+            <img id="imagemSelecionada" src="/uploads/{{produto.imgProduto}}" class="imagemSelecionada" alt="Imagem selecionada" />
+          {{else}}
+            <div id="svg" class="icon">
+              <!-- SVG code here -->
+            </div>
+            <div id="span" class="text">
+              <span>Selecionar imagem</span>
+            </div>
+            <img id="imagemSelecionada" class="imagemSelecionada" alt="Imagem selecionada" style="display: none;" />
+          {{/if}}
+        </label>
+        <input class="input" type="hidden" id="nomeLoja" value="{{loja}}" />
+        <input class="input" type="hidden" id="idProduto" value="{{produto._id}}" name="id" />
+        <label class="label" for="titulo">Título<span class="required">*</span></label>
+        <input class="input" type="text" id="titulo" name="titulo" value="{{produto.titulo}}" />
+        <label class="label" for="descricao">Descrição</label>
+        <input class="input" type="text" name="descricao" value="{{produto.descricao}}" />
+        <label class="label" for="preco">Preço<span class="required">*</span></label>
+        <input class="input" name="preco" id="inputValue" value="{{produto.preco}}" />
+        <label class="label" for="categoria">Categoria<span class="required">*</span></label>
+
+        <select id="select" class="select" name="categoria">
+          <option value="">Selecione a categoria</option>
+          {{#each categorias}}
+            <option value="{{_id}}">{{nome}}</option>
+          {{else}}
+            <option value="0">Nenhuma categoria registrada</option>
+          {{/each}}
+        </select>
+
+        <label class="label" for="adicionais">Adicionais: </label>
+
+        {{#each adicionais}}
+          <span class="labelCategoriaAdicionais">{{@key}}</span>
+
+          <div class="containerMinMax">
+            <label for="minAdicionais-{{@key}}">
+              <div class="containerQuantidadeCategoria">
+                <span>Quantidade mínima</span>
+                <div>
+                  <button type="button" class="btnSomaSubtrai decrementaMinimo">-</button>
+                  <input class="inputQuantidadeCategoria minInput" type="number" value="0" id="minAdicionais-{{@key}}" name="minAdicionais-{{@key}}" min="0" />
+                  <button type="button" class="btnSomaSubtrai incrementaMinimo">+</button>
+                </div>
+              </div>
+            </label>
+            <label for="maxAdicionais-{{@key}}">
+              <div class="containerQuantidadeCategoria">
+                <span>Quantidade máxima</span>
+                <div>
+                  <button type="button" class="btnSomaSubtrai decrementaMaximo">-</button>
+                  <input class="inputQuantidadeCategoria maxInput" type="number" value="10" id="maxAdicionais-{{@key}}" name="maxAdicionais-{{@key}}" min="0" />
+                  <button type="button" class="btnSomaSubtrai incrementaMaximo">+</button>
+                </div>
+              </div>
+            </label>
+          </div>
+
+          {{#each this}}
+            <label class="labelAdicionais" for="{{_id}}">
+              <label class="containerCheckBox">
+                <input value="{{nome}}" name="adicionais-{{@../key}}" type="checkbox" class="checkboxAdicional" id="adicional-{{@../key}}-{{@index}}" data-preco="{{taxa}}" data-categoria="{{categoria}}" />
+                <div class="checkmark"></div>
+              </label>
+              <span>{{nome}}</span>
+            </label>
+          {{/each}}
+          <div class="separador"></div>
+        {{else}}
+          <option value="0">Nenhum adicional encontrado, cadastre algum.</option>
+        {{/each}}
+
+        <button id="btnEnviar" type="submit">Editar produto</button>
+      </div>
+    </form>
+  </div>
 </div>
-
-
-
-

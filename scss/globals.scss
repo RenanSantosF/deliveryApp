@@ -15,38 +15,37 @@
 }
 
 ::-webkit-scrollbar {
-  width: 10px; /* Largura da barra de rolagem */
-  background-color: #f5f5f5; /* Cor de fundo da barra de rolagem */
+  width: 10px;
+  background-color: #f5f5f5;
 }
 
-/* Estilo do botão da barra de rolagem */
+
 ::-webkit-scrollbar-thumb {
-  background-color: #c5c5c5; /* Cor do botão da barra de rolagem */
-  border-radius: 5px; /* Borda arredondada do botão */
+  background-color: #c5c5c5;
+  border-radius: 5px;
 }
 
 .alert {
   position: fixed;
-  top: 70px; /* Ajuste conforme necessário */
+  top: 70px;
   left: 50%;
+  width: 90%;
+  text-align: center;
   transform: translateX(-50%);
-  justify-content: center;
   display: flex;
-  align-items: center;
-  height: 30px;
   color: #fff;
-  font-weight: bold; /* Alterado para 'bold' em vez de '600px' */
+  font-weight: bold;
   font-size: 17px;
   z-index: 99999999;
-  animation: fadeOut 5s forwards ease-out; /* Aplica a animação com duração de 3 segundos */
+  animation: fadeOut 5s forwards ease-out;
 }
 
 @keyframes fadeOut {
   from {
-    opacity: 1; /* Começa com opacidade total */
+    opacity: 1;
   }
   to {
-    opacity: 0; /* Termina com opacidade zero */
+    opacity: 0;
   }
 }
 

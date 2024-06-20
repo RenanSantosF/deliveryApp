@@ -19,7 +19,7 @@ export function criarDivPedido(pedido) {
         <div class="footerPedido">
         <div>
           <button class="btnModal" data-id="${pedido._id}">Ver Detalhes</button>
-          <button class="btnAtualizaStatus" id="${pedido._id}" data-id="${pedido._id}">${pedido.status}</button>
+          <i class="ri-check-double-line"></i>
         </div>
           
           <p>${pedido.valorTotal.toLocaleString("pt-BR", {

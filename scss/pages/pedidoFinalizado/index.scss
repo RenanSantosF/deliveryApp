@@ -70,6 +70,7 @@ body {
 }
 
 .card {
+  position: relative;
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -414,4 +415,13 @@ body {
 
 .modalDetalhes {
   width: 100%;
+}
+
+
+.ri-check-double-line {
+  font-size: 30px;
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  color: var(--cor-DespacharPedido);
 }
