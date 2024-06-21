@@ -13,7 +13,7 @@
     </a>
   </div>
 
-{{#each adicionais}}
+{{!-- {{#each adicionais}}
   <div class="card">
     <div>
       <div class="nome">
@@ -42,4 +42,35 @@
 
 <p class="mt-3">Nenhum adicional registrado!</p>
 
+{{/each}} --}}
+
+
+{{#each adicionaisPorCategoria}}
+  <div class="categoria">
+    <h2>{{@key}}</h2>
+    {{#each this}}
+      <div class="card">
+        <div>
+          <div class="nome">
+            <h2>{{nome}}</h2>
+          </div>
+          <div class="taxa">
+            <h2>R$ {{taxa}}</h2>
+          </div>
+        </div>
+        <div class="openModal" id="openModal">
+          <img class="abre" src="/img/3pontos.png" />
+        </div>
+        <div class="modal">
+          <a href="/{{nomeLoja}}/admin/adicionais/edit/{{_id}}"><button class="btn edit">Editar</button></a>
+          <form action="/{{nomeLoja}}/admin/adicionais/deletar" method="post">
+            <input type="hidden" name="id" value="{{_id}}" />
+            <button class="btn delete" type="submit">Deletar</button>
+          </form>
+        </div>
+      </div>
+    {{/each}}
+  </div>
+{{else}}
+  <p class="mt-3">Nenhum adicional registrado!</p>
 {{/each}}

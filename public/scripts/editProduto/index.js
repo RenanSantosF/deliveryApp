@@ -235,3 +235,57 @@ document.addEventListener("DOMContentLoaded", function () {
 function habilitaBtnEditar() {
   btnEnviar.disabled = false;
 }
+
+document.getElementById('produtoForm').addEventListener('submit', async function (e) {
+  e.preventDefault();
+
+  const nomeLoja = document.getElementById("nomeLoja").value;
+  const formData = new FormData(this);
+  const fileInput = document.getElementById('file');
+
+  // Adiciona o arquivo de imagem ao FormData
+  if (fileInput.files[0]) {
+    formData.append('imgProduto', fileInput.files[0]);
+  }
+
+  const adicionais = [];
+  const adicionaisCategorias = [...document.querySelectorAll('[name^="adicionais-"]')].reduce((acc, input) => {
+    const category = input.name.split('-')[1];
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+    if (input.checked) {
+      acc[category].push({
+        adicionais: input.value,
+        precoAdicional: input.getAttribute('data-preco'),
+        categoriaAdicional: input.getAttribute('data-categoria')
+      });
+    }
+    return acc;
+  }, {});
+
+  Object.keys(adicionaisCategorias).forEach(category => {
+    adicionaisCategorias[category].forEach((adicional) => {
+      adicional.minAdicionais = formData.get(`minAdicionais-${category}`);
+      adicional.maxAdicionais = formData.get(`maxAdicionais-${category}`);
+      adicional.produtoReferido = formData.get('titulo');
+    });
+    adicionais.push(...adicionaisCategorias[category]);
+  });
+
+  formData.append('adicionais', JSON.stringify(adicionais));
+
+  const response = await fetch(`/${nomeLoja}/admin/produto/edit`, {
+    method: 'POST',
+    body: formData,
+  });
+
+  if (response.ok) {
+    window.location.href = `/${nomeLoja}/admin/produtos`;
+  } else {
+    alert('Houve um erro na edição do produto!');
+  }
+});
+
+
+

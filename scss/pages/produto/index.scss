@@ -20,7 +20,7 @@ body {
 }
 
 .body {
-  gap: 20px;
+  gap: 10px;
   display: flex;
   flex-direction: column;
   padding: 20px;
@@ -34,7 +34,7 @@ body {
 }
 
 .nome > h2 {
-  font-weight: 400;
+  font-weight: 600;
   font-size: 16px;
   color: $cor-texto-cinzaEscuro;
 }
@@ -56,7 +56,17 @@ body {
 .imgProduto > img {
   width: 70px;
   border-radius: 10px;
-  height: auto;
+  height: 70px;
+}
+
+.categoria {
+  width: 100%;
+}
+.categoria > h2 {
+  font-size: 20px;
+  font-weight: 800;
+  color: $cor-texto-cinzaEscuro;
+  padding-left: 10px;
 }
 
 .card {
@@ -66,8 +76,8 @@ body {
   background-color: #ffffff;
   padding: 17px 10px 17px 10px;
   align-items: center;
-  border-radius: 10px;
-  border-left: 5px solid #03032b;
+  border-radius: 4px;
+  // border-left: 5px solid #03032b;
   box-shadow: 1px 1px 5px rgba(150, 150, 150, 0.3);
 }
 
@@ -151,7 +161,6 @@ body {
 .indisponivel {
   background-color: rgb(138, 153, 0);
 }
-
 
 .delete {
   background-color: rgb(255, 99, 71);

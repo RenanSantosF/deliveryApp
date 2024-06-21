@@ -1,6 +1,8 @@
 import showMenu from "../mostraMenu.js";
 showMenu("nav-toggle", "nav-menu");
 
+
+
 function exibirImagem() {
   const inputImagem = document.getElementById("file");
   if (inputImagem.files && inputImagem.files[0]) {
@@ -183,3 +185,50 @@ function removerClasseEmptyAoDigitar() {
     });
   });
 }
+
+document.getElementById('produtoForm').addEventListener('submit', async function (e) {
+  e.preventDefault();
+
+  const nomeLoja = document.getElementById("nomeLoja").value;
+  const formData = new FormData(this);
+
+  const adicionais = [];
+  const adicionaisCategorias = [...document.querySelectorAll('[name^="adicionais-"]')].reduce((acc, input) => {
+    const category = input.name.split('-')[1];
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+    if (input.checked) {
+      acc[category].push({
+        adicionais: input.value,
+        precoAdicional: input.getAttribute('data-preco'),
+        categoriaAdicional: input.getAttribute('data-categoria')
+      });
+    }
+    return acc;
+  }, {});
+
+  Object.keys(adicionaisCategorias).forEach(category => {
+    adicionaisCategorias[category].forEach((adicional, index) => {
+      adicional.minAdicionais = formData.get(`minAdicionais-${category}`);
+      adicional.maxAdicionais = formData.get(`maxAdicionais-${category}`);
+      adicional.produtoReferido = formData.get('titulo');
+    });
+    adicionais.push(...adicionaisCategorias[category]);
+  });
+
+  formData.append('adicionais', JSON.stringify(adicionais));
+  formData.append('nomeLoja', nomeLoja);
+
+  const response = await fetch(this.action, {
+    method: 'POST',
+    body: formData,
+  });
+
+  if (response.ok) {
+    console.log('Produto criado com sucesso!');
+    window.location.href = `/${nomeLoja}/admin/produtos`;
+  } else {
+    alert('Houve um erro na criação do produto!');
+  }
+});

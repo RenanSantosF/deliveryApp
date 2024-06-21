@@ -20,7 +20,7 @@ body {
 }
 
 .body {
-  gap: 20px;
+  gap: 10px;
   display: flex;
   flex-direction: column;
   padding: 20px;
@@ -28,7 +28,7 @@ body {
 }
 
 .nome > h2 {
-  font-weight: 400;
+  font-weight: 600;
   font-size: 16px;
   color: $cor-texto-cinzaEscuro;
 }
@@ -38,6 +38,15 @@ body {
   color: #47a2e4;
 }
 
+.categoria {
+  width: 100%;
+}
+.categoria > h2 {
+  font-size: 20px;
+  font-weight: 800;
+  color: $cor-texto-cinzaEscuro;
+  padding-left: 10px;
+}
 .card {
   width: 100%;
   display: flex;
@@ -45,8 +54,7 @@ body {
   background-color: #ffffff;
   padding: 17px 10px 17px 10px;
   align-items: center;
-  border-radius: 10px;
-  border-left: 5px solid #03032b;
+  border-radius: 4px;
   box-shadow: 1px 1px 5px rgba(150, 150, 150, 0.3);
 }
 

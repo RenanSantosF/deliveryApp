@@ -14,7 +14,7 @@
     </a>
   </div>
 
-{{#each produtos}}
+{{!-- {{#each produtos}}
   <div class="card">
 
     <div>
@@ -67,4 +67,55 @@
   </div>
 {{else}}
 <p>Nenhum produto registrado!</p>
+{{/each}} --}}
+
+
+{{#each produtosPorCategoria}}
+  <div class="categoria">
+    <h2>{{@key}}</h2>
+    {{#each this}}
+      <div class="card">
+        <div>
+          <div class="containerContent">
+            <div class="imgProduto">
+              <img src="/uploads/{{imgProduto}}" alt="">
+            </div>
+            <div>
+              <div class="titulo">
+                <h2>{{titulo}}</h2>
+              </div>
+              {{!-- <div class="nome">
+                <h2>{{this.categoria.nome}}</h2>
+              </div> --}}
+              <div class="taxa">
+                <h2>R$ {{preco}}</h2>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="openModal" id="openModal">
+          <img class="abre" src="/img/3pontos.png" />
+        </div>
+        <div class="modal">
+          <a href="/{{nomeLoja}}/admin/produtos/edit/{{_id}}">
+            <button class="btn edit">Editar</button>
+          </a>
+          <form action="/{{nomeLoja}}/admin/produtos/deletar" method="post">
+            <input type="hidden" name="id" value="{{_id}}" />
+            <button class="btn delete" type="submit">Deletar</button>
+          </form>
+          <form action="/{{nomeLoja}}/admin/produtos/disponibilidade" method="post">
+            <input type="hidden" name="id" value="{{_id}}" />
+            {{#if disponivel}}
+              <button class="btnDisponibilidade indisponivel" type="submit">Tornar indisponível</button>
+            {{else}}
+              <button class="btnDisponibilidade disponivel" type="submit">Tornar disponível</button>
+            {{/if}}
+          </form>
+        </div>
+      </div>
+    {{/each}}
+  </div>
+{{else}}
+  <p>Nenhum produto registrado!</p>
 {{/each}}
