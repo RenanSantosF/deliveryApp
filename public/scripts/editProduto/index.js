@@ -236,18 +236,6 @@ function habilitaBtnEditar() {
   btnEnviar.disabled = false;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
 document.getElementById('produtoForm').addEventListener('submit', async function (e) {
   e.preventDefault();
 

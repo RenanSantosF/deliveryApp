@@ -3,7 +3,7 @@ require("../models/Usuario");
 const Usuario = mongoose.model("usuarios");
 
 const existeUsuario = function (req, res, next) {
-  Usuario.findOne({ nomeLoja: req.params.nomeLoja })
+  Usuario.findOne({ nomeLoja: req.params.nomeLoja})
     .lean()
     .then((usuario) => {
       if (usuario) {
